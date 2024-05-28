@@ -3,12 +3,21 @@
 package main
 
 import (
+	"fmt"
 	"github.com/cloudwego/hertz/pkg/app/server"
+	"github.com/jizizr/goligoli/server/common/consts"
+	"github.com/jizizr/goligoli/server/service/api/initialize"
+	"github.com/jizizr/goligoli/server/service/api/initialize/rpc"
 )
 
 func main() {
-	h := server.Default()
-
+	r, info := initialize.InitEtcd()
+	rpc.Init()
+	h := server.New(
+		server.WithHostPorts(fmt.Sprintf(":%d", consts.ApiServerPort)),
+		server.WithRegistry(r, info),
+		server.WithHandleMethodNotAllowed(true),
+	)
 	register(h)
 	h.Spin()
 }

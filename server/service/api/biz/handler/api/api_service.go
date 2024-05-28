@@ -4,10 +4,12 @@ package api
 
 import (
 	"context"
-
 	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/cloudwego/hertz/pkg/protocol/consts"
+	"github.com/jizizr/goligoli/server/kitex_gen/user"
+	"github.com/jizizr/goligoli/server/service/api/biz/global"
 	api "github.com/jizizr/goligoli/server/service/api/biz/model/api"
+	"net/http"
 )
 
 // Register .
@@ -22,7 +24,21 @@ func Register(ctx context.Context, c *app.RequestContext) {
 	}
 
 	resp := new(api.RegisterResponse)
-
+	res, err := global.UserClient.Register(ctx, &user.RegisterRequest{
+		Username: req.Username,
+		Password: req.Password,
+	})
+	if err != nil {
+		c.String(consts.StatusBadRequest, err.Error())
+		return
+	}
+	resp = &api.RegisterResponse{
+		Base: &api.BaseResponse{
+			Code:    http.StatusOK,
+			Message: "success",
+		},
+		Token: res.Token,
+	}
 	c.JSON(consts.StatusOK, resp)
 }
 
@@ -36,9 +52,22 @@ func Login(ctx context.Context, c *app.RequestContext) {
 		c.String(consts.StatusBadRequest, err.Error())
 		return
 	}
-
 	resp := new(api.LoginResponse)
-
+	res, err := global.UserClient.Login(ctx, &user.LoginRequest{
+		Username: req.Username,
+		Password: req.Password,
+	})
+	if err != nil {
+		c.String(consts.StatusBadRequest, err.Error())
+		return
+	}
+	resp = &api.LoginResponse{
+		Base: &api.BaseResponse{
+			Code:    http.StatusOK,
+			Message: "success",
+		},
+		Token: res.Token,
+	}
 	c.JSON(consts.StatusOK, resp)
 }
 

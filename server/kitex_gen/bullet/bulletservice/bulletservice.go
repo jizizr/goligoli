@@ -96,7 +96,7 @@ func newServiceInfo(hasStreaming bool, keepStreamingMethods bool, keepNonStreami
 func addBulletHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
 	realArg := arg.(*bullet.BulletServiceAddBulletArgs)
 	realResult := result.(*bullet.BulletServiceAddBulletResult)
-	success, err := handler.(bullet.BulletService).AddBullet(ctx, realArg.Request)
+	success, err := handler.(bullet.BulletService).AddBullet(ctx, realArg.Req)
 	if err != nil {
 		return err
 	}
@@ -114,7 +114,7 @@ func newBulletServiceAddBulletResult() interface{} {
 func getBulletHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
 	realArg := arg.(*bullet.BulletServiceGetBulletArgs)
 	realResult := result.(*bullet.BulletServiceGetBulletResult)
-	success, err := handler.(bullet.BulletService).GetBullet(ctx, realArg.Request)
+	success, err := handler.(bullet.BulletService).GetBullet(ctx, realArg.Req)
 	if err != nil {
 		return err
 	}
@@ -139,9 +139,9 @@ func newServiceClient(c client.Client) *kClient {
 	}
 }
 
-func (p *kClient) AddBullet(ctx context.Context, request *bullet.AddBulletRequest) (r *bullet.AddBulletResponse, err error) {
+func (p *kClient) AddBullet(ctx context.Context, req *bullet.AddBulletRequest) (r *bullet.AddBulletResponse, err error) {
 	var _args bullet.BulletServiceAddBulletArgs
-	_args.Request = request
+	_args.Req = req
 	var _result bullet.BulletServiceAddBulletResult
 	if err = p.c.Call(ctx, "AddBullet", &_args, &_result); err != nil {
 		return
@@ -149,9 +149,9 @@ func (p *kClient) AddBullet(ctx context.Context, request *bullet.AddBulletReques
 	return _result.GetSuccess(), nil
 }
 
-func (p *kClient) GetBullet(ctx context.Context, request *bullet.GetBulletRequest) (r *bullet.GetBulletResponse, err error) {
+func (p *kClient) GetBullet(ctx context.Context, req *bullet.GetBulletRequest) (r *bullet.GetBulletResponse, err error) {
 	var _args bullet.BulletServiceGetBulletArgs
-	_args.Request = request
+	_args.Req = req
 	var _result bullet.BulletServiceGetBulletResult
 	if err = p.c.Call(ctx, "GetBullet", &_args, &_result); err != nil {
 		return

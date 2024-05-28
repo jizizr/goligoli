@@ -6,7 +6,7 @@ struct RegisterRequest {
 }
 
 struct RegisterResponse {
-    2: string token,
+    1: string token,
 }
 
 struct LoginRequest {

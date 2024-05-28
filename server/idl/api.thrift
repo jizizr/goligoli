@@ -2,11 +2,6 @@ namespace go api
 
 include "base.thrift"
 
-struct BaseResponse {
-    1:i64 code,
-    2:string message,
-}
-
 // User
 struct RegisterRequest {
     1:string username,
@@ -14,7 +9,7 @@ struct RegisterRequest {
 }
 
 struct RegisterResponse {
-    1:BaseResponse base,
+    1:base.BaseResponse base_resp,
     2:string token,
 }
 
@@ -24,7 +19,7 @@ struct LoginRequest {
 }
 
 struct LoginResponse {
-    1:BaseResponse base,
+    1:base.BaseResponse base_resp,
     2:string token,
 }
 
@@ -39,7 +34,7 @@ struct AddBulletRequest {
 }
 
 struct AddBulletResponse {
-    1:BaseResponse base,
+    1:base.BaseResponse base_resp,
     2:i64 bullet_id,
 }
 
@@ -49,7 +44,7 @@ struct GetHistoryBulletsRequest {
 }
 
 struct GetBulletResponse {
-    1:BaseResponse base,
+    1:base.BaseResponse base_resp,
     2:list<base.Bullet> bullets,
 }
 

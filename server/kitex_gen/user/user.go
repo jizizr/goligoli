@@ -233,7 +233,7 @@ func (p *RegisterRequest) Field2DeepEqual(src string) bool {
 }
 
 type RegisterResponse struct {
-	Token string `thrift:"token,2" frugal:"2,default,string" json:"token"`
+	Token string `thrift:"token,1" frugal:"1,default,string" json:"token"`
 }
 
 func NewRegisterResponse() *RegisterResponse {
@@ -252,7 +252,7 @@ func (p *RegisterResponse) SetToken(val string) {
 }
 
 var fieldIDToName_RegisterResponse = map[int16]string{
-	2: "token",
+	1: "token",
 }
 
 func (p *RegisterResponse) Read(iprot thrift.TProtocol) (err error) {
@@ -274,9 +274,9 @@ func (p *RegisterResponse) Read(iprot thrift.TProtocol) (err error) {
 		}
 
 		switch fieldId {
-		case 2:
+		case 1:
 			if fieldTypeId == thrift.STRING {
-				if err = p.ReadField2(iprot); err != nil {
+				if err = p.ReadField1(iprot); err != nil {
 					goto ReadFieldError
 				}
 			} else if err = iprot.Skip(fieldTypeId); err != nil {
@@ -311,7 +311,7 @@ ReadStructEndError:
 	return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
 }
 
-func (p *RegisterResponse) ReadField2(iprot thrift.TProtocol) error {
+func (p *RegisterResponse) ReadField1(iprot thrift.TProtocol) error {
 
 	var _field string
 	if v, err := iprot.ReadString(); err != nil {
@@ -329,8 +329,8 @@ func (p *RegisterResponse) Write(oprot thrift.TProtocol) (err error) {
 		goto WriteStructBeginError
 	}
 	if p != nil {
-		if err = p.writeField2(oprot); err != nil {
-			fieldId = 2
+		if err = p.writeField1(oprot); err != nil {
+			fieldId = 1
 			goto WriteFieldError
 		}
 	}
@@ -351,8 +351,8 @@ WriteStructEndError:
 	return thrift.PrependError(fmt.Sprintf("%T write struct end error: ", p), err)
 }
 
-func (p *RegisterResponse) writeField2(oprot thrift.TProtocol) (err error) {
-	if err = oprot.WriteFieldBegin("token", thrift.STRING, 2); err != nil {
+func (p *RegisterResponse) writeField1(oprot thrift.TProtocol) (err error) {
+	if err = oprot.WriteFieldBegin("token", thrift.STRING, 1); err != nil {
 		goto WriteFieldBeginError
 	}
 	if err := oprot.WriteString(p.Token); err != nil {
@@ -363,9 +363,9 @@ func (p *RegisterResponse) writeField2(oprot thrift.TProtocol) (err error) {
 	}
 	return nil
 WriteFieldBeginError:
-	return thrift.PrependError(fmt.Sprintf("%T write field 2 begin error: ", p), err)
+	return thrift.PrependError(fmt.Sprintf("%T write field 1 begin error: ", p), err)
 WriteFieldEndError:
-	return thrift.PrependError(fmt.Sprintf("%T write field 2 end error: ", p), err)
+	return thrift.PrependError(fmt.Sprintf("%T write field 1 end error: ", p), err)
 }
 
 func (p *RegisterResponse) String() string {
@@ -382,13 +382,13 @@ func (p *RegisterResponse) DeepEqual(ano *RegisterResponse) bool {
 	} else if p == nil || ano == nil {
 		return false
 	}
-	if !p.Field2DeepEqual(ano.Token) {
+	if !p.Field1DeepEqual(ano.Token) {
 		return false
 	}
 	return true
 }
 
-func (p *RegisterResponse) Field2DeepEqual(src string) bool {
+func (p *RegisterResponse) Field1DeepEqual(src string) bool {
 
 	if strings.Compare(p.Token, src) != 0 {
 		return false
