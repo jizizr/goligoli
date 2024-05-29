@@ -4,7 +4,7 @@ import (
 	"github.com/bytedance/sonic"
 	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/jizizr/goligoli/server/common/consts"
-	"github.com/jizizr/goligoli/server/service/user/config"
+	"github.com/jizizr/goligoli/server/service/api/config"
 	"github.com/spf13/viper"
 	clientv3 "go.etcd.io/etcd/client/v3"
 	"log"
@@ -36,9 +36,9 @@ func InitConfig() {
 		log.Fatalf("etcd get config failed, err: %s", err)
 	}
 	kv := content.Kvs[0]
-	err = sonic.Unmarshal(kv.Value, &config.GlobalServerConfig)
+	err = sonic.Unmarshal(kv.Value, &config.GlobalServiceConfig)
 	if err != nil {
 		klog.Fatalf("sonic unmarshal config failed, err: %s", err)
 	}
-	klog.Infof("get config from etcd success,key: %s, config: %v", kv.Key, config.GlobalServerConfig)
+	klog.Infof("get config from etcd success,key: %s, config: %v", kv.Key, config.GlobalServiceConfig)
 }

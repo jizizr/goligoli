@@ -8,12 +8,14 @@ const (
 
 const (
 	UserSnowflakeNode = iota + 1
+	BulletSnowflakeNode
 	EtcdSnowflakeNode
 )
 
 const (
 	ApiServerPort = 8000 + iota
 	UserServerPort
+	BulletServerPort
 )
 
 const (

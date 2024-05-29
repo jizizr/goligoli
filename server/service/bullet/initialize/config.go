@@ -4,7 +4,7 @@ import (
 	"github.com/bytedance/sonic"
 	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/jizizr/goligoli/server/common/consts"
-	"github.com/jizizr/goligoli/server/service/user/config"
+	"github.com/jizizr/goligoli/server/service/bullet/config"
 	"github.com/spf13/viper"
 	clientv3 "go.etcd.io/etcd/client/v3"
 	"log"

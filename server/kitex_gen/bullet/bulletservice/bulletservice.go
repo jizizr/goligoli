@@ -13,7 +13,7 @@ import (
 var errInvalidMessageType = errors.New("invalid message type for service method handler")
 
 var serviceMethods = map[string]kitex.MethodInfo{
-	"AddBullet": kitex.NewMethodInfo(
+	"CreateBullet": kitex.NewMethodInfo(
 		addBulletHandler,
 		newBulletServiceAddBulletArgs,
 		newBulletServiceAddBulletResult,
@@ -24,6 +24,13 @@ var serviceMethods = map[string]kitex.MethodInfo{
 		getBulletHandler,
 		newBulletServiceGetBulletArgs,
 		newBulletServiceGetBulletResult,
+		false,
+		kitex.WithStreamingMode(kitex.StreamingNone),
+	),
+	"GetHistoryBullets": kitex.NewMethodInfo(
+		getHistoryBulletsHandler,
+		newBulletServiceGetHistoryBulletsArgs,
+		newBulletServiceGetHistoryBulletsResult,
 		false,
 		kitex.WithStreamingMode(kitex.StreamingNone),
 	),
@@ -129,6 +136,24 @@ func newBulletServiceGetBulletResult() interface{} {
 	return bullet.NewBulletServiceGetBulletResult()
 }
 
+func getHistoryBulletsHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	realArg := arg.(*bullet.BulletServiceGetHistoryBulletsArgs)
+	realResult := result.(*bullet.BulletServiceGetHistoryBulletsResult)
+	success, err := handler.(bullet.BulletService).GetHistoryBullets(ctx, realArg.Req)
+	if err != nil {
+		return err
+	}
+	realResult.Success = success
+	return nil
+}
+func newBulletServiceGetHistoryBulletsArgs() interface{} {
+	return bullet.NewBulletServiceGetHistoryBulletsArgs()
+}
+
+func newBulletServiceGetHistoryBulletsResult() interface{} {
+	return bullet.NewBulletServiceGetHistoryBulletsResult()
+}
+
 type kClient struct {
 	c client.Client
 }
@@ -143,7 +168,7 @@ func (p *kClient) AddBullet(ctx context.Context, req *bullet.AddBulletRequest) (
 	var _args bullet.BulletServiceAddBulletArgs
 	_args.Req = req
 	var _result bullet.BulletServiceAddBulletResult
-	if err = p.c.Call(ctx, "AddBullet", &_args, &_result); err != nil {
+	if err = p.c.Call(ctx, "CreateBullet", &_args, &_result); err != nil {
 		return
 	}
 	return _result.GetSuccess(), nil
@@ -154,6 +179,16 @@ func (p *kClient) GetBullet(ctx context.Context, req *bullet.GetBulletRequest) (
 	_args.Req = req
 	var _result bullet.BulletServiceGetBulletResult
 	if err = p.c.Call(ctx, "GetBullet", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) GetHistoryBullets(ctx context.Context, req *bullet.GetHistoryBulletsRequest) (r *bullet.GetHistoryBulletsResponse, err error) {
+	var _args bullet.BulletServiceGetHistoryBulletsArgs
+	_args.Req = req
+	var _result bullet.BulletServiceGetHistoryBulletsResult
+	if err = p.c.Call(ctx, "GetHistoryBullets", &_args, &_result); err != nil {
 		return
 	}
 	return _result.GetSuccess(), nil

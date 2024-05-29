@@ -6,7 +6,7 @@ import (
 	"github.com/cloudwego/kitex/pkg/registry"
 	"github.com/cloudwego/kitex/pkg/utils"
 	"github.com/jizizr/goligoli/server/common/consts"
-	"github.com/jizizr/goligoli/server/service/user/config"
+	"github.com/jizizr/goligoli/server/service/bullet/config"
 	etcd "github.com/kitex-contrib/registry-etcd"
 	"net"
 	"strconv"
@@ -29,7 +29,7 @@ func InitRegistry() (registry.Registry, *registry.Info) {
 	}
 	info := &registry.Info{
 		ServiceName: config.GlobalServerConfig.Name,
-		Addr:        utils.NewNetAddr("tcp", net.JoinHostPort("127.0.0.1", strconv.Itoa(consts.UserServerPort))),
+		Addr:        utils.NewNetAddr("tcp", net.JoinHostPort("127.0.0.1", strconv.Itoa(consts.BulletServerPort))),
 		Tags: map[string]string{
 			"ID": sf.Generate().Base36(),
 		},

@@ -41,7 +41,7 @@ func NewUser(db *gorm.DB) *User {
 	if !m.HasTable(&model.User{}) {
 		err := m.CreateTable(&model.User{})
 		if err != nil {
-			klog.Errorf("create mysql table failed,%v", err)
+			panic(err)
 		}
 	}
 	return &User{db: db}

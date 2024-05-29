@@ -13,6 +13,7 @@ import (
 type Client interface {
 	AddBullet(ctx context.Context, req *bullet.AddBulletRequest, callOptions ...callopt.Option) (r *bullet.AddBulletResponse, err error)
 	GetBullet(ctx context.Context, req *bullet.GetBulletRequest, callOptions ...callopt.Option) (r *bullet.GetBulletResponse, err error)
+	GetHistoryBullets(ctx context.Context, req *bullet.GetHistoryBulletsRequest, callOptions ...callopt.Option) (r *bullet.GetHistoryBulletsResponse, err error)
 }
 
 // NewClient creates a client for the service defined in IDL.
@@ -52,4 +53,9 @@ func (p *kBulletServiceClient) AddBullet(ctx context.Context, req *bullet.AddBul
 func (p *kBulletServiceClient) GetBullet(ctx context.Context, req *bullet.GetBulletRequest, callOptions ...callopt.Option) (r *bullet.GetBulletResponse, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
 	return p.kClient.GetBullet(ctx, req)
+}
+
+func (p *kBulletServiceClient) GetHistoryBullets(ctx context.Context, req *bullet.GetHistoryBulletsRequest, callOptions ...callopt.Option) (r *bullet.GetHistoryBulletsResponse, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.GetHistoryBullets(ctx, req)
 }

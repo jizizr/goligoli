@@ -2,15 +2,12 @@ package main
 
 import (
 	"github.com/cloudwego/kitex/pkg/rpcinfo"
-	"github.com/cloudwego/kitex/pkg/utils"
 	"github.com/cloudwego/kitex/server"
-	"github.com/jizizr/goligoli/server/common/consts"
 	user "github.com/jizizr/goligoli/server/kitex_gen/user/userservice"
+	"github.com/jizizr/goligoli/server/service/user/config"
 	"github.com/jizizr/goligoli/server/service/user/dao"
 	"github.com/jizizr/goligoli/server/service/user/initialize"
 	"log"
-	"net"
-	"strconv"
 )
 
 func main() {
@@ -20,11 +17,11 @@ func main() {
 	svr := user.NewServer(&UserServiceImpl{
 		dao.NewUser(db),
 	},
-		server.WithServiceAddr(utils.NewNetAddr("tcp", net.JoinHostPort("127.0.0.1", strconv.Itoa(consts.UserServerPort)))),
+		server.WithServiceAddr(info.Addr),
 		server.WithRegistry(r),
 		server.WithRegistryInfo(info),
 		server.WithServerBasicInfo(&rpcinfo.EndpointBasicInfo{
-			ServiceName: "user_srv",
+			ServiceName: config.GlobalServerConfig.Name,
 		}),
 	)
 

@@ -7,6 +7,7 @@ replace github.com/apache/thrift => github.com/apache/thrift v0.13.0
 require (
 	github.com/apache/thrift v0.16.0
 	github.com/bwmarrin/snowflake v0.3.0
+	github.com/bytedance/sonic v1.11.2
 	github.com/cloudwego/hertz v0.9.0
 	github.com/cloudwego/kitex v0.9.1
 	github.com/golang-jwt/jwt/v4 v4.5.0
@@ -22,7 +23,6 @@ require (
 	filippo.io/edwards25519 v1.1.0 // indirect
 	github.com/bytedance/go-tagexpr/v2 v2.9.2 // indirect
 	github.com/bytedance/gopkg v0.0.0-20230728082804-614d0af6619b // indirect
-	github.com/bytedance/sonic v1.11.2 // indirect
 	github.com/chenzhuoyu/base64x v0.0.0-20230717121745-296ad89f973d // indirect
 	github.com/chenzhuoyu/iasm v0.9.1 // indirect
 	github.com/choleraehyq/pid v0.0.18 // indirect

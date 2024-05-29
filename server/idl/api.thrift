@@ -30,7 +30,7 @@ struct AddBulletRequest {
     2:i64 live_id,
     3:i64 live_time,
     4:i64 send_time,
-    5:string content,
+    5:string Content,
 }
 
 struct AddBulletResponse {
