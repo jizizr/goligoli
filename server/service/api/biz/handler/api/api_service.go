@@ -6,11 +6,22 @@ import (
 	"context"
 	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/cloudwego/hertz/pkg/protocol/consts"
+	consts2 "github.com/jizizr/goligoli/server/common/consts"
+	"github.com/jizizr/goligoli/server/common/tools"
+	"github.com/jizizr/goligoli/server/kitex_gen/bullet"
 	"github.com/jizizr/goligoli/server/kitex_gen/user"
+	"github.com/jizizr/goligoli/server/service/api/biz/errno"
 	"github.com/jizizr/goligoli/server/service/api/biz/global"
-	api "github.com/jizizr/goligoli/server/service/api/biz/model/api"
-	"net/http"
+	"github.com/jizizr/goligoli/server/service/api/biz/model/api"
+	"github.com/jizizr/goligoli/server/service/api/biz/model/base"
 )
+
+func SuccessBaseResponse() *base.BaseResponse {
+	return &base.BaseResponse{
+		StatusCode: int32(consts2.Success),
+		StatusMsg:  consts2.Success.Msg(),
+	}
+}
 
 // Register .
 // @router /register [POST]
@@ -29,15 +40,18 @@ func Register(ctx context.Context, c *app.RequestContext) {
 		Password: req.Password,
 	})
 	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
+		errno.SendResponse(c, consts2.CodeRegisterFailed, err.Error())
 		return
 	}
+
+	if res.Token == "" {
+		errno.SendResponse(c, consts2.CodeUserAlreadyExists, nil)
+		return
+	}
+
 	resp = &api.RegisterResponse{
-		Base: &api.BaseResponse{
-			Code:    http.StatusOK,
-			Message: "success",
-		},
-		Token: res.Token,
+		BaseResp: SuccessBaseResponse(),
+		Token:    res.Token,
 	}
 	c.JSON(consts.StatusOK, resp)
 }
@@ -58,15 +72,22 @@ func Login(ctx context.Context, c *app.RequestContext) {
 		Password: req.Password,
 	})
 	if err != nil {
-		c.String(consts.StatusBadRequest, err.Error())
+		errno.SendResponse(c, consts2.CodeLoginFailed, err.Error())
 		return
 	}
+
+	if res == nil {
+		errno.SendResponse(c, consts2.CodeUserNotFound, nil)
+		return
+	}
+	if res.Token == "" {
+		errno.SendResponse(c, consts2.CodeWrongPassword, nil)
+		return
+	}
+
 	resp = &api.LoginResponse{
-		Base: &api.BaseResponse{
-			Code:    http.StatusOK,
-			Message: "success",
-		},
-		Token: res.Token,
+		BaseResp: SuccessBaseResponse(),
+		Token:    res.Token,
 	}
 	c.JSON(consts.StatusOK, resp)
 }
@@ -83,12 +104,26 @@ func SendBullet(ctx context.Context, c *app.RequestContext) {
 	}
 
 	resp := new(api.AddBulletResponse)
-
+	uid, _ := tools.GetUID(c)
+	res, err := global.BulletClient.AddBullet(ctx, &bullet.AddBulletRequest{
+		UserId:   uid,
+		LiveId:   req.LiveID,
+		LiveTime: req.LiveTime,
+		Content:  req.Content,
+	})
+	if err != nil {
+		errno.SendResponse(c, consts2.CodeSendBulletFailed, err.Error())
+		return
+	}
+	resp = &api.AddBulletResponse{
+		BaseResp: SuccessBaseResponse(),
+		BulletID: res.BulletId,
+	}
 	c.JSON(consts.StatusOK, resp)
 }
 
 // GetHistoryBullets .
-// @router /bullet/history [GET]
+// @router /bullet/history/multi [GET]
 func GetHistoryBullets(ctx context.Context, c *app.RequestContext) {
 	var err error
 	var req api.GetHistoryBulletsRequest
@@ -98,7 +133,65 @@ func GetHistoryBullets(ctx context.Context, c *app.RequestContext) {
 		return
 	}
 
-	resp := new(api.GetBulletResponse)
+	resp := new(api.GetHistoryBulletsResponse)
+	res, err := global.BulletClient.GetHistoryBullets(ctx, &bullet.GetHistoryBulletsRequest{
+		LiveId:    req.LiveID,
+		StartTime: req.StartTime,
+		Offset:    req.Offset,
+	})
 
+	if err != nil {
+		errno.SendResponse(c, consts2.CodeGetHistoryBulletsFailed, err.Error())
+		return
+	}
+
+	resp.BaseResp = SuccessBaseResponse()
+	for _, b := range res.Bullets {
+		resp.Bullets = append(resp.Bullets, &base.Bullet{
+			BulletID: b.BulletId,
+			UserID:   b.UserId,
+			LiveID:   b.LiveId,
+			LiveTime: b.LiveTime,
+			SendTime: b.SendTime,
+			Content:  b.Content,
+		})
+
+	}
+	c.JSON(consts.StatusOK, resp)
+}
+
+// GetBulletByID .
+// @router /bullet/history/single/ [GET]
+func GetBulletByID(ctx context.Context, c *app.RequestContext) {
+	var err error
+	var req api.GetBulletByIDRequest
+	err = c.BindAndValidate(&req)
+	if err != nil {
+		c.String(consts.StatusBadRequest, err.Error())
+		return
+	}
+
+	resp := new(api.GetBulletByIDResponse)
+
+	res, err := global.BulletClient.GetBullet(ctx, &bullet.GetBulletRequest{
+		BulletId: req.BulletID,
+	})
+
+	if err != nil {
+		errno.SendResponse(c, consts2.CodeGetBulletByIDFailed, err.Error())
+		return
+	}
+	resp.BaseResp = SuccessBaseResponse()
+	b := res.Bullet
+	if b != nil {
+		resp.Bullet = &base.Bullet{
+			BulletID: b.BulletId,
+			UserID:   b.UserId,
+			LiveID:   b.LiveId,
+			LiveTime: b.LiveTime,
+			SendTime: b.SendTime,
+			Content:  b.Content,
+		}
+	}
 	c.JSON(consts.StatusOK, resp)
 }

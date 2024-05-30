@@ -17,13 +17,3 @@ const (
 	UserServerPort
 	BulletServerPort
 )
-
-const (
-	ErrPassword = "ErrorPassword"
-)
-
-const (
-	MySqlAlreadyExist = "MySqlAlreadyExist"
-	MySqlNotExist
-	MySqlInsertError
-)

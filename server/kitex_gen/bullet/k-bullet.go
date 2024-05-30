@@ -257,7 +257,7 @@ func (p *AddBulletRequest) fastWriteField3(buf []byte, binaryWriter bthrift.Bina
 
 func (p *AddBulletRequest) fastWriteField4(buf []byte, binaryWriter bthrift.BinaryWriter) int {
 	offset := 0
-	offset += bthrift.Binary.WriteFieldBegin(buf[offset:], "content", thrift.STRING, 4)
+	offset += bthrift.Binary.WriteFieldBegin(buf[offset:], "Content", thrift.STRING, 4)
 	offset += bthrift.Binary.WriteStringNocopy(buf[offset:], binaryWriter, p.Content)
 
 	offset += bthrift.Binary.WriteFieldEnd(buf[offset:])
@@ -293,7 +293,7 @@ func (p *AddBulletRequest) field3Length() int {
 
 func (p *AddBulletRequest) field4Length() int {
 	l := 0
-	l += bthrift.Binary.FieldBeginLength("content", thrift.STRING, 4)
+	l += bthrift.Binary.FieldBeginLength("Content", thrift.STRING, 4)
 	l += bthrift.Binary.StringLengthNocopy(p.Content)
 
 	l += bthrift.Binary.FieldEndLength()
@@ -673,17 +673,21 @@ func (p *GetBulletResponse) BLength() int {
 
 func (p *GetBulletResponse) fastWriteField1(buf []byte, binaryWriter bthrift.BinaryWriter) int {
 	offset := 0
-	offset += bthrift.Binary.WriteFieldBegin(buf[offset:], "bullet", thrift.STRUCT, 1)
-	offset += p.Bullet.FastWriteNocopy(buf[offset:], binaryWriter)
-	offset += bthrift.Binary.WriteFieldEnd(buf[offset:])
+	if p.IsSetBullet() {
+		offset += bthrift.Binary.WriteFieldBegin(buf[offset:], "bullet", thrift.STRUCT, 1)
+		offset += p.Bullet.FastWriteNocopy(buf[offset:], binaryWriter)
+		offset += bthrift.Binary.WriteFieldEnd(buf[offset:])
+	}
 	return offset
 }
 
 func (p *GetBulletResponse) field1Length() int {
 	l := 0
-	l += bthrift.Binary.FieldBeginLength("bullet", thrift.STRUCT, 1)
-	l += p.Bullet.BLength()
-	l += bthrift.Binary.FieldEndLength()
+	if p.IsSetBullet() {
+		l += bthrift.Binary.FieldBeginLength("bullet", thrift.STRUCT, 1)
+		l += p.Bullet.BLength()
+		l += bthrift.Binary.FieldEndLength()
+	}
 	return l
 }
 

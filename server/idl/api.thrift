@@ -4,8 +4,8 @@ include "base.thrift"
 
 // User
 struct RegisterRequest {
-    1:string username,
-    2:string password,
+    1:required string username (api.vd="len($)>3 && len($)<32"),
+    2:required string password,
 }
 
 struct RegisterResponse {
@@ -14,8 +14,8 @@ struct RegisterResponse {
 }
 
 struct LoginRequest {
-    1:string username,
-    2:string password,
+    1:required string username (api.vd="len($)>3 && len($)<32"),
+    2:required string password,
 }
 
 struct LoginResponse {
@@ -26,11 +26,9 @@ struct LoginResponse {
 // Bullet
 
 struct AddBulletRequest {
-    1:string token,
-    2:i64 live_id,
-    3:i64 live_time,
-    4:i64 send_time,
-    5:string Content,
+    1:required i64 live_id,
+    2:required i64 live_time,
+    3:required string content,
 }
 
 struct AddBulletResponse {
@@ -38,12 +36,22 @@ struct AddBulletResponse {
     2:i64 bullet_id,
 }
 
-struct GetHistoryBulletsRequest {
-    1:i64 live_id,
-    2:i64 bullet_id,
+struct GetBulletByIDRequest {
+    1:required i64 bullet_id,
 }
 
-struct GetBulletResponse {
+struct GetBulletByIDResponse {
+    1:base.BaseResponse base_resp,
+    2:base.Bullet bullet,
+}
+
+struct GetHistoryBulletsRequest {
+    1:required i64 live_id,
+    2:required i64 start_time,
+    3:required i64 offset,
+}
+
+struct GetHistoryBulletsResponse {
     1:base.BaseResponse base_resp,
     2:list<base.Bullet> bullets,
 }
@@ -52,5 +60,6 @@ service ApiService {
     RegisterResponse Register(1:RegisterRequest req)(api.post="/register"),
     LoginResponse Login(1:LoginRequest req)(api.post="/login"),
     AddBulletResponse SendBullet(1:AddBulletRequest req)(api.post="/bullet/live"),
-    GetBulletResponse GetHistoryBullets(1:GetHistoryBulletsRequest req)(api.get="/bullet/history"),
+    GetBulletByIDResponse GetBulletByID(1:GetBulletByIDRequest req)(api.get="/bullet/history/single/"),
+    GetHistoryBulletsResponse GetHistoryBullets(1:GetHistoryBulletsRequest req)(api.get="/bullet/history/multi/"),
 }

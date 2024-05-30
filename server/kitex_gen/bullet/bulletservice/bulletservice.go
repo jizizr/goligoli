@@ -13,7 +13,7 @@ import (
 var errInvalidMessageType = errors.New("invalid message type for service method handler")
 
 var serviceMethods = map[string]kitex.MethodInfo{
-	"CreateBullet": kitex.NewMethodInfo(
+	"AddBullet": kitex.NewMethodInfo(
 		addBulletHandler,
 		newBulletServiceAddBulletArgs,
 		newBulletServiceAddBulletResult,
@@ -168,7 +168,7 @@ func (p *kClient) AddBullet(ctx context.Context, req *bullet.AddBulletRequest) (
 	var _args bullet.BulletServiceAddBulletArgs
 	_args.Req = req
 	var _result bullet.BulletServiceAddBulletResult
-	if err = p.c.Call(ctx, "CreateBullet", &_args, &_result); err != nil {
+	if err = p.c.Call(ctx, "AddBullet", &_args, &_result); err != nil {
 		return
 	}
 	return _result.GetSuccess(), nil

@@ -14,7 +14,7 @@ type AddBulletRequest struct {
 	UserId   int64  `thrift:"user_id,1" frugal:"1,default,i64" json:"user_id"`
 	LiveId   int64  `thrift:"live_id,2" frugal:"2,default,i64" json:"live_id"`
 	LiveTime int64  `thrift:"live_time,3" frugal:"3,default,i64" json:"live_time"`
-	Content  string `thrift:"content,4" frugal:"4,default,string" json:"content"`
+	Content  string `thrift:"Content,4" frugal:"4,default,string" json:"Content"`
 }
 
 func NewAddBulletRequest() *AddBulletRequest {
@@ -57,7 +57,7 @@ var fieldIDToName_AddBulletRequest = map[int16]string{
 	1: "user_id",
 	2: "live_id",
 	3: "live_time",
-	4: "content",
+	4: "Content",
 }
 
 func (p *AddBulletRequest) Read(iprot thrift.TProtocol) (err error) {
@@ -277,7 +277,7 @@ WriteFieldEndError:
 }
 
 func (p *AddBulletRequest) writeField4(oprot thrift.TProtocol) (err error) {
-	if err = oprot.WriteFieldBegin("content", thrift.STRING, 4); err != nil {
+	if err = oprot.WriteFieldBegin("Content", thrift.STRING, 4); err != nil {
 		goto WriteFieldBeginError
 	}
 	if err := oprot.WriteString(p.Content); err != nil {
@@ -680,7 +680,7 @@ func (p *GetBulletRequest) Field1DeepEqual(src int64) bool {
 }
 
 type GetBulletResponse struct {
-	Bullet *base.Bullet `thrift:"bullet,1" frugal:"1,default,base.Bullet" json:"bullet"`
+	Bullet *base.Bullet `thrift:"bullet,1,optional" frugal:"1,optional,base.Bullet" json:"bullet,omitempty"`
 }
 
 func NewGetBulletResponse() *GetBulletResponse {
@@ -805,14 +805,16 @@ WriteStructEndError:
 }
 
 func (p *GetBulletResponse) writeField1(oprot thrift.TProtocol) (err error) {
-	if err = oprot.WriteFieldBegin("bullet", thrift.STRUCT, 1); err != nil {
-		goto WriteFieldBeginError
-	}
-	if err := p.Bullet.Write(oprot); err != nil {
-		return err
-	}
-	if err = oprot.WriteFieldEnd(); err != nil {
-		goto WriteFieldEndError
+	if p.IsSetBullet() {
+		if err = oprot.WriteFieldBegin("bullet", thrift.STRUCT, 1); err != nil {
+			goto WriteFieldBeginError
+		}
+		if err := p.Bullet.Write(oprot); err != nil {
+			return err
+		}
+		if err = oprot.WriteFieldEnd(); err != nil {
+			goto WriteFieldEndError
+		}
 	}
 	return nil
 WriteFieldBeginError:
@@ -1358,7 +1360,7 @@ func (p *BulletServiceClient) AddBullet(ctx context.Context, req *AddBulletReque
 	var _args BulletServiceAddBulletArgs
 	_args.Req = req
 	var _result BulletServiceAddBulletResult
-	if err = p.Client_().Call(ctx, "CreateBullet", &_args, &_result); err != nil {
+	if err = p.Client_().Call(ctx, "AddBullet", &_args, &_result); err != nil {
 		return
 	}
 	return _result.GetSuccess(), nil
@@ -1402,7 +1404,7 @@ func (p *BulletServiceProcessor) ProcessorMap() map[string]thrift.TProcessorFunc
 
 func NewBulletServiceProcessor(handler BulletService) *BulletServiceProcessor {
 	self := &BulletServiceProcessor{handler: handler, processorMap: make(map[string]thrift.TProcessorFunction)}
-	self.AddToProcessorMap("CreateBullet", &bulletServiceProcessorAddBullet{handler: handler})
+	self.AddToProcessorMap("AddBullet", &bulletServiceProcessorAddBullet{handler: handler})
 	self.AddToProcessorMap("GetBullet", &bulletServiceProcessorGetBullet{handler: handler})
 	self.AddToProcessorMap("GetHistoryBullets", &bulletServiceProcessorGetHistoryBullets{handler: handler})
 	return self
@@ -1434,7 +1436,7 @@ func (p *bulletServiceProcessorAddBullet) Process(ctx context.Context, seqId int
 	if err = args.Read(iprot); err != nil {
 		iprot.ReadMessageEnd()
 		x := thrift.NewTApplicationException(thrift.PROTOCOL_ERROR, err.Error())
-		oprot.WriteMessageBegin("CreateBullet", thrift.EXCEPTION, seqId)
+		oprot.WriteMessageBegin("AddBullet", thrift.EXCEPTION, seqId)
 		x.Write(oprot)
 		oprot.WriteMessageEnd()
 		oprot.Flush(ctx)
@@ -1446,8 +1448,8 @@ func (p *bulletServiceProcessorAddBullet) Process(ctx context.Context, seqId int
 	result := BulletServiceAddBulletResult{}
 	var retval *AddBulletResponse
 	if retval, err2 = p.handler.AddBullet(ctx, args.Req); err2 != nil {
-		x := thrift.NewTApplicationException(thrift.INTERNAL_ERROR, "Internal error processing CreateBullet: "+err2.Error())
-		oprot.WriteMessageBegin("CreateBullet", thrift.EXCEPTION, seqId)
+		x := thrift.NewTApplicationException(thrift.INTERNAL_ERROR, "Internal error processing AddBullet: "+err2.Error())
+		oprot.WriteMessageBegin("AddBullet", thrift.EXCEPTION, seqId)
 		x.Write(oprot)
 		oprot.WriteMessageEnd()
 		oprot.Flush(ctx)
@@ -1455,7 +1457,7 @@ func (p *bulletServiceProcessorAddBullet) Process(ctx context.Context, seqId int
 	} else {
 		result.Success = retval
 	}
-	if err2 = oprot.WriteMessageBegin("CreateBullet", thrift.REPLY, seqId); err2 != nil {
+	if err2 = oprot.WriteMessageBegin("AddBullet", thrift.REPLY, seqId); err2 != nil {
 		err = err2
 	}
 	if err2 = result.Write(oprot); err == nil && err2 != nil {

@@ -2,6 +2,7 @@ package tools
 
 import (
 	"errors"
+	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/golang-jwt/jwt/v4"
 	"time"
 )
@@ -77,4 +78,12 @@ func ParseCustomToken(tokenStr string) (*CustomClaims, error) {
 		return claims, nil
 	}
 	return nil, errors.New("invalid Token")
+}
+
+func GetUID(ctx *app.RequestContext) (int64, error) {
+	uid, err := ctx.Get("UID")
+	if !err {
+		return 0, errors.New("no uid")
+	}
+	return uid.(int64), nil
 }

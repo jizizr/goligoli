@@ -510,7 +510,7 @@ func (p *Bullet) fastWriteField5(buf []byte, binaryWriter bthrift.BinaryWriter) 
 
 func (p *Bullet) fastWriteField6(buf []byte, binaryWriter bthrift.BinaryWriter) int {
 	offset := 0
-	offset += bthrift.Binary.WriteFieldBegin(buf[offset:], "content", thrift.STRING, 6)
+	offset += bthrift.Binary.WriteFieldBegin(buf[offset:], "Content", thrift.STRING, 6)
 	offset += bthrift.Binary.WriteStringNocopy(buf[offset:], binaryWriter, p.Content)
 
 	offset += bthrift.Binary.WriteFieldEnd(buf[offset:])
@@ -564,7 +564,7 @@ func (p *Bullet) field5Length() int {
 
 func (p *Bullet) field6Length() int {
 	l := 0
-	l += bthrift.Binary.FieldBeginLength("content", thrift.STRING, 6)
+	l += bthrift.Binary.FieldBeginLength("Content", thrift.STRING, 6)
 	l += bthrift.Binary.StringLengthNocopy(p.Content)
 
 	l += bthrift.Binary.FieldEndLength()

@@ -237,7 +237,7 @@ type Bullet struct {
 	LiveId   int64  `thrift:"live_id,3" frugal:"3,default,i64" json:"live_id"`
 	LiveTime int64  `thrift:"live_time,4" frugal:"4,default,i64" json:"live_time"`
 	SendTime int64  `thrift:"send_time,5" frugal:"5,default,i64" json:"send_time"`
-	Content  string `thrift:"content,6" frugal:"6,default,string" json:"content"`
+	Content  string `thrift:"Content,6" frugal:"6,default,string" json:"Content"`
 }
 
 func NewBullet() *Bullet {
@@ -296,7 +296,7 @@ var fieldIDToName_Bullet = map[int16]string{
 	3: "live_id",
 	4: "live_time",
 	5: "send_time",
-	6: "content",
+	6: "Content",
 }
 
 func (p *Bullet) Read(iprot thrift.TProtocol) (err error) {
@@ -596,7 +596,7 @@ WriteFieldEndError:
 }
 
 func (p *Bullet) writeField6(oprot thrift.TProtocol) (err error) {
-	if err = oprot.WriteFieldBegin("content", thrift.STRING, 6); err != nil {
+	if err = oprot.WriteFieldBegin("Content", thrift.STRING, 6); err != nil {
 		goto WriteFieldBeginError
 	}
 	if err := oprot.WriteString(p.Content); err != nil {

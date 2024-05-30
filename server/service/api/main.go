@@ -11,6 +11,7 @@ import (
 )
 
 func main() {
+	initialize.InitConfig()
 	r, info := initialize.InitEtcd()
 	rpc.Init()
 	h := server.New(

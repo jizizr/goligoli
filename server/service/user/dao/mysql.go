@@ -1,9 +1,7 @@
 package dao
 
 import (
-	"errors"
 	"github.com/cloudwego/kitex/pkg/klog"
-	"github.com/jizizr/goligoli/server/common/consts"
 	"github.com/jizizr/goligoli/server/service/user/model"
 	"gorm.io/gorm"
 )
@@ -21,19 +19,24 @@ func (u *User) GetUserByName(username string) (*model.User, error) {
 	return &user, nil
 }
 
-func (u *User) CreateUser(user *model.User) error {
+func (u *User) CreateUser(user *model.User) (string, error) {
 	var temp model.User
 	err := u.db.Where("username = ?", user.Username).First(&temp).Error
+	// if err isn't nil and RecordNotFound return error
 	if err != gorm.ErrRecordNotFound && err != nil {
 		klog.Errorf("MySQL error in GetUserByName: %v", err)
+		return temp.Username, nil
 	}
+	// if Username isn't empty, return username to indicate that the user already exists
 	if temp.Username != "" {
-		return errors.New(consts.MySqlAlreadyExist)
+		return temp.Username, nil
 	}
+
+	// if Username is empty, it's a new user, create it
 	if err := u.db.Create(user).Error; err != nil {
 		klog.Errorf("MySQL error in CreateUser: %v", err)
 	}
-	return nil
+	return "", nil
 }
 
 func NewUser(db *gorm.DB) *User {

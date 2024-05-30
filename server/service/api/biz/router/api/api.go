@@ -21,7 +21,17 @@ func Register(r *server.Hertz) {
 	root.POST("/register", append(_registerMw(), api.Register)...)
 	{
 		_bullet := root.Group("/bullet", _bulletMw()...)
-		_bullet.GET("/history", append(_gethistorybulletsMw(), api.GetHistoryBullets)...)
 		_bullet.POST("/live", append(_sendbulletMw(), api.SendBullet)...)
+		{
+			_history := _bullet.Group("/history", _historyMw()...)
+			{
+				_multi := _history.Group("/multi", _multiMw()...)
+				_multi.GET("/", append(_gethistorybulletsMw(), api.GetHistoryBullets)...)
+			}
+			{
+				_single := _history.Group("/single", _singleMw()...)
+				_single.GET("/", append(_getbulletbyidMw(), api.GetBulletByID)...)
+			}
+		}
 	}
 }

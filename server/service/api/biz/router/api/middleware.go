@@ -4,6 +4,7 @@ package api
 
 import (
 	"github.com/cloudwego/hertz/pkg/app"
+	"github.com/jizizr/goligoli/server/common/middleware"
 )
 
 func rootMw() []app.HandlerFunc {
@@ -32,6 +33,26 @@ func _gethistorybulletsMw() []app.HandlerFunc {
 }
 
 func _sendbulletMw() []app.HandlerFunc {
+	// your code...
+	return []app.HandlerFunc{middleware.JWTAuth()}
+}
+
+func _historyMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _multiMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _singleMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _getbulletbyidMw() []app.HandlerFunc {
 	// your code...
 	return nil
 }

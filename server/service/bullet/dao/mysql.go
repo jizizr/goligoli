@@ -19,8 +19,11 @@ func (b *Bullet) CreateBullet(bullet *base.Bullet) error {
 
 func (b *Bullet) GetBulletByID(id int64) (*base.Bullet, error) {
 	var bullet base.Bullet
-	err := b.db.Where("id = ?", id).First(&bullet).Error
+	err := b.db.Where("bullet_id = ?", id).First(&bullet).Error
 	if err != nil {
+		if err == gorm.ErrRecordNotFound {
+			return nil, nil
+		}
 		return nil, err
 	}
 	return &bullet, nil
@@ -28,7 +31,7 @@ func (b *Bullet) GetBulletByID(id int64) (*base.Bullet, error) {
 
 func (b *Bullet) GetHistoryBulletsByTime(liveID int64, startTime int64, offset int64) ([]*base.Bullet, error) {
 	var bullets []*base.Bullet
-	err := b.db.Where("live_id = ? AND live_time BETWEEN ? AND ?", liveID, startTime, startTime+offset).Order("create_time").Limit(100).Find(&bullets).Error
+	err := b.db.Where("live_id = ? AND live_time BETWEEN ? AND ?", liveID, startTime, startTime+offset).Order("live_time").Limit(100).Find(&bullets).Error
 	if err != nil {
 		return nil, err
 	}

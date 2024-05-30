@@ -18,7 +18,7 @@ struct GetBulletRequest {
 }
 
 struct GetBulletResponse {
-    1:base.Bullet bullet,
+    1:optional base.Bullet bullet,
 }
 
 struct GetHistoryBulletsRequest {
@@ -32,7 +32,7 @@ struct GetHistoryBulletsResponse {
 }
 
 service BulletService {
-    AddBulletResponse CreateBullet(1:AddBulletRequest req),
+    AddBulletResponse AddBullet(1:AddBulletRequest req),
     GetBulletResponse GetBullet(1:GetBulletRequest req),
     GetHistoryBulletsResponse GetHistoryBullets(1:GetHistoryBulletsRequest req),
 }
