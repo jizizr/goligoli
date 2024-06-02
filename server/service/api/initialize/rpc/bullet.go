@@ -26,11 +26,11 @@ func initBullet() {
 	c, err := bullet.NewClient(
 		config.GlobalServiceConfig.BulletSrv.Name,
 		client.WithResolver(r),
+		client.WithSuite(tracing.NewClientSuite()),
 		client.WithClientBasicInfo(
 			&rpcinfo.EndpointBasicInfo{
 				ServiceName: config.GlobalServiceConfig.BulletSrv.Name,
 			}),
-		client.WithSuite(tracing.NewClientSuite()),
 	)
 	if err != nil {
 		log.Fatal(err)

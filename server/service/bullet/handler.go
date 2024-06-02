@@ -2,12 +2,9 @@ package main
 
 import (
 	"context"
-	"github.com/bwmarrin/snowflake"
 	"github.com/cloudwego/kitex/pkg/klog"
-	"github.com/jizizr/goligoli/server/common/consts"
 	"github.com/jizizr/goligoli/server/kitex_gen/base"
 	bullet "github.com/jizizr/goligoli/server/kitex_gen/bullet"
-	"time"
 )
 
 // BulletServiceImpl implements the last service interface defined in the IDL.
@@ -22,23 +19,8 @@ type MySqlServiceImpl interface {
 }
 
 // AddBullet implements the BulletServiceImpl interface.
-func (s *BulletServiceImpl) AddBullet(ctx context.Context, req *bullet.AddBulletRequest) (resp *bullet.AddBulletResponse, err error) {
-	resp = new(bullet.AddBulletResponse)
-	sf, err := snowflake.NewNode(consts.BulletSnowflakeNode)
-	if err != nil {
-		klog.Errorf("generate snowflake node failed, %v", err)
-		return
-	}
-	resp.BulletId = sf.Generate().Int64()
-	bul := &base.Bullet{
-		BulletId: resp.BulletId,
-		UserId:   req.UserId,
-		LiveId:   req.LiveId,
-		LiveTime: req.LiveTime,
-		SendTime: time.Now().Unix(),
-		Content:  req.Content,
-	}
-	err = s.CreateBullet(bul)
+func (s *BulletServiceImpl) AddBullet(ctx context.Context, req *bullet.AddBulletRequest) (err error) {
+	err = s.CreateBullet(req.Bullet)
 	return
 }
 

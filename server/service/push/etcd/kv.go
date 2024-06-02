@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/bytedance/sonic"
 	"github.com/jizizr/goligoli/server/common/consts"
-	"github.com/jizizr/goligoli/server/service/api/config"
+	"github.com/jizizr/goligoli/server/service/push/config"
 	"github.com/spf13/viper"
 	"go.etcd.io/etcd/client/v3"
 	"log"
@@ -25,16 +25,19 @@ func main() {
 		panic("viper unmarshal config failed, err: " + err.Error())
 	}
 	c := config.Config{
-		Name: consts.ApiSrv,
-		UserSrv: config.RPCSrvConfig{
-			Name: consts.UserSrv,
+		Name: "push_srv",
+		Server: config.ServerConfig{
+			Host: "127.0.0.1",
+			Port: consts.PushServerPort,
 		},
-		BulletSrv: config.RPCSrvConfig{
-			Name: consts.BulletSrv,
+		NsqInfo: config.NsqConfig{
+			Host:     "127.0.0.1",
+			Port:     4150,
+			User:     "",
+			Password: "",
+			Topic:    "bullet",
 		},
-		PushSrv: config.RPCSrvConfig{
-			Name: consts.PushSrv,
-		},
+		BulletSrv: config.RPCSrvConfig{Name: consts.BulletSrv},
 	}
 	cli, err := clientv3.New(clientv3.Config{
 		Endpoints:   []string{net.JoinHostPort(etcdConf.Host, etcdConf.Port)},

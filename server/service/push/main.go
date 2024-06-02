@@ -2,12 +2,14 @@ package main
 
 import (
 	"context"
+	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/cloudwego/kitex/pkg/rpcinfo"
 	"github.com/cloudwego/kitex/server"
-	bullet "github.com/jizizr/goligoli/server/kitex_gen/bullet/bulletservice"
-	"github.com/jizizr/goligoli/server/service/bullet/config"
-	"github.com/jizizr/goligoli/server/service/bullet/dao"
-	"github.com/jizizr/goligoli/server/service/bullet/initialize"
+	push "github.com/jizizr/goligoli/server/kitex_gen/push/pushservice"
+	"github.com/jizizr/goligoli/server/service/push/config"
+	"github.com/jizizr/goligoli/server/service/push/initialize"
+	"github.com/jizizr/goligoli/server/service/push/initialize/rpc"
+	"github.com/jizizr/goligoli/server/service/push/mq"
 	"github.com/kitex-contrib/obs-opentelemetry/provider"
 	"github.com/kitex-contrib/obs-opentelemetry/tracing"
 	"log"
@@ -15,17 +17,28 @@ import (
 
 func main() {
 	initialize.InitConfig()
-	db := initialize.InitDB()
+	rpc.Init()
 	r, info := initialize.InitRegistry()
+	publisher := initialize.InitProducer()
+	subscriber := initialize.InitComsumer()
 	p := provider.NewOpenTelemetryProvider(
 		provider.WithServiceName(config.GlobalServerConfig.Name),
 		provider.WithExportEndpoint("localhost:4318"),
 		provider.WithInsecure(),
 	)
 	defer p.Shutdown(context.Background())
-	svr := bullet.NewServer(
-		&BulletServiceImpl{
-			dao.NewBullet(db),
+
+	go func() {
+		bulletSub := mq.NewSubscriberManager(subscriber)
+		err := bulletSub.SubscribeBulletFromNsq(context.Background())
+		if err != nil {
+			klog.Error(err)
+		}
+	}()
+
+	svr := push.NewServer(
+		&PushServiceImpl{
+			mq.NewPublisherManager(publisher),
 		},
 		server.WithServiceAddr(info.Addr),
 		server.WithRegistry(r),
@@ -35,6 +48,7 @@ func main() {
 			ServiceName: config.GlobalServerConfig.Name,
 		}),
 	)
+
 	err := svr.Run()
 
 	if err != nil {

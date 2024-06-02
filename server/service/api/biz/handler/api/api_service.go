@@ -4,16 +4,25 @@ package api
 
 import (
 	"context"
+	"github.com/bwmarrin/snowflake"
+	"github.com/bytedance/sonic"
 	"github.com/cloudwego/hertz/pkg/app"
+	"github.com/cloudwego/hertz/pkg/common/hlog"
 	"github.com/cloudwego/hertz/pkg/protocol/consts"
+	"github.com/cloudwego/kitex/pkg/klog"
+	"github.com/hertz-contrib/sse"
 	consts2 "github.com/jizizr/goligoli/server/common/consts"
 	"github.com/jizizr/goligoli/server/common/tools"
+	base2 "github.com/jizizr/goligoli/server/kitex_gen/base"
 	"github.com/jizizr/goligoli/server/kitex_gen/bullet"
+	"github.com/jizizr/goligoli/server/kitex_gen/push"
 	"github.com/jizizr/goligoli/server/kitex_gen/user"
 	"github.com/jizizr/goligoli/server/service/api/biz/errno"
 	"github.com/jizizr/goligoli/server/service/api/biz/global"
 	"github.com/jizizr/goligoli/server/service/api/biz/model/api"
 	"github.com/jizizr/goligoli/server/service/api/biz/model/base"
+	"net/http"
+	"time"
 )
 
 func SuccessBaseResponse() *base.BaseResponse {
@@ -105,20 +114,28 @@ func SendBullet(ctx context.Context, c *app.RequestContext) {
 
 	resp := new(api.AddBulletResponse)
 	uid, _ := tools.GetUID(c)
-	res, err := global.BulletClient.AddBullet(ctx, &bullet.AddBulletRequest{
+	sf, err := snowflake.NewNode(consts2.BulletSnowflakeNode)
+	if err != nil {
+		klog.Errorf("generate snowflake node failed, %v", err)
+		return
+	}
+	resp.BulletID = sf.Generate().Int64()
+	bul := &base2.Bullet{
+		BulletId: resp.BulletID,
 		UserId:   uid,
 		LiveId:   req.LiveID,
 		LiveTime: req.LiveTime,
+		SendTime: time.Now().Unix(),
 		Content:  req.Content,
+	}
+	err = global.PushClient.PushBullet(ctx, &push.PushBulletRequest{
+		Bullet: bul,
 	})
 	if err != nil {
 		errno.SendResponse(c, consts2.CodeSendBulletFailed, err.Error())
 		return
 	}
-	resp = &api.AddBulletResponse{
-		BaseResp: SuccessBaseResponse(),
-		BulletID: res.BulletId,
-	}
+	resp.BaseResp = SuccessBaseResponse()
 	c.JSON(consts.StatusOK, resp)
 }
 
@@ -194,4 +211,36 @@ func GetBulletByID(ctx context.Context, c *app.RequestContext) {
 		}
 	}
 	c.JSON(consts.StatusOK, resp)
+}
+
+// GetBulletRT .
+// @router /bullet/live [GET]
+func GetBulletRT(ctx context.Context, c *app.RequestContext) {
+	var err error
+	var req api.GetBulletRTRequest
+	err = c.BindAndValidate(&req)
+	if err != nil {
+		c.String(consts.StatusBadRequest, err.Error())
+		return
+	}
+	stream := sse.NewStream(c)
+
+	uid, _ := tools.GetUID(c)
+	for bul := range global.Receiver[req.LiveID][uid] {
+		payload, err := sonic.Marshal(bul)
+		if err != nil {
+			klog.Errorf("marshal bullet failed, %v", err)
+			return
+		}
+		hlog.CtxInfof(ctx, "message received: %+v", bul)
+		event := &sse.Event{
+			Event: "bullet",
+			Data:  payload,
+		}
+		c.SetStatusCode(http.StatusOK)
+		err = stream.Publish(event)
+		if err != nil {
+			return
+		}
+	}
 }

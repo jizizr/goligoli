@@ -25,7 +25,7 @@ func main() {
 		panic("viper unmarshal config failed, err: " + err.Error())
 	}
 	c := config.Config{
-		Name: "user_srv",
+		Name: consts.UserSrv,
 		Server: config.ServerConfig{
 			Host: "127.0.0.1",
 			Port: consts.UserServerPort,

@@ -11,7 +11,7 @@ import (
 
 // Client is designed to provide IDL-compatible methods with call-option parameter for kitex framework.
 type Client interface {
-	AddBullet(ctx context.Context, req *bullet.AddBulletRequest, callOptions ...callopt.Option) (r *bullet.AddBulletResponse, err error)
+	AddBullet(ctx context.Context, req *bullet.AddBulletRequest, callOptions ...callopt.Option) (err error)
 	GetBullet(ctx context.Context, req *bullet.GetBulletRequest, callOptions ...callopt.Option) (r *bullet.GetBulletResponse, err error)
 	GetHistoryBullets(ctx context.Context, req *bullet.GetHistoryBulletsRequest, callOptions ...callopt.Option) (r *bullet.GetHistoryBulletsResponse, err error)
 }
@@ -45,7 +45,7 @@ type kBulletServiceClient struct {
 	*kClient
 }
 
-func (p *kBulletServiceClient) AddBullet(ctx context.Context, req *bullet.AddBulletRequest, callOptions ...callopt.Option) (r *bullet.AddBulletResponse, err error) {
+func (p *kBulletServiceClient) AddBullet(ctx context.Context, req *bullet.AddBulletRequest, callOptions ...callopt.Option) (err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
 	return p.kClient.AddBullet(ctx, req)
 }

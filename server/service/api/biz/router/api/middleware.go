@@ -33,7 +33,6 @@ func _gethistorybulletsMw() []app.HandlerFunc {
 }
 
 func _sendbulletMw() []app.HandlerFunc {
-	// your code...
 	return []app.HandlerFunc{middleware.JWTAuth()}
 }
 
@@ -55,4 +54,8 @@ func _singleMw() []app.HandlerFunc {
 func _getbulletbyidMw() []app.HandlerFunc {
 	// your code...
 	return nil
+}
+
+func _getbulletrtMw() []app.HandlerFunc {
+	return []app.HandlerFunc{middleware.JWTAuth()}
 }

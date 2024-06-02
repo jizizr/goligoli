@@ -11,9 +11,12 @@ require (
 	github.com/cloudwego/hertz v0.9.0
 	github.com/cloudwego/kitex v0.9.1
 	github.com/golang-jwt/jwt/v4 v4.5.0
+	github.com/hertz-contrib/obs-opentelemetry/tracing v0.4.1
 	github.com/hertz-contrib/registry/etcd v0.0.0-20240117071831-d07355f82f9f
+	github.com/hertz-contrib/sse v0.0.5
 	github.com/kitex-contrib/obs-opentelemetry v0.2.7
 	github.com/kitex-contrib/registry-etcd v0.2.2
+	github.com/nsqio/go-nsq v1.1.0
 	github.com/spf13/viper v1.18.2
 	go.etcd.io/etcd/client/v3 v3.5.12
 	gorm.io/driver/mysql v1.5.6
@@ -45,6 +48,7 @@ require (
 	github.com/go-sql-driver/mysql v1.8.1 // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect
 	github.com/golang/protobuf v1.5.3 // indirect
+	github.com/golang/snappy v0.0.1 // indirect
 	github.com/google/pprof v0.0.0-20230509042627-b1315fad0c5a // indirect
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.18.0 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
@@ -89,7 +93,7 @@ require (
 	go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracegrpc v1.20.0 // indirect
 	go.opentelemetry.io/otel/metric v1.20.0 // indirect
 	go.opentelemetry.io/otel/sdk v1.20.0 // indirect
-	go.opentelemetry.io/otel/sdk/metric v1.19.0 // indirect
+	go.opentelemetry.io/otel/sdk/metric v1.20.0 // indirect
 	go.opentelemetry.io/otel/trace v1.20.0 // indirect
 	go.opentelemetry.io/proto/otlp v1.0.0 // indirect
 	go.uber.org/multierr v1.11.0 // indirect

@@ -25,7 +25,7 @@ func main() {
 		panic("viper unmarshal config failed, err: " + err.Error())
 	}
 	c := config.Config{
-		Name: "bullet_srv",
+		Name: consts.BulletSrv,
 		Server: config.ServerConfig{
 			Host: "127.0.0.1",
 			Port: consts.BulletServerPort,

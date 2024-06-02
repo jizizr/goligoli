@@ -3,7 +3,7 @@ package rpc
 import (
 	"github.com/cloudwego/kitex/client"
 	"github.com/cloudwego/kitex/pkg/rpcinfo"
-	user "github.com/jizizr/goligoli/server/kitex_gen/user/userservice"
+	push "github.com/jizizr/goligoli/server/kitex_gen/push/pushservice"
 	"github.com/jizizr/goligoli/server/service/api/biz/global"
 	"github.com/jizizr/goligoli/server/service/api/config"
 	"github.com/kitex-contrib/obs-opentelemetry/provider"
@@ -13,7 +13,7 @@ import (
 	"net"
 )
 
-func initUser() {
+func initPush() {
 	r, err := etcd.NewEtcdResolver([]string{net.JoinHostPort(config.GlobalEtcdConfig.Host, config.GlobalEtcdConfig.Port)})
 	if err != nil {
 		log.Fatal(err)
@@ -23,16 +23,17 @@ func initUser() {
 		provider.WithExportEndpoint("localhost:4318"),
 		provider.WithInsecure(),
 	)
-	c, err := user.NewClient(
-		config.GlobalServiceConfig.UserSrv.Name,
-		client.WithSuite(tracing.NewClientSuite()),
+	c, err := push.NewClient(
+		config.GlobalServiceConfig.PushSrv.Name,
 		client.WithResolver(r),
-		client.WithClientBasicInfo(&rpcinfo.EndpointBasicInfo{
-			ServiceName: config.GlobalServiceConfig.UserSrv.Name,
-		}),
+		client.WithSuite(tracing.NewClientSuite()),
+		client.WithClientBasicInfo(
+			&rpcinfo.EndpointBasicInfo{
+				ServiceName: config.GlobalServiceConfig.PushSrv.Name,
+			}),
 	)
 	if err != nil {
 		log.Fatal(err)
 	}
-	global.UserClient = c
+	global.PushClient = c
 }

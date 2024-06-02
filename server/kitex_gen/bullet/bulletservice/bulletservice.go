@@ -102,12 +102,12 @@ func newServiceInfo(hasStreaming bool, keepStreamingMethods bool, keepNonStreami
 
 func addBulletHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
 	realArg := arg.(*bullet.BulletServiceAddBulletArgs)
-	realResult := result.(*bullet.BulletServiceAddBulletResult)
-	success, err := handler.(bullet.BulletService).AddBullet(ctx, realArg.Req)
+
+	err := handler.(bullet.BulletService).AddBullet(ctx, realArg.Req)
 	if err != nil {
 		return err
 	}
-	realResult.Success = success
+
 	return nil
 }
 func newBulletServiceAddBulletArgs() interface{} {
@@ -164,14 +164,14 @@ func newServiceClient(c client.Client) *kClient {
 	}
 }
 
-func (p *kClient) AddBullet(ctx context.Context, req *bullet.AddBulletRequest) (r *bullet.AddBulletResponse, err error) {
+func (p *kClient) AddBullet(ctx context.Context, req *bullet.AddBulletRequest) (err error) {
 	var _args bullet.BulletServiceAddBulletArgs
 	_args.Req = req
 	var _result bullet.BulletServiceAddBulletResult
 	if err = p.c.Call(ctx, "AddBullet", &_args, &_result); err != nil {
 		return
 	}
-	return _result.GetSuccess(), nil
+	return nil
 }
 
 func (p *kClient) GetBullet(ctx context.Context, req *bullet.GetBulletRequest) (r *bullet.GetBulletResponse, err error) {

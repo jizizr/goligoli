@@ -16,4 +16,12 @@ const (
 	ApiServerPort = 8000 + iota
 	UserServerPort
 	BulletServerPort
+	PushServerPort
+)
+
+const (
+	ApiSrv    = "api_srv"
+	UserSrv   = "user_srv"
+	BulletSrv = "bullet_srv"
+	PushSrv   = "push_srv"
 )
