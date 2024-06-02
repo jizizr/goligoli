@@ -2,6 +2,7 @@ package rpc
 
 import (
 	"github.com/cloudwego/kitex/client"
+	"github.com/cloudwego/kitex/client/streamclient"
 	"github.com/cloudwego/kitex/pkg/rpcinfo"
 	push "github.com/jizizr/goligoli/server/kitex_gen/push/pushservice"
 	"github.com/jizizr/goligoli/server/service/api/biz/global"
@@ -36,4 +37,23 @@ func initPush() {
 		log.Fatal(err)
 	}
 	global.PushClient = c
+}
+
+func initReceiveStreamClient() {
+	r, err := etcd.NewEtcdResolver([]string{net.JoinHostPort(config.GlobalEtcdConfig.Host, config.GlobalEtcdConfig.Port)})
+	if err != nil {
+		log.Fatal(err)
+	}
+	c, err := push.NewStreamClient(
+		config.GlobalServiceConfig.PushSrv.Name,
+		streamclient.WithResolver(r),
+		streamclient.WithClientBasicInfo(
+			&rpcinfo.EndpointBasicInfo{
+				ServiceName: config.GlobalServiceConfig.PushSrv.Name,
+			}),
+	)
+	if err != nil {
+		log.Fatal(err)
+	}
+	global.ReceiveStreamClient = c
 }

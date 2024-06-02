@@ -5,8 +5,10 @@ package pushservice
 import (
 	"context"
 	"errors"
+	"fmt"
 	client "github.com/cloudwego/kitex/client"
 	kitex "github.com/cloudwego/kitex/pkg/serviceinfo"
+	streaming "github.com/cloudwego/kitex/pkg/streaming"
 	push "github.com/jizizr/goligoli/server/kitex_gen/push"
 )
 
@@ -19,6 +21,13 @@ var serviceMethods = map[string]kitex.MethodInfo{
 		newPushServicePushBulletResult,
 		false,
 		kitex.WithStreamingMode(kitex.StreamingNone),
+	),
+	"ReceiveBullet": kitex.NewMethodInfo(
+		receiveBulletHandler,
+		newPushServiceReceiveBulletArgs,
+		newPushServiceReceiveBulletResult,
+		false,
+		kitex.WithStreamingMode(kitex.StreamingBidirectional),
 	),
 }
 
@@ -45,7 +54,7 @@ func serviceInfoForClient() *kitex.ServiceInfo {
 
 // NewServiceInfo creates a new ServiceInfo containing all methods
 func NewServiceInfo() *kitex.ServiceInfo {
-	return newServiceInfo(false, true, true)
+	return newServiceInfo(true, true, true)
 }
 
 // NewServiceInfo creates a new ServiceInfo containing non-streaming methods
@@ -104,6 +113,55 @@ func newPushServicePushBulletResult() interface{} {
 	return push.NewPushServicePushBulletResult()
 }
 
+func receiveBulletHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	st, ok := arg.(*streaming.Args)
+	if !ok {
+		return errors.New("PushService.ReceiveBullet is a thrift streaming method, please call with Kitex StreamClient")
+	}
+	stream := &pushServiceReceiveBulletServer{st.Stream}
+	return handler.(push.PushService).ReceiveBullet(stream)
+}
+
+type pushServiceReceiveBulletClient struct {
+	streaming.Stream
+}
+
+func (x *pushServiceReceiveBulletClient) DoFinish(err error) {
+	if finisher, ok := x.Stream.(streaming.WithDoFinish); ok {
+		finisher.DoFinish(err)
+	} else {
+		panic(fmt.Sprintf("streaming.WithDoFinish is not implemented by %T", x.Stream))
+	}
+}
+func (x *pushServiceReceiveBulletClient) Send(m *push.ReceiveBulletRequest) error {
+	return x.Stream.SendMsg(m)
+}
+func (x *pushServiceReceiveBulletClient) Recv() (*push.ReceiveBulletResponse, error) {
+	m := new(push.ReceiveBulletResponse)
+	return m, x.Stream.RecvMsg(m)
+}
+
+type pushServiceReceiveBulletServer struct {
+	streaming.Stream
+}
+
+func (x *pushServiceReceiveBulletServer) Send(m *push.ReceiveBulletResponse) error {
+	return x.Stream.SendMsg(m)
+}
+
+func (x *pushServiceReceiveBulletServer) Recv() (*push.ReceiveBulletRequest, error) {
+	m := new(push.ReceiveBulletRequest)
+	return m, x.Stream.RecvMsg(m)
+}
+
+func newPushServiceReceiveBulletArgs() interface{} {
+	return push.NewPushServiceReceiveBulletArgs()
+}
+
+func newPushServiceReceiveBulletResult() interface{} {
+	return push.NewPushServiceReceiveBulletResult()
+}
+
 type kClient struct {
 	c client.Client
 }
@@ -122,4 +180,18 @@ func (p *kClient) PushBullet(ctx context.Context, req *push.PushBulletRequest) (
 		return
 	}
 	return nil
+}
+
+func (p *kClient) ReceiveBullet(ctx context.Context) (PushService_ReceiveBulletClient, error) {
+	streamClient, ok := p.c.(client.Streaming)
+	if !ok {
+		return nil, fmt.Errorf("client not support streaming")
+	}
+	res := new(streaming.Result)
+	err := streamClient.Stream(ctx, "ReceiveBullet", nil, res)
+	if err != nil {
+		return nil, err
+	}
+	stream := &pushServiceReceiveBulletClient{res.Stream}
+	return stream, nil
 }

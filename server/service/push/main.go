@@ -17,7 +17,6 @@ import (
 
 func main() {
 	initialize.InitConfig()
-	rpc.Init()
 	r, info := initialize.InitRegistry()
 	publisher := initialize.InitProducer()
 	subscriber := initialize.InitComsumer()
@@ -27,7 +26,7 @@ func main() {
 		provider.WithInsecure(),
 	)
 	defer p.Shutdown(context.Background())
-
+	rpc.Init()
 	go func() {
 		bulletSub := mq.NewSubscriberManager(subscriber)
 		err := bulletSub.SubscribeBulletFromNsq(context.Background())
@@ -35,7 +34,6 @@ func main() {
 			klog.Error(err)
 		}
 	}()
-
 	svr := push.NewServer(
 		&PushServiceImpl{
 			mq.NewPublisherManager(publisher),

@@ -7,9 +7,9 @@ import (
 	"github.com/bwmarrin/snowflake"
 	"github.com/bytedance/sonic"
 	"github.com/cloudwego/hertz/pkg/app"
-	"github.com/cloudwego/hertz/pkg/common/hlog"
 	"github.com/cloudwego/hertz/pkg/protocol/consts"
 	"github.com/cloudwego/kitex/pkg/klog"
+	"github.com/cloudwego/kitex/pkg/streaming"
 	"github.com/hertz-contrib/sse"
 	consts2 "github.com/jizizr/goligoli/server/common/consts"
 	"github.com/jizizr/goligoli/server/common/tools"
@@ -21,6 +21,7 @@ import (
 	"github.com/jizizr/goligoli/server/service/api/biz/global"
 	"github.com/jizizr/goligoli/server/service/api/biz/model/api"
 	"github.com/jizizr/goligoli/server/service/api/biz/model/base"
+	"io"
 	"net/http"
 	"time"
 )
@@ -223,24 +224,41 @@ func GetBulletRT(ctx context.Context, c *app.RequestContext) {
 		c.String(consts.StatusBadRequest, err.Error())
 		return
 	}
-	stream := sse.NewStream(c)
-
+	c.SetStatusCode(http.StatusOK)
+	clientStream := sse.NewStream(c)
 	uid, _ := tools.GetUID(c)
-	for bul := range global.Receiver[req.LiveID][uid] {
-		payload, err := sonic.Marshal(bul)
-		if err != nil {
-			klog.Errorf("marshal bullet failed, %v", err)
-			return
+	serverStream, err := global.ReceiveStreamClient.ReceiveBullet(ctx)
+	if err != nil {
+		klog.Errorf("receive bullet failed, %v", err)
+		return
+	}
+	defer serverStream.Close()
+	err = serverStream.Send(&push.ReceiveBulletRequest{
+		LiveId: req.LiveID,
+		UserId: uid,
+	})
+	for {
+		bul, err := serverStream.Recv()
+		if err == io.EOF {
+			klog.CtxInfof(ctx, "stream closed")
+			break
+		} else if err != nil {
+			klog.CtxErrorf(ctx, "stream error: %v", err)
+			streaming.FinishStream(serverStream, err)
+			break
 		}
-		hlog.CtxInfof(ctx, "message received: %+v", bul)
-		event := &sse.Event{
+		payload, err := sonic.Marshal(bul.Bullet)
+		if err != nil {
+			klog.Errorf("marshal error: %v", err)
+			break
+		}
+		err = clientStream.Publish(&sse.Event{
 			Event: "bullet",
 			Data:  payload,
-		}
-		c.SetStatusCode(http.StatusOK)
-		err = stream.Publish(event)
+		})
 		if err != nil {
-			return
+			streaming.FinishStream(serverStream, err)
+			break
 		}
 	}
 }

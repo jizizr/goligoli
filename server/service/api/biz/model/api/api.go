@@ -2304,6 +2304,14 @@ func (p *GetBulletRTResponse) String() string {
 
 }
 
+//	struct BroadcastBulletRequest {
+//	   1:i64 live_id
+//	   2:base.Bullet bullet
+//	}
+//
+//	struct BroadcastBulletResponse{
+//	   1:base.BaseResponse base_resp
+//	}
 type ApiService interface {
 	Register(ctx context.Context, req *RegisterRequest) (r *RegisterResponse, err error)
 

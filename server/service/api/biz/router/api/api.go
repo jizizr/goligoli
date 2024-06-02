@@ -21,8 +21,8 @@ func Register(r *server.Hertz) {
 	root.POST("/register", append(_registerMw(), api.Register)...)
 	{
 		_bullet := root.Group("/bullet", _bulletMw()...)
-		_bullet.POST("/live", append(_sendbulletMw(), api.SendBullet)...)
 		_bullet.GET("/live", append(_getbulletrtMw(), api.GetBulletRT)...)
+		_bullet.POST("/live", append(_sendbulletMw(), api.SendBullet)...)
 		{
 			_history := _bullet.Group("/history", _historyMw()...)
 			_history.GET("/multi", append(_gethistorybulletsMw(), api.GetHistoryBullets)...)

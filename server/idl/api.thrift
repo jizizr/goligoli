@@ -64,6 +64,15 @@ struct GetBulletRTResponse {
     1:base.BaseResponse base_resp,
 }
 
+//struct BroadcastBulletRequest {
+//    1:i64 live_id
+//    2:base.Bullet bullet
+//}
+//
+//struct BroadcastBulletResponse{
+//    1:base.BaseResponse base_resp
+//}
+
 service ApiService {
     RegisterResponse Register(1:RegisterRequest req)(api.post="/register"),
     LoginResponse Login(1:LoginRequest req)(api.post="/login"),
@@ -71,4 +80,5 @@ service ApiService {
     GetBulletByIDResponse GetBulletByID(1:GetBulletByIDRequest req)(api.get="/bullet/history/single"),
     GetHistoryBulletsResponse GetHistoryBullets(1:GetHistoryBulletsRequest req)(api.get="/bullet/history/multi"),
     GetBulletRTResponse GetBulletRT(1:GetBulletRTRequest req) (api.get="/bullet/live"),
+//    BroadcastBulletResponse BroadcastBullet(1:BroadcastBulletRequest req) (api.post="/bullet/live"),
 }

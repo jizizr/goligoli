@@ -1,6 +1,9 @@
 package config
 
-import "github.com/jizizr/goligoli/server/kitex_gen/bullet/bulletservice"
+import (
+	"github.com/jizizr/goligoli/server/kitex_gen/bullet/bulletservice"
+	"sync"
+)
 
 var (
 	GlobalEtcdConfig   EtcdConfig
@@ -9,4 +12,5 @@ var (
 
 var (
 	BulletClient bulletservice.Client
+	Receiver     sync.Map
 )

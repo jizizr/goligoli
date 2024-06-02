@@ -59,3 +59,8 @@ func _getbulletbyidMw() []app.HandlerFunc {
 func _getbulletrtMw() []app.HandlerFunc {
 	return []app.HandlerFunc{middleware.JWTAuth()}
 }
+
+func _broadcastbulletMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}

@@ -6,12 +6,27 @@ import (
 	"context"
 	client "github.com/cloudwego/kitex/client"
 	callopt "github.com/cloudwego/kitex/client/callopt"
+	"github.com/cloudwego/kitex/client/callopt/streamcall"
+	"github.com/cloudwego/kitex/client/streamclient"
+	streaming "github.com/cloudwego/kitex/pkg/streaming"
+	transport "github.com/cloudwego/kitex/transport"
 	push "github.com/jizizr/goligoli/server/kitex_gen/push"
 )
 
 // Client is designed to provide IDL-compatible methods with call-option parameter for kitex framework.
 type Client interface {
 	PushBullet(ctx context.Context, req *push.PushBulletRequest, callOptions ...callopt.Option) (err error)
+}
+
+// StreamClient is designed to provide Interface for Streaming APIs.
+type StreamClient interface {
+	ReceiveBullet(ctx context.Context, callOptions ...streamcall.Option) (stream PushService_ReceiveBulletClient, err error)
+}
+
+type PushService_ReceiveBulletClient interface {
+	streaming.Stream
+	Send(*push.ReceiveBulletRequest) error
+	Recv() (*push.ReceiveBulletResponse, error)
 }
 
 // NewClient creates a client for the service defined in IDL.
@@ -46,4 +61,39 @@ type kPushServiceClient struct {
 func (p *kPushServiceClient) PushBullet(ctx context.Context, req *push.PushBulletRequest, callOptions ...callopt.Option) (err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
 	return p.kClient.PushBullet(ctx, req)
+}
+
+// NewStreamClient creates a stream client for the service's streaming APIs defined in IDL.
+func NewStreamClient(destService string, opts ...streamclient.Option) (StreamClient, error) {
+	var options []client.Option
+	options = append(options, client.WithDestService(destService))
+	options = append(options, client.WithTransportProtocol(transport.GRPC))
+	options = append(options, streamclient.GetClientOptions(opts)...)
+
+	kc, err := client.NewClient(serviceInfoForStreamClient(), options...)
+	if err != nil {
+		return nil, err
+	}
+	return &kPushServiceStreamClient{
+		kClient: newServiceClient(kc),
+	}, nil
+}
+
+// MustNewStreamClient creates a stream client for the service's streaming APIs defined in IDL.
+// It panics if any error occurs.
+func MustNewStreamClient(destService string, opts ...streamclient.Option) StreamClient {
+	kc, err := NewStreamClient(destService, opts...)
+	if err != nil {
+		panic(err)
+	}
+	return kc
+}
+
+type kPushServiceStreamClient struct {
+	*kClient
+}
+
+func (p *kPushServiceStreamClient) ReceiveBullet(ctx context.Context, callOptions ...streamcall.Option) (stream PushService_ReceiveBulletClient, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, streamcall.GetCallOptions(callOptions))
+	return p.kClient.ReceiveBullet(ctx)
 }
