@@ -35,9 +35,10 @@ func main() {
 			Port:     4150,
 			User:     "",
 			Password: "",
-			Topic:    "bullet",
+			Topic:    "message",
 		},
-		BulletSrv: config.RPCSrvConfig{Name: consts.BulletSrv},
+		MessageSrv: config.RPCSrvConfig{Name: consts.MessageSrv},
+		ApiSrv:     config.RPCSrvConfig{Name: consts.ApiSrv},
 	}
 	cli, err := clientv3.New(clientv3.Config{
 		Endpoints:   []string{net.JoinHostPort(etcdConf.Host, etcdConf.Port)},

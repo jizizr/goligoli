@@ -24,9 +24,9 @@ type RPCSrvConfig struct {
 }
 
 type Config struct {
-	Name      string       `json:"name"`
-	Server    ServerConfig `json:"server"`
-	NsqInfo   NsqConfig    `json:"nsq"`
-	BulletSrv RPCSrvConfig `json:"bullet_srv"`
-	ApiSrv    RPCSrvConfig `json:"api_srv"`
+	Name       string       `json:"name"`
+	Server     ServerConfig `json:"server"`
+	NsqInfo    NsqConfig    `json:"nsq"`
+	MessageSrv RPCSrvConfig `json:"message_srv"`
+	ApiSrv     RPCSrvConfig `json:"api_srv"`
 }

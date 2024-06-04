@@ -15,17 +15,17 @@ import (
 var errInvalidMessageType = errors.New("invalid message type for service method handler")
 
 var serviceMethods = map[string]kitex.MethodInfo{
-	"PushBullet": kitex.NewMethodInfo(
-		pushBulletHandler,
-		newPushServicePushBulletArgs,
-		newPushServicePushBulletResult,
+	"PushMessage": kitex.NewMethodInfo(
+		pushMessageHandler,
+		newPushServicePushMessageArgs,
+		newPushServicePushMessageResult,
 		false,
 		kitex.WithStreamingMode(kitex.StreamingNone),
 	),
-	"ReceiveBullet": kitex.NewMethodInfo(
-		receiveBulletHandler,
-		newPushServiceReceiveBulletArgs,
-		newPushServiceReceiveBulletResult,
+	"ReceiveMessage": kitex.NewMethodInfo(
+		receiveMessageHandler,
+		newPushServiceReceiveMessageArgs,
+		newPushServiceReceiveMessageResult,
 		false,
 		kitex.WithStreamingMode(kitex.StreamingBidirectional),
 	),
@@ -95,71 +95,71 @@ func newServiceInfo(hasStreaming bool, keepStreamingMethods bool, keepNonStreami
 	return svcInfo
 }
 
-func pushBulletHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
-	realArg := arg.(*push.PushServicePushBulletArgs)
+func pushMessageHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	realArg := arg.(*push.PushServicePushMessageArgs)
 
-	err := handler.(push.PushService).PushBullet(ctx, realArg.Req)
+	err := handler.(push.PushService).PushMessage(ctx, realArg.Req)
 	if err != nil {
 		return err
 	}
 
 	return nil
 }
-func newPushServicePushBulletArgs() interface{} {
-	return push.NewPushServicePushBulletArgs()
+func newPushServicePushMessageArgs() interface{} {
+	return push.NewPushServicePushMessageArgs()
 }
 
-func newPushServicePushBulletResult() interface{} {
-	return push.NewPushServicePushBulletResult()
+func newPushServicePushMessageResult() interface{} {
+	return push.NewPushServicePushMessageResult()
 }
 
-func receiveBulletHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+func receiveMessageHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
 	st, ok := arg.(*streaming.Args)
 	if !ok {
-		return errors.New("PushService.ReceiveBullet is a thrift streaming method, please call with Kitex StreamClient")
+		return errors.New("PushService.ReceiveMessage is a thrift streaming method, please call with Kitex StreamClient")
 	}
-	stream := &pushServiceReceiveBulletServer{st.Stream}
-	return handler.(push.PushService).ReceiveBullet(stream)
+	stream := &pushServiceReceiveMessageServer{st.Stream}
+	return handler.(push.PushService).ReceiveMessage(stream)
 }
 
-type pushServiceReceiveBulletClient struct {
+type pushServiceReceiveMessageClient struct {
 	streaming.Stream
 }
 
-func (x *pushServiceReceiveBulletClient) DoFinish(err error) {
+func (x *pushServiceReceiveMessageClient) DoFinish(err error) {
 	if finisher, ok := x.Stream.(streaming.WithDoFinish); ok {
 		finisher.DoFinish(err)
 	} else {
 		panic(fmt.Sprintf("streaming.WithDoFinish is not implemented by %T", x.Stream))
 	}
 }
-func (x *pushServiceReceiveBulletClient) Send(m *push.ReceiveBulletRequest) error {
+func (x *pushServiceReceiveMessageClient) Send(m *push.ReceiveMessageRequest) error {
 	return x.Stream.SendMsg(m)
 }
-func (x *pushServiceReceiveBulletClient) Recv() (*push.ReceiveBulletResponse, error) {
-	m := new(push.ReceiveBulletResponse)
+func (x *pushServiceReceiveMessageClient) Recv() (*push.ReceiveMessageResponse, error) {
+	m := new(push.ReceiveMessageResponse)
 	return m, x.Stream.RecvMsg(m)
 }
 
-type pushServiceReceiveBulletServer struct {
+type pushServiceReceiveMessageServer struct {
 	streaming.Stream
 }
 
-func (x *pushServiceReceiveBulletServer) Send(m *push.ReceiveBulletResponse) error {
+func (x *pushServiceReceiveMessageServer) Send(m *push.ReceiveMessageResponse) error {
 	return x.Stream.SendMsg(m)
 }
 
-func (x *pushServiceReceiveBulletServer) Recv() (*push.ReceiveBulletRequest, error) {
-	m := new(push.ReceiveBulletRequest)
+func (x *pushServiceReceiveMessageServer) Recv() (*push.ReceiveMessageRequest, error) {
+	m := new(push.ReceiveMessageRequest)
 	return m, x.Stream.RecvMsg(m)
 }
 
-func newPushServiceReceiveBulletArgs() interface{} {
-	return push.NewPushServiceReceiveBulletArgs()
+func newPushServiceReceiveMessageArgs() interface{} {
+	return push.NewPushServiceReceiveMessageArgs()
 }
 
-func newPushServiceReceiveBulletResult() interface{} {
-	return push.NewPushServiceReceiveBulletResult()
+func newPushServiceReceiveMessageResult() interface{} {
+	return push.NewPushServiceReceiveMessageResult()
 }
 
 type kClient struct {
@@ -172,26 +172,26 @@ func newServiceClient(c client.Client) *kClient {
 	}
 }
 
-func (p *kClient) PushBullet(ctx context.Context, req *push.PushBulletRequest) (err error) {
-	var _args push.PushServicePushBulletArgs
+func (p *kClient) PushMessage(ctx context.Context, req *push.PushMessageRequest) (err error) {
+	var _args push.PushServicePushMessageArgs
 	_args.Req = req
-	var _result push.PushServicePushBulletResult
-	if err = p.c.Call(ctx, "PushBullet", &_args, &_result); err != nil {
+	var _result push.PushServicePushMessageResult
+	if err = p.c.Call(ctx, "PushMessage", &_args, &_result); err != nil {
 		return
 	}
 	return nil
 }
 
-func (p *kClient) ReceiveBullet(ctx context.Context) (PushService_ReceiveBulletClient, error) {
+func (p *kClient) ReceiveMessage(ctx context.Context) (PushService_ReceiveMessageClient, error) {
 	streamClient, ok := p.c.(client.Streaming)
 	if !ok {
 		return nil, fmt.Errorf("client not support streaming")
 	}
 	res := new(streaming.Result)
-	err := streamClient.Stream(ctx, "ReceiveBullet", nil, res)
+	err := streamClient.Stream(ctx, "ReceiveMessage", nil, res)
 	if err != nil {
 		return nil, err
 	}
-	stream := &pushServiceReceiveBulletClient{res.Stream}
+	stream := &pushServiceReceiveMessageClient{res.Stream}
 	return stream, nil
 }

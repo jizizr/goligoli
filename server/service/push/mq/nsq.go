@@ -6,7 +6,7 @@ import (
 	"github.com/bytedance/sonic"
 	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/jizizr/goligoli/server/kitex_gen/base"
-	"github.com/jizizr/goligoli/server/kitex_gen/bullet"
+	message2 "github.com/jizizr/goligoli/server/kitex_gen/message"
 	"github.com/jizizr/goligoli/server/kitex_gen/push"
 	"github.com/jizizr/goligoli/server/service/push/config"
 	"github.com/nsqio/go-nsq"
@@ -19,8 +19,8 @@ type PublisherManager struct {
 	Publisher *nsq.Producer
 }
 
-func (p PublisherManager) PushBulletToNsq(ctx context.Context, request *push.PushBulletRequest) error {
-	body, err := sonic.Marshal(request.Bullet)
+func (p PublisherManager) PushMessageToNsq(ctx context.Context, request *push.PushMessageRequest) error {
+	body, err := sonic.Marshal(request.Message)
 	if err != nil {
 		return err
 	}
@@ -31,18 +31,20 @@ type SubscriberManager struct {
 	Subscriber *nsq.Consumer
 }
 
-func (s SubscriberManager) SubscribeBulletFromNsq(ctx context.Context) error {
+func (s SubscriberManager) SubscribeMessageFromNsq(ctx context.Context) error {
 	nsqInfo := config.GlobalServerConfig.NsqInfo
 	s.Subscriber.AddHandler(nsq.HandlerFunc(func(message *nsq.Message) error {
-		var req base.Bullet
+		var req base.LiveMessage
 		err := sonic.Unmarshal(message.Body, &req)
 		if err != nil {
 			klog.Errorf("subscribe unmarshal message failed, %v", err)
 			return err
 		}
-		err = config.BulletClient.AddBullet(ctx, &bullet.AddBulletRequest{Bullet: &req})
+		err = config.MessageClient.AddMessage(ctx, &message2.AddMessageRequest{
+			Message: &req,
+		})
 		if err != nil {
-			klog.Errorf("subscribe add bullet failed, %v", err)
+			klog.Errorf("subscribe add message failed, %v", err)
 			return err
 		}
 		return nil

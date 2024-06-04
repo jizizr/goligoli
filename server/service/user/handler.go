@@ -6,7 +6,7 @@ import (
 	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/jizizr/goligoli/server/common/consts"
 	"github.com/jizizr/goligoli/server/common/tools"
-	user "github.com/jizizr/goligoli/server/kitex_gen/user"
+	"github.com/jizizr/goligoli/server/kitex_gen/user"
 	"github.com/jizizr/goligoli/server/service/user/model"
 	"gorm.io/gorm"
 )

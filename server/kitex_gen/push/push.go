@@ -10,39 +10,39 @@ import (
 	"github.com/jizizr/goligoli/server/kitex_gen/base"
 )
 
-type PushBulletRequest struct {
-	Bullet *base.Bullet `thrift:"bullet,1" frugal:"1,default,base.Bullet" json:"bullet"`
+type PushMessageRequest struct {
+	Message *base.LiveMessage `thrift:"Message,1" frugal:"1,default,base.LiveMessage" json:"Message"`
 }
 
-func NewPushBulletRequest() *PushBulletRequest {
-	return &PushBulletRequest{}
+func NewPushMessageRequest() *PushMessageRequest {
+	return &PushMessageRequest{}
 }
 
-func (p *PushBulletRequest) InitDefault() {
-	*p = PushBulletRequest{}
+func (p *PushMessageRequest) InitDefault() {
+	*p = PushMessageRequest{}
 }
 
-var PushBulletRequest_Bullet_DEFAULT *base.Bullet
+var PushMessageRequest_Message_DEFAULT *base.LiveMessage
 
-func (p *PushBulletRequest) GetBullet() (v *base.Bullet) {
-	if !p.IsSetBullet() {
-		return PushBulletRequest_Bullet_DEFAULT
+func (p *PushMessageRequest) GetMessage() (v *base.LiveMessage) {
+	if !p.IsSetMessage() {
+		return PushMessageRequest_Message_DEFAULT
 	}
-	return p.Bullet
+	return p.Message
 }
-func (p *PushBulletRequest) SetBullet(val *base.Bullet) {
-	p.Bullet = val
-}
-
-var fieldIDToName_PushBulletRequest = map[int16]string{
-	1: "bullet",
+func (p *PushMessageRequest) SetMessage(val *base.LiveMessage) {
+	p.Message = val
 }
 
-func (p *PushBulletRequest) IsSetBullet() bool {
-	return p.Bullet != nil
+var fieldIDToName_PushMessageRequest = map[int16]string{
+	1: "Message",
 }
 
-func (p *PushBulletRequest) Read(iprot thrift.TProtocol) (err error) {
+func (p *PushMessageRequest) IsSetMessage() bool {
+	return p.Message != nil
+}
+
+func (p *PushMessageRequest) Read(iprot thrift.TProtocol) (err error) {
 
 	var fieldTypeId thrift.TType
 	var fieldId int16
@@ -88,7 +88,7 @@ ReadStructBeginError:
 ReadFieldBeginError:
 	return thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
 ReadFieldError:
-	return thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_PushBulletRequest[fieldId]), err)
+	return thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_PushMessageRequest[fieldId]), err)
 SkipFieldError:
 	return thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
 
@@ -98,18 +98,18 @@ ReadStructEndError:
 	return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
 }
 
-func (p *PushBulletRequest) ReadField1(iprot thrift.TProtocol) error {
-	_field := base.NewBullet()
+func (p *PushMessageRequest) ReadField1(iprot thrift.TProtocol) error {
+	_field := base.NewLiveMessage()
 	if err := _field.Read(iprot); err != nil {
 		return err
 	}
-	p.Bullet = _field
+	p.Message = _field
 	return nil
 }
 
-func (p *PushBulletRequest) Write(oprot thrift.TProtocol) (err error) {
+func (p *PushMessageRequest) Write(oprot thrift.TProtocol) (err error) {
 	var fieldId int16
-	if err = oprot.WriteStructBegin("PushBulletRequest"); err != nil {
+	if err = oprot.WriteStructBegin("PushMessageRequest"); err != nil {
 		goto WriteStructBeginError
 	}
 	if p != nil {
@@ -135,11 +135,11 @@ WriteStructEndError:
 	return thrift.PrependError(fmt.Sprintf("%T write struct end error: ", p), err)
 }
 
-func (p *PushBulletRequest) writeField1(oprot thrift.TProtocol) (err error) {
-	if err = oprot.WriteFieldBegin("bullet", thrift.STRUCT, 1); err != nil {
+func (p *PushMessageRequest) writeField1(oprot thrift.TProtocol) (err error) {
+	if err = oprot.WriteFieldBegin("Message", thrift.STRUCT, 1); err != nil {
 		goto WriteFieldBeginError
 	}
-	if err := p.Bullet.Write(oprot); err != nil {
+	if err := p.Message.Write(oprot); err != nil {
 		return err
 	}
 	if err = oprot.WriteFieldEnd(); err != nil {
@@ -152,67 +152,67 @@ WriteFieldEndError:
 	return thrift.PrependError(fmt.Sprintf("%T write field 1 end error: ", p), err)
 }
 
-func (p *PushBulletRequest) String() string {
+func (p *PushMessageRequest) String() string {
 	if p == nil {
 		return "<nil>"
 	}
-	return fmt.Sprintf("PushBulletRequest(%+v)", *p)
+	return fmt.Sprintf("PushMessageRequest(%+v)", *p)
 
 }
 
-func (p *PushBulletRequest) DeepEqual(ano *PushBulletRequest) bool {
+func (p *PushMessageRequest) DeepEqual(ano *PushMessageRequest) bool {
 	if p == ano {
 		return true
 	} else if p == nil || ano == nil {
 		return false
 	}
-	if !p.Field1DeepEqual(ano.Bullet) {
+	if !p.Field1DeepEqual(ano.Message) {
 		return false
 	}
 	return true
 }
 
-func (p *PushBulletRequest) Field1DeepEqual(src *base.Bullet) bool {
+func (p *PushMessageRequest) Field1DeepEqual(src *base.LiveMessage) bool {
 
-	if !p.Bullet.DeepEqual(src) {
+	if !p.Message.DeepEqual(src) {
 		return false
 	}
 	return true
 }
 
-type ReceiveBulletRequest struct {
+type ReceiveMessageRequest struct {
 	UserId int64 `thrift:"user_id,1" frugal:"1,default,i64" json:"user_id"`
 	LiveId int64 `thrift:"live_id,2" frugal:"2,default,i64" json:"live_id"`
 }
 
-func NewReceiveBulletRequest() *ReceiveBulletRequest {
-	return &ReceiveBulletRequest{}
+func NewReceiveMessageRequest() *ReceiveMessageRequest {
+	return &ReceiveMessageRequest{}
 }
 
-func (p *ReceiveBulletRequest) InitDefault() {
-	*p = ReceiveBulletRequest{}
+func (p *ReceiveMessageRequest) InitDefault() {
+	*p = ReceiveMessageRequest{}
 }
 
-func (p *ReceiveBulletRequest) GetUserId() (v int64) {
+func (p *ReceiveMessageRequest) GetUserId() (v int64) {
 	return p.UserId
 }
 
-func (p *ReceiveBulletRequest) GetLiveId() (v int64) {
+func (p *ReceiveMessageRequest) GetLiveId() (v int64) {
 	return p.LiveId
 }
-func (p *ReceiveBulletRequest) SetUserId(val int64) {
+func (p *ReceiveMessageRequest) SetUserId(val int64) {
 	p.UserId = val
 }
-func (p *ReceiveBulletRequest) SetLiveId(val int64) {
+func (p *ReceiveMessageRequest) SetLiveId(val int64) {
 	p.LiveId = val
 }
 
-var fieldIDToName_ReceiveBulletRequest = map[int16]string{
+var fieldIDToName_ReceiveMessageRequest = map[int16]string{
 	1: "user_id",
 	2: "live_id",
 }
 
-func (p *ReceiveBulletRequest) Read(iprot thrift.TProtocol) (err error) {
+func (p *ReceiveMessageRequest) Read(iprot thrift.TProtocol) (err error) {
 
 	var fieldTypeId thrift.TType
 	var fieldId int16
@@ -266,7 +266,7 @@ ReadStructBeginError:
 ReadFieldBeginError:
 	return thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
 ReadFieldError:
-	return thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_ReceiveBulletRequest[fieldId]), err)
+	return thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_ReceiveMessageRequest[fieldId]), err)
 SkipFieldError:
 	return thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
 
@@ -276,7 +276,7 @@ ReadStructEndError:
 	return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
 }
 
-func (p *ReceiveBulletRequest) ReadField1(iprot thrift.TProtocol) error {
+func (p *ReceiveMessageRequest) ReadField1(iprot thrift.TProtocol) error {
 
 	var _field int64
 	if v, err := iprot.ReadI64(); err != nil {
@@ -287,7 +287,7 @@ func (p *ReceiveBulletRequest) ReadField1(iprot thrift.TProtocol) error {
 	p.UserId = _field
 	return nil
 }
-func (p *ReceiveBulletRequest) ReadField2(iprot thrift.TProtocol) error {
+func (p *ReceiveMessageRequest) ReadField2(iprot thrift.TProtocol) error {
 
 	var _field int64
 	if v, err := iprot.ReadI64(); err != nil {
@@ -299,9 +299,9 @@ func (p *ReceiveBulletRequest) ReadField2(iprot thrift.TProtocol) error {
 	return nil
 }
 
-func (p *ReceiveBulletRequest) Write(oprot thrift.TProtocol) (err error) {
+func (p *ReceiveMessageRequest) Write(oprot thrift.TProtocol) (err error) {
 	var fieldId int16
-	if err = oprot.WriteStructBegin("ReceiveBulletRequest"); err != nil {
+	if err = oprot.WriteStructBegin("ReceiveMessageRequest"); err != nil {
 		goto WriteStructBeginError
 	}
 	if p != nil {
@@ -331,7 +331,7 @@ WriteStructEndError:
 	return thrift.PrependError(fmt.Sprintf("%T write struct end error: ", p), err)
 }
 
-func (p *ReceiveBulletRequest) writeField1(oprot thrift.TProtocol) (err error) {
+func (p *ReceiveMessageRequest) writeField1(oprot thrift.TProtocol) (err error) {
 	if err = oprot.WriteFieldBegin("user_id", thrift.I64, 1); err != nil {
 		goto WriteFieldBeginError
 	}
@@ -348,7 +348,7 @@ WriteFieldEndError:
 	return thrift.PrependError(fmt.Sprintf("%T write field 1 end error: ", p), err)
 }
 
-func (p *ReceiveBulletRequest) writeField2(oprot thrift.TProtocol) (err error) {
+func (p *ReceiveMessageRequest) writeField2(oprot thrift.TProtocol) (err error) {
 	if err = oprot.WriteFieldBegin("live_id", thrift.I64, 2); err != nil {
 		goto WriteFieldBeginError
 	}
@@ -365,15 +365,15 @@ WriteFieldEndError:
 	return thrift.PrependError(fmt.Sprintf("%T write field 2 end error: ", p), err)
 }
 
-func (p *ReceiveBulletRequest) String() string {
+func (p *ReceiveMessageRequest) String() string {
 	if p == nil {
 		return "<nil>"
 	}
-	return fmt.Sprintf("ReceiveBulletRequest(%+v)", *p)
+	return fmt.Sprintf("ReceiveMessageRequest(%+v)", *p)
 
 }
 
-func (p *ReceiveBulletRequest) DeepEqual(ano *ReceiveBulletRequest) bool {
+func (p *ReceiveMessageRequest) DeepEqual(ano *ReceiveMessageRequest) bool {
 	if p == ano {
 		return true
 	} else if p == nil || ano == nil {
@@ -388,14 +388,14 @@ func (p *ReceiveBulletRequest) DeepEqual(ano *ReceiveBulletRequest) bool {
 	return true
 }
 
-func (p *ReceiveBulletRequest) Field1DeepEqual(src int64) bool {
+func (p *ReceiveMessageRequest) Field1DeepEqual(src int64) bool {
 
 	if p.UserId != src {
 		return false
 	}
 	return true
 }
-func (p *ReceiveBulletRequest) Field2DeepEqual(src int64) bool {
+func (p *ReceiveMessageRequest) Field2DeepEqual(src int64) bool {
 
 	if p.LiveId != src {
 		return false
@@ -403,39 +403,39 @@ func (p *ReceiveBulletRequest) Field2DeepEqual(src int64) bool {
 	return true
 }
 
-type ReceiveBulletResponse struct {
-	Bullet *base.Bullet `thrift:"bullet,1" frugal:"1,default,base.Bullet" json:"bullet"`
+type ReceiveMessageResponse struct {
+	Message *base.LiveMessage `thrift:"Message,1" frugal:"1,default,base.LiveMessage" json:"Message"`
 }
 
-func NewReceiveBulletResponse() *ReceiveBulletResponse {
-	return &ReceiveBulletResponse{}
+func NewReceiveMessageResponse() *ReceiveMessageResponse {
+	return &ReceiveMessageResponse{}
 }
 
-func (p *ReceiveBulletResponse) InitDefault() {
-	*p = ReceiveBulletResponse{}
+func (p *ReceiveMessageResponse) InitDefault() {
+	*p = ReceiveMessageResponse{}
 }
 
-var ReceiveBulletResponse_Bullet_DEFAULT *base.Bullet
+var ReceiveMessageResponse_Message_DEFAULT *base.LiveMessage
 
-func (p *ReceiveBulletResponse) GetBullet() (v *base.Bullet) {
-	if !p.IsSetBullet() {
-		return ReceiveBulletResponse_Bullet_DEFAULT
+func (p *ReceiveMessageResponse) GetMessage() (v *base.LiveMessage) {
+	if !p.IsSetMessage() {
+		return ReceiveMessageResponse_Message_DEFAULT
 	}
-	return p.Bullet
+	return p.Message
 }
-func (p *ReceiveBulletResponse) SetBullet(val *base.Bullet) {
-	p.Bullet = val
-}
-
-var fieldIDToName_ReceiveBulletResponse = map[int16]string{
-	1: "bullet",
+func (p *ReceiveMessageResponse) SetMessage(val *base.LiveMessage) {
+	p.Message = val
 }
 
-func (p *ReceiveBulletResponse) IsSetBullet() bool {
-	return p.Bullet != nil
+var fieldIDToName_ReceiveMessageResponse = map[int16]string{
+	1: "Message",
 }
 
-func (p *ReceiveBulletResponse) Read(iprot thrift.TProtocol) (err error) {
+func (p *ReceiveMessageResponse) IsSetMessage() bool {
+	return p.Message != nil
+}
+
+func (p *ReceiveMessageResponse) Read(iprot thrift.TProtocol) (err error) {
 
 	var fieldTypeId thrift.TType
 	var fieldId int16
@@ -481,7 +481,7 @@ ReadStructBeginError:
 ReadFieldBeginError:
 	return thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
 ReadFieldError:
-	return thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_ReceiveBulletResponse[fieldId]), err)
+	return thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_ReceiveMessageResponse[fieldId]), err)
 SkipFieldError:
 	return thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
 
@@ -491,18 +491,18 @@ ReadStructEndError:
 	return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
 }
 
-func (p *ReceiveBulletResponse) ReadField1(iprot thrift.TProtocol) error {
-	_field := base.NewBullet()
+func (p *ReceiveMessageResponse) ReadField1(iprot thrift.TProtocol) error {
+	_field := base.NewLiveMessage()
 	if err := _field.Read(iprot); err != nil {
 		return err
 	}
-	p.Bullet = _field
+	p.Message = _field
 	return nil
 }
 
-func (p *ReceiveBulletResponse) Write(oprot thrift.TProtocol) (err error) {
+func (p *ReceiveMessageResponse) Write(oprot thrift.TProtocol) (err error) {
 	var fieldId int16
-	if err = oprot.WriteStructBegin("ReceiveBulletResponse"); err != nil {
+	if err = oprot.WriteStructBegin("ReceiveMessageResponse"); err != nil {
 		goto WriteStructBeginError
 	}
 	if p != nil {
@@ -528,11 +528,11 @@ WriteStructEndError:
 	return thrift.PrependError(fmt.Sprintf("%T write struct end error: ", p), err)
 }
 
-func (p *ReceiveBulletResponse) writeField1(oprot thrift.TProtocol) (err error) {
-	if err = oprot.WriteFieldBegin("bullet", thrift.STRUCT, 1); err != nil {
+func (p *ReceiveMessageResponse) writeField1(oprot thrift.TProtocol) (err error) {
+	if err = oprot.WriteFieldBegin("Message", thrift.STRUCT, 1); err != nil {
 		goto WriteFieldBeginError
 	}
-	if err := p.Bullet.Write(oprot); err != nil {
+	if err := p.Message.Write(oprot); err != nil {
 		return err
 	}
 	if err = oprot.WriteFieldEnd(); err != nil {
@@ -545,38 +545,38 @@ WriteFieldEndError:
 	return thrift.PrependError(fmt.Sprintf("%T write field 1 end error: ", p), err)
 }
 
-func (p *ReceiveBulletResponse) String() string {
+func (p *ReceiveMessageResponse) String() string {
 	if p == nil {
 		return "<nil>"
 	}
-	return fmt.Sprintf("ReceiveBulletResponse(%+v)", *p)
+	return fmt.Sprintf("ReceiveMessageResponse(%+v)", *p)
 
 }
 
-func (p *ReceiveBulletResponse) DeepEqual(ano *ReceiveBulletResponse) bool {
+func (p *ReceiveMessageResponse) DeepEqual(ano *ReceiveMessageResponse) bool {
 	if p == ano {
 		return true
 	} else if p == nil || ano == nil {
 		return false
 	}
-	if !p.Field1DeepEqual(ano.Bullet) {
+	if !p.Field1DeepEqual(ano.Message) {
 		return false
 	}
 	return true
 }
 
-func (p *ReceiveBulletResponse) Field1DeepEqual(src *base.Bullet) bool {
+func (p *ReceiveMessageResponse) Field1DeepEqual(src *base.LiveMessage) bool {
 
-	if !p.Bullet.DeepEqual(src) {
+	if !p.Message.DeepEqual(src) {
 		return false
 	}
 	return true
 }
 
 type PushService interface {
-	PushBullet(ctx context.Context, req *PushBulletRequest) (err error)
+	PushMessage(ctx context.Context, req *PushMessageRequest) (err error)
 
-	ReceiveBullet(stream PushService_ReceiveBulletServer) (err error)
+	ReceiveMessage(stream PushService_ReceiveMessageServer) (err error)
 }
 
 type PushServiceClient struct {
@@ -605,25 +605,25 @@ func (p *PushServiceClient) Client_() thrift.TClient {
 	return p.c
 }
 
-func (p *PushServiceClient) PushBullet(ctx context.Context, req *PushBulletRequest) (err error) {
-	var _args PushServicePushBulletArgs
+func (p *PushServiceClient) PushMessage(ctx context.Context, req *PushMessageRequest) (err error) {
+	var _args PushServicePushMessageArgs
 	_args.Req = req
-	var _result PushServicePushBulletResult
-	if err = p.Client_().Call(ctx, "PushBullet", &_args, &_result); err != nil {
+	var _result PushServicePushMessageResult
+	if err = p.Client_().Call(ctx, "PushMessage", &_args, &_result); err != nil {
 		return
 	}
 	return nil
 }
-func (p *PushServiceClient) ReceiveBullet(stream PushService_ReceiveBulletServer) (err error) {
-	panic("streaming method PushService.ReceiveBullet(mode = bidirectional) not available, please use Kitex Thrift Streaming Client.")
+func (p *PushServiceClient) ReceiveMessage(stream PushService_ReceiveMessageServer) (err error) {
+	panic("streaming method PushService.ReceiveMessage(mode = bidirectional) not available, please use Kitex Thrift Streaming Client.")
 }
 
-type PushService_ReceiveBulletServer interface {
+type PushService_ReceiveMessageServer interface {
 	streaming.Stream
 
-	Recv() (*ReceiveBulletRequest, error)
+	Recv() (*ReceiveMessageRequest, error)
 
-	Send(*ReceiveBulletResponse) error
+	Send(*ReceiveMessageResponse) error
 }
 
 type PushServiceProcessor struct {
@@ -646,8 +646,8 @@ func (p *PushServiceProcessor) ProcessorMap() map[string]thrift.TProcessorFuncti
 
 func NewPushServiceProcessor(handler PushService) *PushServiceProcessor {
 	self := &PushServiceProcessor{handler: handler, processorMap: make(map[string]thrift.TProcessorFunction)}
-	self.AddToProcessorMap("PushBullet", &pushServiceProcessorPushBullet{handler: handler})
-	self.AddToProcessorMap("ReceiveBullet", &pushServiceProcessorReceiveBullet{handler: handler})
+	self.AddToProcessorMap("PushMessage", &pushServiceProcessorPushMessage{handler: handler})
+	self.AddToProcessorMap("ReceiveMessage", &pushServiceProcessorReceiveMessage{handler: handler})
 	return self
 }
 func (p *PushServiceProcessor) Process(ctx context.Context, iprot, oprot thrift.TProtocol) (success bool, err thrift.TException) {
@@ -668,16 +668,16 @@ func (p *PushServiceProcessor) Process(ctx context.Context, iprot, oprot thrift.
 	return false, x
 }
 
-type pushServiceProcessorPushBullet struct {
+type pushServiceProcessorPushMessage struct {
 	handler PushService
 }
 
-func (p *pushServiceProcessorPushBullet) Process(ctx context.Context, seqId int32, iprot, oprot thrift.TProtocol) (success bool, err thrift.TException) {
-	args := PushServicePushBulletArgs{}
+func (p *pushServiceProcessorPushMessage) Process(ctx context.Context, seqId int32, iprot, oprot thrift.TProtocol) (success bool, err thrift.TException) {
+	args := PushServicePushMessageArgs{}
 	if err = args.Read(iprot); err != nil {
 		iprot.ReadMessageEnd()
 		x := thrift.NewTApplicationException(thrift.PROTOCOL_ERROR, err.Error())
-		oprot.WriteMessageBegin("PushBullet", thrift.EXCEPTION, seqId)
+		oprot.WriteMessageBegin("PushMessage", thrift.EXCEPTION, seqId)
 		x.Write(oprot)
 		oprot.WriteMessageEnd()
 		oprot.Flush(ctx)
@@ -686,16 +686,16 @@ func (p *pushServiceProcessorPushBullet) Process(ctx context.Context, seqId int3
 
 	iprot.ReadMessageEnd()
 	var err2 error
-	result := PushServicePushBulletResult{}
-	if err2 = p.handler.PushBullet(ctx, args.Req); err2 != nil {
-		x := thrift.NewTApplicationException(thrift.INTERNAL_ERROR, "Internal error processing PushBullet: "+err2.Error())
-		oprot.WriteMessageBegin("PushBullet", thrift.EXCEPTION, seqId)
+	result := PushServicePushMessageResult{}
+	if err2 = p.handler.PushMessage(ctx, args.Req); err2 != nil {
+		x := thrift.NewTApplicationException(thrift.INTERNAL_ERROR, "Internal error processing PushMessage: "+err2.Error())
+		oprot.WriteMessageBegin("PushMessage", thrift.EXCEPTION, seqId)
 		x.Write(oprot)
 		oprot.WriteMessageEnd()
 		oprot.Flush(ctx)
 		return true, err2
 	}
-	if err2 = oprot.WriteMessageBegin("PushBullet", thrift.REPLY, seqId); err2 != nil {
+	if err2 = oprot.WriteMessageBegin("PushMessage", thrift.REPLY, seqId); err2 != nil {
 		err = err2
 	}
 	if err2 = result.Write(oprot); err == nil && err2 != nil {
@@ -713,47 +713,47 @@ func (p *pushServiceProcessorPushBullet) Process(ctx context.Context, seqId int3
 	return true, err
 }
 
-type pushServiceProcessorReceiveBullet struct {
+type pushServiceProcessorReceiveMessage struct {
 	handler PushService
 }
 
-func (p *pushServiceProcessorReceiveBullet) Process(ctx context.Context, seqId int32, iprot, oprot thrift.TProtocol) (success bool, err thrift.TException) {
-	panic("streaming method PushService.ReceiveBullet(mode = bidirectional) not available, please use Kitex Thrift Streaming Client.")
+func (p *pushServiceProcessorReceiveMessage) Process(ctx context.Context, seqId int32, iprot, oprot thrift.TProtocol) (success bool, err thrift.TException) {
+	panic("streaming method PushService.ReceiveMessage(mode = bidirectional) not available, please use Kitex Thrift Streaming Client.")
 }
 
-type PushServicePushBulletArgs struct {
-	Req *PushBulletRequest `thrift:"req,1" frugal:"1,default,PushBulletRequest" json:"req"`
+type PushServicePushMessageArgs struct {
+	Req *PushMessageRequest `thrift:"req,1" frugal:"1,default,PushMessageRequest" json:"req"`
 }
 
-func NewPushServicePushBulletArgs() *PushServicePushBulletArgs {
-	return &PushServicePushBulletArgs{}
+func NewPushServicePushMessageArgs() *PushServicePushMessageArgs {
+	return &PushServicePushMessageArgs{}
 }
 
-func (p *PushServicePushBulletArgs) InitDefault() {
-	*p = PushServicePushBulletArgs{}
+func (p *PushServicePushMessageArgs) InitDefault() {
+	*p = PushServicePushMessageArgs{}
 }
 
-var PushServicePushBulletArgs_Req_DEFAULT *PushBulletRequest
+var PushServicePushMessageArgs_Req_DEFAULT *PushMessageRequest
 
-func (p *PushServicePushBulletArgs) GetReq() (v *PushBulletRequest) {
+func (p *PushServicePushMessageArgs) GetReq() (v *PushMessageRequest) {
 	if !p.IsSetReq() {
-		return PushServicePushBulletArgs_Req_DEFAULT
+		return PushServicePushMessageArgs_Req_DEFAULT
 	}
 	return p.Req
 }
-func (p *PushServicePushBulletArgs) SetReq(val *PushBulletRequest) {
+func (p *PushServicePushMessageArgs) SetReq(val *PushMessageRequest) {
 	p.Req = val
 }
 
-var fieldIDToName_PushServicePushBulletArgs = map[int16]string{
+var fieldIDToName_PushServicePushMessageArgs = map[int16]string{
 	1: "req",
 }
 
-func (p *PushServicePushBulletArgs) IsSetReq() bool {
+func (p *PushServicePushMessageArgs) IsSetReq() bool {
 	return p.Req != nil
 }
 
-func (p *PushServicePushBulletArgs) Read(iprot thrift.TProtocol) (err error) {
+func (p *PushServicePushMessageArgs) Read(iprot thrift.TProtocol) (err error) {
 
 	var fieldTypeId thrift.TType
 	var fieldId int16
@@ -799,7 +799,7 @@ ReadStructBeginError:
 ReadFieldBeginError:
 	return thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
 ReadFieldError:
-	return thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_PushServicePushBulletArgs[fieldId]), err)
+	return thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_PushServicePushMessageArgs[fieldId]), err)
 SkipFieldError:
 	return thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
 
@@ -809,8 +809,8 @@ ReadStructEndError:
 	return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
 }
 
-func (p *PushServicePushBulletArgs) ReadField1(iprot thrift.TProtocol) error {
-	_field := NewPushBulletRequest()
+func (p *PushServicePushMessageArgs) ReadField1(iprot thrift.TProtocol) error {
+	_field := NewPushMessageRequest()
 	if err := _field.Read(iprot); err != nil {
 		return err
 	}
@@ -818,9 +818,9 @@ func (p *PushServicePushBulletArgs) ReadField1(iprot thrift.TProtocol) error {
 	return nil
 }
 
-func (p *PushServicePushBulletArgs) Write(oprot thrift.TProtocol) (err error) {
+func (p *PushServicePushMessageArgs) Write(oprot thrift.TProtocol) (err error) {
 	var fieldId int16
-	if err = oprot.WriteStructBegin("PushBullet_args"); err != nil {
+	if err = oprot.WriteStructBegin("PushMessage_args"); err != nil {
 		goto WriteStructBeginError
 	}
 	if p != nil {
@@ -846,7 +846,7 @@ WriteStructEndError:
 	return thrift.PrependError(fmt.Sprintf("%T write struct end error: ", p), err)
 }
 
-func (p *PushServicePushBulletArgs) writeField1(oprot thrift.TProtocol) (err error) {
+func (p *PushServicePushMessageArgs) writeField1(oprot thrift.TProtocol) (err error) {
 	if err = oprot.WriteFieldBegin("req", thrift.STRUCT, 1); err != nil {
 		goto WriteFieldBeginError
 	}
@@ -863,15 +863,15 @@ WriteFieldEndError:
 	return thrift.PrependError(fmt.Sprintf("%T write field 1 end error: ", p), err)
 }
 
-func (p *PushServicePushBulletArgs) String() string {
+func (p *PushServicePushMessageArgs) String() string {
 	if p == nil {
 		return "<nil>"
 	}
-	return fmt.Sprintf("PushServicePushBulletArgs(%+v)", *p)
+	return fmt.Sprintf("PushServicePushMessageArgs(%+v)", *p)
 
 }
 
-func (p *PushServicePushBulletArgs) DeepEqual(ano *PushServicePushBulletArgs) bool {
+func (p *PushServicePushMessageArgs) DeepEqual(ano *PushServicePushMessageArgs) bool {
 	if p == ano {
 		return true
 	} else if p == nil || ano == nil {
@@ -883,7 +883,7 @@ func (p *PushServicePushBulletArgs) DeepEqual(ano *PushServicePushBulletArgs) bo
 	return true
 }
 
-func (p *PushServicePushBulletArgs) Field1DeepEqual(src *PushBulletRequest) bool {
+func (p *PushServicePushMessageArgs) Field1DeepEqual(src *PushMessageRequest) bool {
 
 	if !p.Req.DeepEqual(src) {
 		return false
@@ -891,20 +891,20 @@ func (p *PushServicePushBulletArgs) Field1DeepEqual(src *PushBulletRequest) bool
 	return true
 }
 
-type PushServicePushBulletResult struct {
+type PushServicePushMessageResult struct {
 }
 
-func NewPushServicePushBulletResult() *PushServicePushBulletResult {
-	return &PushServicePushBulletResult{}
+func NewPushServicePushMessageResult() *PushServicePushMessageResult {
+	return &PushServicePushMessageResult{}
 }
 
-func (p *PushServicePushBulletResult) InitDefault() {
-	*p = PushServicePushBulletResult{}
+func (p *PushServicePushMessageResult) InitDefault() {
+	*p = PushServicePushMessageResult{}
 }
 
-var fieldIDToName_PushServicePushBulletResult = map[int16]string{}
+var fieldIDToName_PushServicePushMessageResult = map[int16]string{}
 
-func (p *PushServicePushBulletResult) Read(iprot thrift.TProtocol) (err error) {
+func (p *PushServicePushMessageResult) Read(iprot thrift.TProtocol) (err error) {
 
 	var fieldTypeId thrift.TType
 	var fieldId int16
@@ -946,8 +946,8 @@ ReadStructEndError:
 	return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
 }
 
-func (p *PushServicePushBulletResult) Write(oprot thrift.TProtocol) (err error) {
-	if err = oprot.WriteStructBegin("PushBullet_result"); err != nil {
+func (p *PushServicePushMessageResult) Write(oprot thrift.TProtocol) (err error) {
+	if err = oprot.WriteStructBegin("PushMessage_result"); err != nil {
 		goto WriteStructBeginError
 	}
 	if p != nil {
@@ -967,15 +967,15 @@ WriteStructEndError:
 	return thrift.PrependError(fmt.Sprintf("%T write struct end error: ", p), err)
 }
 
-func (p *PushServicePushBulletResult) String() string {
+func (p *PushServicePushMessageResult) String() string {
 	if p == nil {
 		return "<nil>"
 	}
-	return fmt.Sprintf("PushServicePushBulletResult(%+v)", *p)
+	return fmt.Sprintf("PushServicePushMessageResult(%+v)", *p)
 
 }
 
-func (p *PushServicePushBulletResult) DeepEqual(ano *PushServicePushBulletResult) bool {
+func (p *PushServicePushMessageResult) DeepEqual(ano *PushServicePushMessageResult) bool {
 	if p == ano {
 		return true
 	} else if p == nil || ano == nil {
@@ -984,39 +984,39 @@ func (p *PushServicePushBulletResult) DeepEqual(ano *PushServicePushBulletResult
 	return true
 }
 
-type PushServiceReceiveBulletArgs struct {
-	Req *ReceiveBulletRequest `thrift:"req,1" frugal:"1,default,ReceiveBulletRequest" json:"req"`
+type PushServiceReceiveMessageArgs struct {
+	Req *ReceiveMessageRequest `thrift:"req,1" frugal:"1,default,ReceiveMessageRequest" json:"req"`
 }
 
-func NewPushServiceReceiveBulletArgs() *PushServiceReceiveBulletArgs {
-	return &PushServiceReceiveBulletArgs{}
+func NewPushServiceReceiveMessageArgs() *PushServiceReceiveMessageArgs {
+	return &PushServiceReceiveMessageArgs{}
 }
 
-func (p *PushServiceReceiveBulletArgs) InitDefault() {
-	*p = PushServiceReceiveBulletArgs{}
+func (p *PushServiceReceiveMessageArgs) InitDefault() {
+	*p = PushServiceReceiveMessageArgs{}
 }
 
-var PushServiceReceiveBulletArgs_Req_DEFAULT *ReceiveBulletRequest
+var PushServiceReceiveMessageArgs_Req_DEFAULT *ReceiveMessageRequest
 
-func (p *PushServiceReceiveBulletArgs) GetReq() (v *ReceiveBulletRequest) {
+func (p *PushServiceReceiveMessageArgs) GetReq() (v *ReceiveMessageRequest) {
 	if !p.IsSetReq() {
-		return PushServiceReceiveBulletArgs_Req_DEFAULT
+		return PushServiceReceiveMessageArgs_Req_DEFAULT
 	}
 	return p.Req
 }
-func (p *PushServiceReceiveBulletArgs) SetReq(val *ReceiveBulletRequest) {
+func (p *PushServiceReceiveMessageArgs) SetReq(val *ReceiveMessageRequest) {
 	p.Req = val
 }
 
-var fieldIDToName_PushServiceReceiveBulletArgs = map[int16]string{
+var fieldIDToName_PushServiceReceiveMessageArgs = map[int16]string{
 	1: "req",
 }
 
-func (p *PushServiceReceiveBulletArgs) IsSetReq() bool {
+func (p *PushServiceReceiveMessageArgs) IsSetReq() bool {
 	return p.Req != nil
 }
 
-func (p *PushServiceReceiveBulletArgs) Read(iprot thrift.TProtocol) (err error) {
+func (p *PushServiceReceiveMessageArgs) Read(iprot thrift.TProtocol) (err error) {
 
 	var fieldTypeId thrift.TType
 	var fieldId int16
@@ -1062,7 +1062,7 @@ ReadStructBeginError:
 ReadFieldBeginError:
 	return thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
 ReadFieldError:
-	return thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_PushServiceReceiveBulletArgs[fieldId]), err)
+	return thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_PushServiceReceiveMessageArgs[fieldId]), err)
 SkipFieldError:
 	return thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
 
@@ -1072,8 +1072,8 @@ ReadStructEndError:
 	return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
 }
 
-func (p *PushServiceReceiveBulletArgs) ReadField1(iprot thrift.TProtocol) error {
-	_field := NewReceiveBulletRequest()
+func (p *PushServiceReceiveMessageArgs) ReadField1(iprot thrift.TProtocol) error {
+	_field := NewReceiveMessageRequest()
 	if err := _field.Read(iprot); err != nil {
 		return err
 	}
@@ -1081,9 +1081,9 @@ func (p *PushServiceReceiveBulletArgs) ReadField1(iprot thrift.TProtocol) error 
 	return nil
 }
 
-func (p *PushServiceReceiveBulletArgs) Write(oprot thrift.TProtocol) (err error) {
+func (p *PushServiceReceiveMessageArgs) Write(oprot thrift.TProtocol) (err error) {
 	var fieldId int16
-	if err = oprot.WriteStructBegin("ReceiveBullet_args"); err != nil {
+	if err = oprot.WriteStructBegin("ReceiveMessage_args"); err != nil {
 		goto WriteStructBeginError
 	}
 	if p != nil {
@@ -1109,7 +1109,7 @@ WriteStructEndError:
 	return thrift.PrependError(fmt.Sprintf("%T write struct end error: ", p), err)
 }
 
-func (p *PushServiceReceiveBulletArgs) writeField1(oprot thrift.TProtocol) (err error) {
+func (p *PushServiceReceiveMessageArgs) writeField1(oprot thrift.TProtocol) (err error) {
 	if err = oprot.WriteFieldBegin("req", thrift.STRUCT, 1); err != nil {
 		goto WriteFieldBeginError
 	}
@@ -1126,15 +1126,15 @@ WriteFieldEndError:
 	return thrift.PrependError(fmt.Sprintf("%T write field 1 end error: ", p), err)
 }
 
-func (p *PushServiceReceiveBulletArgs) String() string {
+func (p *PushServiceReceiveMessageArgs) String() string {
 	if p == nil {
 		return "<nil>"
 	}
-	return fmt.Sprintf("PushServiceReceiveBulletArgs(%+v)", *p)
+	return fmt.Sprintf("PushServiceReceiveMessageArgs(%+v)", *p)
 
 }
 
-func (p *PushServiceReceiveBulletArgs) DeepEqual(ano *PushServiceReceiveBulletArgs) bool {
+func (p *PushServiceReceiveMessageArgs) DeepEqual(ano *PushServiceReceiveMessageArgs) bool {
 	if p == ano {
 		return true
 	} else if p == nil || ano == nil {
@@ -1146,7 +1146,7 @@ func (p *PushServiceReceiveBulletArgs) DeepEqual(ano *PushServiceReceiveBulletAr
 	return true
 }
 
-func (p *PushServiceReceiveBulletArgs) Field1DeepEqual(src *ReceiveBulletRequest) bool {
+func (p *PushServiceReceiveMessageArgs) Field1DeepEqual(src *ReceiveMessageRequest) bool {
 
 	if !p.Req.DeepEqual(src) {
 		return false
@@ -1154,39 +1154,39 @@ func (p *PushServiceReceiveBulletArgs) Field1DeepEqual(src *ReceiveBulletRequest
 	return true
 }
 
-type PushServiceReceiveBulletResult struct {
-	Success *ReceiveBulletResponse `thrift:"success,0,optional" frugal:"0,optional,ReceiveBulletResponse" json:"success,omitempty"`
+type PushServiceReceiveMessageResult struct {
+	Success *ReceiveMessageResponse `thrift:"success,0,optional" frugal:"0,optional,ReceiveMessageResponse" json:"success,omitempty"`
 }
 
-func NewPushServiceReceiveBulletResult() *PushServiceReceiveBulletResult {
-	return &PushServiceReceiveBulletResult{}
+func NewPushServiceReceiveMessageResult() *PushServiceReceiveMessageResult {
+	return &PushServiceReceiveMessageResult{}
 }
 
-func (p *PushServiceReceiveBulletResult) InitDefault() {
-	*p = PushServiceReceiveBulletResult{}
+func (p *PushServiceReceiveMessageResult) InitDefault() {
+	*p = PushServiceReceiveMessageResult{}
 }
 
-var PushServiceReceiveBulletResult_Success_DEFAULT *ReceiveBulletResponse
+var PushServiceReceiveMessageResult_Success_DEFAULT *ReceiveMessageResponse
 
-func (p *PushServiceReceiveBulletResult) GetSuccess() (v *ReceiveBulletResponse) {
+func (p *PushServiceReceiveMessageResult) GetSuccess() (v *ReceiveMessageResponse) {
 	if !p.IsSetSuccess() {
-		return PushServiceReceiveBulletResult_Success_DEFAULT
+		return PushServiceReceiveMessageResult_Success_DEFAULT
 	}
 	return p.Success
 }
-func (p *PushServiceReceiveBulletResult) SetSuccess(x interface{}) {
-	p.Success = x.(*ReceiveBulletResponse)
+func (p *PushServiceReceiveMessageResult) SetSuccess(x interface{}) {
+	p.Success = x.(*ReceiveMessageResponse)
 }
 
-var fieldIDToName_PushServiceReceiveBulletResult = map[int16]string{
+var fieldIDToName_PushServiceReceiveMessageResult = map[int16]string{
 	0: "success",
 }
 
-func (p *PushServiceReceiveBulletResult) IsSetSuccess() bool {
+func (p *PushServiceReceiveMessageResult) IsSetSuccess() bool {
 	return p.Success != nil
 }
 
-func (p *PushServiceReceiveBulletResult) Read(iprot thrift.TProtocol) (err error) {
+func (p *PushServiceReceiveMessageResult) Read(iprot thrift.TProtocol) (err error) {
 
 	var fieldTypeId thrift.TType
 	var fieldId int16
@@ -1232,7 +1232,7 @@ ReadStructBeginError:
 ReadFieldBeginError:
 	return thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
 ReadFieldError:
-	return thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_PushServiceReceiveBulletResult[fieldId]), err)
+	return thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_PushServiceReceiveMessageResult[fieldId]), err)
 SkipFieldError:
 	return thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
 
@@ -1242,8 +1242,8 @@ ReadStructEndError:
 	return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
 }
 
-func (p *PushServiceReceiveBulletResult) ReadField0(iprot thrift.TProtocol) error {
-	_field := NewReceiveBulletResponse()
+func (p *PushServiceReceiveMessageResult) ReadField0(iprot thrift.TProtocol) error {
+	_field := NewReceiveMessageResponse()
 	if err := _field.Read(iprot); err != nil {
 		return err
 	}
@@ -1251,9 +1251,9 @@ func (p *PushServiceReceiveBulletResult) ReadField0(iprot thrift.TProtocol) erro
 	return nil
 }
 
-func (p *PushServiceReceiveBulletResult) Write(oprot thrift.TProtocol) (err error) {
+func (p *PushServiceReceiveMessageResult) Write(oprot thrift.TProtocol) (err error) {
 	var fieldId int16
-	if err = oprot.WriteStructBegin("ReceiveBullet_result"); err != nil {
+	if err = oprot.WriteStructBegin("ReceiveMessage_result"); err != nil {
 		goto WriteStructBeginError
 	}
 	if p != nil {
@@ -1279,7 +1279,7 @@ WriteStructEndError:
 	return thrift.PrependError(fmt.Sprintf("%T write struct end error: ", p), err)
 }
 
-func (p *PushServiceReceiveBulletResult) writeField0(oprot thrift.TProtocol) (err error) {
+func (p *PushServiceReceiveMessageResult) writeField0(oprot thrift.TProtocol) (err error) {
 	if p.IsSetSuccess() {
 		if err = oprot.WriteFieldBegin("success", thrift.STRUCT, 0); err != nil {
 			goto WriteFieldBeginError
@@ -1298,15 +1298,15 @@ WriteFieldEndError:
 	return thrift.PrependError(fmt.Sprintf("%T write field 0 end error: ", p), err)
 }
 
-func (p *PushServiceReceiveBulletResult) String() string {
+func (p *PushServiceReceiveMessageResult) String() string {
 	if p == nil {
 		return "<nil>"
 	}
-	return fmt.Sprintf("PushServiceReceiveBulletResult(%+v)", *p)
+	return fmt.Sprintf("PushServiceReceiveMessageResult(%+v)", *p)
 
 }
 
-func (p *PushServiceReceiveBulletResult) DeepEqual(ano *PushServiceReceiveBulletResult) bool {
+func (p *PushServiceReceiveMessageResult) DeepEqual(ano *PushServiceReceiveMessageResult) bool {
 	if p == ano {
 		return true
 	} else if p == nil || ano == nil {
@@ -1318,7 +1318,7 @@ func (p *PushServiceReceiveBulletResult) DeepEqual(ano *PushServiceReceiveBullet
 	return true
 }
 
-func (p *PushServiceReceiveBulletResult) Field0DeepEqual(src *ReceiveBulletResponse) bool {
+func (p *PushServiceReceiveMessageResult) Field0DeepEqual(src *ReceiveMessageResponse) bool {
 
 	if !p.Success.DeepEqual(src) {
 		return false

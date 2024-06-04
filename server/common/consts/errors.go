@@ -15,25 +15,25 @@ const (
 	CodeLoginFailed
 	CodeUserNotFound
 	CodeWrongPassword
-	CodeSendBulletFailed
-	CodeGetHistoryBulletsFailed
-	CodeGetBulletByIDFailed
+	CodeSendMessageFailed
+	CodeGetHistoryMessagesFailed
+	CodeGetMessageByIDFailed
 )
 
 var codeMsgMap = map[RespCode]string{
-	Success:                     "success",
-	CodeNeedLogin:               "need login",
-	CodeBadRequest:              "bad request",
-	CodeTokenExpired:            "token expired",
-	CodeTokenInvalid:            "token invalid",
-	CodeRegisterFailed:          "register failed",
-	CodeUserAlreadyExists:       "user already exists",
-	CodeLoginFailed:             "login failed",
-	CodeUserNotFound:            "user not found",
-	CodeWrongPassword:           "wrong password",
-	CodeSendBulletFailed:        "send bullet failed",
-	CodeGetHistoryBulletsFailed: "get history bullets failed",
-	CodeGetBulletByIDFailed:     "get bullet by id failed",
+	Success:                      "success",
+	CodeNeedLogin:                "need login",
+	CodeBadRequest:               "bad request",
+	CodeTokenExpired:             "token expired",
+	CodeTokenInvalid:             "token invalid",
+	CodeRegisterFailed:           "register failed",
+	CodeUserAlreadyExists:        "user already exists",
+	CodeLoginFailed:              "login failed",
+	CodeUserNotFound:             "user not found",
+	CodeWrongPassword:            "wrong password",
+	CodeSendMessageFailed:        "send message failed",
+	CodeGetHistoryMessagesFailed: "get history Messages failed",
+	CodeGetMessageByIDFailed:     "get message by id failed",
 }
 
 func (code RespCode) Msg() string {

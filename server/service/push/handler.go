@@ -16,29 +16,29 @@ type PushServiceImpl struct {
 }
 
 type NsqServiceImpl interface {
-	PushBulletToNsq(ctx context.Context, request *push.PushBulletRequest) error
+	PushMessageToNsq(ctx context.Context, request *push.PushMessageRequest) error
 }
 
-// PushBullet implements the PushServiceImpl interface.
-func (s *PushServiceImpl) PushBullet(ctx context.Context, req *push.PushBulletRequest) (err error) {
-	r, ok := config.Receiver.Load(req.Bullet.LiveId)
+// PushMessage implements the PushServiceImpl interface.
+func (s *PushServiceImpl) PushMessage(ctx context.Context, req *push.PushMessageRequest) (err error) {
+	r, ok := config.Receiver.Load(req.Message.LiveId)
 	if !ok {
 		return errors.New("live not exist")
 	}
 	r.(*sync.Map).Range(func(key, value interface{}) bool {
-		rec := value.(chan *base.Bullet)
-		rec <- req.Bullet
+		rec := value.(chan *base.LiveMessage)
+		rec <- req.Message
 		return true
 	})
-	err = s.PushBulletToNsq(ctx, &push.PushBulletRequest{Bullet: req.Bullet})
+	err = s.PushMessageToNsq(ctx, &push.PushMessageRequest{Message: req.Message})
 	if err != nil {
-		klog.Errorf("push bullet to nsq failed, %v", err)
+		klog.Errorf("push message to nsq failed, %v", err)
 	}
 	return
 }
 
-func (s *PushServiceImpl) ReceiveBullet(stream push.PushService_ReceiveBulletServer) (err error) {
-	rec := make(chan *base.Bullet)
+func (s *PushServiceImpl) ReceiveMessage(stream push.PushService_ReceiveMessageServer) (err error) {
+	rec := make(chan *base.LiveMessage)
 	req, err := stream.Recv()
 	v, _ := config.Receiver.LoadOrStore(req.LiveId, &sync.Map{})
 	v.(*sync.Map).Store(req.UserId, rec)
@@ -54,8 +54,11 @@ func (s *PushServiceImpl) ReceiveBullet(stream push.PushService_ReceiveBulletSer
 			goto EXIT
 		case <-stream.Context().Done():
 			goto EXIT
-		case bullet := <-rec:
-			err = stream.Send(&push.ReceiveBulletResponse{Bullet: bullet})
+		case Message, ok := <-rec:
+			if !ok {
+				goto EXIT
+			}
+			err = stream.Send(&push.ReceiveMessageResponse{Message: Message})
 			if err != nil {
 				goto EXIT
 			}

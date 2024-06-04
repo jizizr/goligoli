@@ -1,7 +1,7 @@
 package config
 
 import (
-	"github.com/jizizr/goligoli/server/kitex_gen/bullet/bulletservice"
+	"github.com/jizizr/goligoli/server/kitex_gen/message/messageservice"
 	"sync"
 )
 
@@ -11,6 +11,6 @@ var (
 )
 
 var (
-	BulletClient bulletservice.Client
-	Receiver     sync.Map
+	MessageClient messageservice.Client
+	Receiver      sync.Map
 )

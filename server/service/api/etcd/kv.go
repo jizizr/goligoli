@@ -29,8 +29,8 @@ func main() {
 		UserSrv: config.RPCSrvConfig{
 			Name: consts.UserSrv,
 		},
-		BulletSrv: config.RPCSrvConfig{
-			Name: consts.BulletSrv,
+		MessageSrv: config.RPCSrvConfig{
+			Name: consts.MessageSrv,
 		},
 		PushSrv: config.RPCSrvConfig{
 			Name: consts.PushSrv,

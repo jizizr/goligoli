@@ -12,7 +12,7 @@ import (
 	"strconv"
 )
 
-// InitRegistry to init etcd
+// InitEtcd to init etcd
 func InitEtcd() (registry.Registry, *registry.Info) {
 	// 使用 etcd 注册
 	r, err := etcd.NewEtcdRegistry(

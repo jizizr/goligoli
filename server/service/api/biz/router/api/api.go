@@ -20,13 +20,13 @@ func Register(r *server.Hertz) {
 	root.POST("/login", append(_loginMw(), api.Login)...)
 	root.POST("/register", append(_registerMw(), api.Register)...)
 	{
-		_bullet := root.Group("/bullet", _bulletMw()...)
-		_bullet.GET("/live", append(_getbulletrtMw(), api.GetBulletRT)...)
-		_bullet.POST("/live", append(_sendbulletMw(), api.SendBullet)...)
+		_message := root.Group("/message", _messageMw()...)
+		_message.POST("/live", append(_sendmessageMw(), api.SendMessage)...)
+		_message.GET("/live", append(_getmessagertMw(), api.GetMessageRT)...)
 		{
-			_history := _bullet.Group("/history", _historyMw()...)
-			_history.GET("/multi", append(_gethistorybulletsMw(), api.GetHistoryBullets)...)
-			_history.GET("/single", append(_getbulletbyidMw(), api.GetBulletByID)...)
+			_history := _message.Group("/history", _historyMw()...)
+			_history.GET("/multi", append(_gethistorymessagesMw(), api.GetHistoryMessages)...)
+			_history.GET("/single", append(_getmessagebyidMw(), api.GetMessageByID)...)
 		}
 	}
 }

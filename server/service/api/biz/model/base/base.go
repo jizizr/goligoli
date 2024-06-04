@@ -190,53 +190,59 @@ func (p *BaseResponse) String() string {
 
 }
 
-type Bullet struct {
-	BulletID int64  `thrift:"bullet_id,1" form:"bullet_id" json:"bullet_id" query:"bullet_id"`
-	UserID   int64  `thrift:"user_id,2" form:"user_id" json:"user_id" query:"user_id"`
-	LiveID   int64  `thrift:"live_id,3" form:"live_id" json:"live_id" query:"live_id"`
-	LiveTime int64  `thrift:"live_time,4" form:"live_time" json:"live_time" query:"live_time"`
-	SendTime int64  `thrift:"send_time,5" form:"send_time" json:"send_time" query:"send_time"`
-	Content  string `thrift:"Content,6" form:"Content" json:"Content" query:"Content"`
+type LiveMessage struct {
+	Type     int8   `thrift:"type,1" form:"type" json:"type" query:"type"`
+	ID       int64  `thrift:"id,2" form:"id" json:"id" query:"id"`
+	UserID   int64  `thrift:"user_id,3" form:"user_id" json:"user_id" query:"user_id"`
+	LiveID   int64  `thrift:"live_id,4" form:"live_id" json:"live_id" query:"live_id"`
+	LiveTime int64  `thrift:"live_time,5" form:"live_time" json:"live_time" query:"live_time"`
+	SendTime int64  `thrift:"send_time,6" form:"send_time" json:"send_time" query:"send_time"`
+	Content  string `thrift:"content,7" form:"content" json:"content" query:"content"`
 }
 
-func NewBullet() *Bullet {
-	return &Bullet{}
+func NewLiveMessage() *LiveMessage {
+	return &LiveMessage{}
 }
 
-func (p *Bullet) GetBulletID() (v int64) {
-	return p.BulletID
+func (p *LiveMessage) GetType() (v int8) {
+	return p.Type
 }
 
-func (p *Bullet) GetUserID() (v int64) {
+func (p *LiveMessage) GetID() (v int64) {
+	return p.ID
+}
+
+func (p *LiveMessage) GetUserID() (v int64) {
 	return p.UserID
 }
 
-func (p *Bullet) GetLiveID() (v int64) {
+func (p *LiveMessage) GetLiveID() (v int64) {
 	return p.LiveID
 }
 
-func (p *Bullet) GetLiveTime() (v int64) {
+func (p *LiveMessage) GetLiveTime() (v int64) {
 	return p.LiveTime
 }
 
-func (p *Bullet) GetSendTime() (v int64) {
+func (p *LiveMessage) GetSendTime() (v int64) {
 	return p.SendTime
 }
 
-func (p *Bullet) GetContent() (v string) {
+func (p *LiveMessage) GetContent() (v string) {
 	return p.Content
 }
 
-var fieldIDToName_Bullet = map[int16]string{
-	1: "bullet_id",
-	2: "user_id",
-	3: "live_id",
-	4: "live_time",
-	5: "send_time",
-	6: "Content",
+var fieldIDToName_LiveMessage = map[int16]string{
+	1: "type",
+	2: "id",
+	3: "user_id",
+	4: "live_id",
+	5: "live_time",
+	6: "send_time",
+	7: "content",
 }
 
-func (p *Bullet) Read(iprot thrift.TProtocol) (err error) {
+func (p *LiveMessage) Read(iprot thrift.TProtocol) (err error) {
 
 	var fieldTypeId thrift.TType
 	var fieldId int16
@@ -256,7 +262,7 @@ func (p *Bullet) Read(iprot thrift.TProtocol) (err error) {
 
 		switch fieldId {
 		case 1:
-			if fieldTypeId == thrift.I64 {
+			if fieldTypeId == thrift.BYTE {
 				if err = p.ReadField1(iprot); err != nil {
 					goto ReadFieldError
 				}
@@ -296,8 +302,16 @@ func (p *Bullet) Read(iprot thrift.TProtocol) (err error) {
 				goto SkipFieldError
 			}
 		case 6:
-			if fieldTypeId == thrift.STRING {
+			if fieldTypeId == thrift.I64 {
 				if err = p.ReadField6(iprot); err != nil {
+					goto ReadFieldError
+				}
+			} else if err = iprot.Skip(fieldTypeId); err != nil {
+				goto SkipFieldError
+			}
+		case 7:
+			if fieldTypeId == thrift.STRING {
+				if err = p.ReadField7(iprot); err != nil {
 					goto ReadFieldError
 				}
 			} else if err = iprot.Skip(fieldTypeId); err != nil {
@@ -322,7 +336,7 @@ ReadStructBeginError:
 ReadFieldBeginError:
 	return thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
 ReadFieldError:
-	return thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_Bullet[fieldId]), err)
+	return thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_LiveMessage[fieldId]), err)
 SkipFieldError:
 	return thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
 
@@ -332,7 +346,18 @@ ReadStructEndError:
 	return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
 }
 
-func (p *Bullet) ReadField1(iprot thrift.TProtocol) error {
+func (p *LiveMessage) ReadField1(iprot thrift.TProtocol) error {
+
+	var _field int8
+	if v, err := iprot.ReadByte(); err != nil {
+		return err
+	} else {
+		_field = v
+	}
+	p.Type = _field
+	return nil
+}
+func (p *LiveMessage) ReadField2(iprot thrift.TProtocol) error {
 
 	var _field int64
 	if v, err := iprot.ReadI64(); err != nil {
@@ -340,10 +365,10 @@ func (p *Bullet) ReadField1(iprot thrift.TProtocol) error {
 	} else {
 		_field = v
 	}
-	p.BulletID = _field
+	p.ID = _field
 	return nil
 }
-func (p *Bullet) ReadField2(iprot thrift.TProtocol) error {
+func (p *LiveMessage) ReadField3(iprot thrift.TProtocol) error {
 
 	var _field int64
 	if v, err := iprot.ReadI64(); err != nil {
@@ -354,7 +379,7 @@ func (p *Bullet) ReadField2(iprot thrift.TProtocol) error {
 	p.UserID = _field
 	return nil
 }
-func (p *Bullet) ReadField3(iprot thrift.TProtocol) error {
+func (p *LiveMessage) ReadField4(iprot thrift.TProtocol) error {
 
 	var _field int64
 	if v, err := iprot.ReadI64(); err != nil {
@@ -365,7 +390,7 @@ func (p *Bullet) ReadField3(iprot thrift.TProtocol) error {
 	p.LiveID = _field
 	return nil
 }
-func (p *Bullet) ReadField4(iprot thrift.TProtocol) error {
+func (p *LiveMessage) ReadField5(iprot thrift.TProtocol) error {
 
 	var _field int64
 	if v, err := iprot.ReadI64(); err != nil {
@@ -376,7 +401,7 @@ func (p *Bullet) ReadField4(iprot thrift.TProtocol) error {
 	p.LiveTime = _field
 	return nil
 }
-func (p *Bullet) ReadField5(iprot thrift.TProtocol) error {
+func (p *LiveMessage) ReadField6(iprot thrift.TProtocol) error {
 
 	var _field int64
 	if v, err := iprot.ReadI64(); err != nil {
@@ -387,7 +412,7 @@ func (p *Bullet) ReadField5(iprot thrift.TProtocol) error {
 	p.SendTime = _field
 	return nil
 }
-func (p *Bullet) ReadField6(iprot thrift.TProtocol) error {
+func (p *LiveMessage) ReadField7(iprot thrift.TProtocol) error {
 
 	var _field string
 	if v, err := iprot.ReadString(); err != nil {
@@ -399,9 +424,9 @@ func (p *Bullet) ReadField6(iprot thrift.TProtocol) error {
 	return nil
 }
 
-func (p *Bullet) Write(oprot thrift.TProtocol) (err error) {
+func (p *LiveMessage) Write(oprot thrift.TProtocol) (err error) {
 	var fieldId int16
-	if err = oprot.WriteStructBegin("Bullet"); err != nil {
+	if err = oprot.WriteStructBegin("LiveMessage"); err != nil {
 		goto WriteStructBeginError
 	}
 	if p != nil {
@@ -429,6 +454,10 @@ func (p *Bullet) Write(oprot thrift.TProtocol) (err error) {
 			fieldId = 6
 			goto WriteFieldError
 		}
+		if err = p.writeField7(oprot); err != nil {
+			fieldId = 7
+			goto WriteFieldError
+		}
 	}
 	if err = oprot.WriteFieldStop(); err != nil {
 		goto WriteFieldStopError
@@ -447,11 +476,11 @@ WriteStructEndError:
 	return thrift.PrependError(fmt.Sprintf("%T write struct end error: ", p), err)
 }
 
-func (p *Bullet) writeField1(oprot thrift.TProtocol) (err error) {
-	if err = oprot.WriteFieldBegin("bullet_id", thrift.I64, 1); err != nil {
+func (p *LiveMessage) writeField1(oprot thrift.TProtocol) (err error) {
+	if err = oprot.WriteFieldBegin("type", thrift.BYTE, 1); err != nil {
 		goto WriteFieldBeginError
 	}
-	if err := oprot.WriteI64(p.BulletID); err != nil {
+	if err := oprot.WriteByte(p.Type); err != nil {
 		return err
 	}
 	if err = oprot.WriteFieldEnd(); err != nil {
@@ -464,11 +493,11 @@ WriteFieldEndError:
 	return thrift.PrependError(fmt.Sprintf("%T write field 1 end error: ", p), err)
 }
 
-func (p *Bullet) writeField2(oprot thrift.TProtocol) (err error) {
-	if err = oprot.WriteFieldBegin("user_id", thrift.I64, 2); err != nil {
+func (p *LiveMessage) writeField2(oprot thrift.TProtocol) (err error) {
+	if err = oprot.WriteFieldBegin("id", thrift.I64, 2); err != nil {
 		goto WriteFieldBeginError
 	}
-	if err := oprot.WriteI64(p.UserID); err != nil {
+	if err := oprot.WriteI64(p.ID); err != nil {
 		return err
 	}
 	if err = oprot.WriteFieldEnd(); err != nil {
@@ -481,11 +510,11 @@ WriteFieldEndError:
 	return thrift.PrependError(fmt.Sprintf("%T write field 2 end error: ", p), err)
 }
 
-func (p *Bullet) writeField3(oprot thrift.TProtocol) (err error) {
-	if err = oprot.WriteFieldBegin("live_id", thrift.I64, 3); err != nil {
+func (p *LiveMessage) writeField3(oprot thrift.TProtocol) (err error) {
+	if err = oprot.WriteFieldBegin("user_id", thrift.I64, 3); err != nil {
 		goto WriteFieldBeginError
 	}
-	if err := oprot.WriteI64(p.LiveID); err != nil {
+	if err := oprot.WriteI64(p.UserID); err != nil {
 		return err
 	}
 	if err = oprot.WriteFieldEnd(); err != nil {
@@ -498,11 +527,11 @@ WriteFieldEndError:
 	return thrift.PrependError(fmt.Sprintf("%T write field 3 end error: ", p), err)
 }
 
-func (p *Bullet) writeField4(oprot thrift.TProtocol) (err error) {
-	if err = oprot.WriteFieldBegin("live_time", thrift.I64, 4); err != nil {
+func (p *LiveMessage) writeField4(oprot thrift.TProtocol) (err error) {
+	if err = oprot.WriteFieldBegin("live_id", thrift.I64, 4); err != nil {
 		goto WriteFieldBeginError
 	}
-	if err := oprot.WriteI64(p.LiveTime); err != nil {
+	if err := oprot.WriteI64(p.LiveID); err != nil {
 		return err
 	}
 	if err = oprot.WriteFieldEnd(); err != nil {
@@ -515,11 +544,11 @@ WriteFieldEndError:
 	return thrift.PrependError(fmt.Sprintf("%T write field 4 end error: ", p), err)
 }
 
-func (p *Bullet) writeField5(oprot thrift.TProtocol) (err error) {
-	if err = oprot.WriteFieldBegin("send_time", thrift.I64, 5); err != nil {
+func (p *LiveMessage) writeField5(oprot thrift.TProtocol) (err error) {
+	if err = oprot.WriteFieldBegin("live_time", thrift.I64, 5); err != nil {
 		goto WriteFieldBeginError
 	}
-	if err := oprot.WriteI64(p.SendTime); err != nil {
+	if err := oprot.WriteI64(p.LiveTime); err != nil {
 		return err
 	}
 	if err = oprot.WriteFieldEnd(); err != nil {
@@ -532,11 +561,11 @@ WriteFieldEndError:
 	return thrift.PrependError(fmt.Sprintf("%T write field 5 end error: ", p), err)
 }
 
-func (p *Bullet) writeField6(oprot thrift.TProtocol) (err error) {
-	if err = oprot.WriteFieldBegin("Content", thrift.STRING, 6); err != nil {
+func (p *LiveMessage) writeField6(oprot thrift.TProtocol) (err error) {
+	if err = oprot.WriteFieldBegin("send_time", thrift.I64, 6); err != nil {
 		goto WriteFieldBeginError
 	}
-	if err := oprot.WriteString(p.Content); err != nil {
+	if err := oprot.WriteI64(p.SendTime); err != nil {
 		return err
 	}
 	if err = oprot.WriteFieldEnd(); err != nil {
@@ -549,10 +578,27 @@ WriteFieldEndError:
 	return thrift.PrependError(fmt.Sprintf("%T write field 6 end error: ", p), err)
 }
 
-func (p *Bullet) String() string {
+func (p *LiveMessage) writeField7(oprot thrift.TProtocol) (err error) {
+	if err = oprot.WriteFieldBegin("content", thrift.STRING, 7); err != nil {
+		goto WriteFieldBeginError
+	}
+	if err := oprot.WriteString(p.Content); err != nil {
+		return err
+	}
+	if err = oprot.WriteFieldEnd(); err != nil {
+		goto WriteFieldEndError
+	}
+	return nil
+WriteFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 7 begin error: ", p), err)
+WriteFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 7 end error: ", p), err)
+}
+
+func (p *LiveMessage) String() string {
 	if p == nil {
 		return "<nil>"
 	}
-	return fmt.Sprintf("Bullet(%+v)", *p)
+	return fmt.Sprintf("LiveMessage(%+v)", *p)
 
 }

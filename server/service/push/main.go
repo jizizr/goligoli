@@ -28,8 +28,8 @@ func main() {
 	defer p.Shutdown(context.Background())
 	rpc.Init()
 	go func() {
-		bulletSub := mq.NewSubscriberManager(subscriber)
-		err := bulletSub.SubscribeBulletFromNsq(context.Background())
+		MessageSub := mq.NewSubscriberManager(subscriber)
+		err := MessageSub.SubscribeMessageFromNsq(context.Background())
 		if err != nil {
 			klog.Error(err)
 		}

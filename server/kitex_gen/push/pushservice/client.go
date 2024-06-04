@@ -15,18 +15,18 @@ import (
 
 // Client is designed to provide IDL-compatible methods with call-option parameter for kitex framework.
 type Client interface {
-	PushBullet(ctx context.Context, req *push.PushBulletRequest, callOptions ...callopt.Option) (err error)
+	PushMessage(ctx context.Context, req *push.PushMessageRequest, callOptions ...callopt.Option) (err error)
 }
 
 // StreamClient is designed to provide Interface for Streaming APIs.
 type StreamClient interface {
-	ReceiveBullet(ctx context.Context, callOptions ...streamcall.Option) (stream PushService_ReceiveBulletClient, err error)
+	ReceiveMessage(ctx context.Context, callOptions ...streamcall.Option) (stream PushService_ReceiveMessageClient, err error)
 }
 
-type PushService_ReceiveBulletClient interface {
+type PushService_ReceiveMessageClient interface {
 	streaming.Stream
-	Send(*push.ReceiveBulletRequest) error
-	Recv() (*push.ReceiveBulletResponse, error)
+	Send(*push.ReceiveMessageRequest) error
+	Recv() (*push.ReceiveMessageResponse, error)
 }
 
 // NewClient creates a client for the service defined in IDL.
@@ -58,9 +58,9 @@ type kPushServiceClient struct {
 	*kClient
 }
 
-func (p *kPushServiceClient) PushBullet(ctx context.Context, req *push.PushBulletRequest, callOptions ...callopt.Option) (err error) {
+func (p *kPushServiceClient) PushMessage(ctx context.Context, req *push.PushMessageRequest, callOptions ...callopt.Option) (err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
-	return p.kClient.PushBullet(ctx, req)
+	return p.kClient.PushMessage(ctx, req)
 }
 
 // NewStreamClient creates a stream client for the service's streaming APIs defined in IDL.
@@ -93,7 +93,7 @@ type kPushServiceStreamClient struct {
 	*kClient
 }
 
-func (p *kPushServiceStreamClient) ReceiveBullet(ctx context.Context, callOptions ...streamcall.Option) (stream PushService_ReceiveBulletClient, err error) {
+func (p *kPushServiceStreamClient) ReceiveMessage(ctx context.Context, callOptions ...streamcall.Option) (stream PushService_ReceiveMessageClient, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, streamcall.GetCallOptions(callOptions))
-	return p.kClient.ReceiveBullet(ctx)
+	return p.kClient.ReceiveMessage(ctx)
 }

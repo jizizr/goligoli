@@ -25,7 +25,7 @@ func (u *User) CreateUser(user *model.User) (string, error) {
 	// if err isn't nil and RecordNotFound return error
 	if err != gorm.ErrRecordNotFound && err != nil {
 		klog.Errorf("MySQL error in GetUserByName: %v", err)
-		return temp.Username, nil
+		return temp.Username, err
 	}
 	// if Username isn't empty, return username to indicate that the user already exists
 	if temp.Username != "" {

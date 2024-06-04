@@ -7,10 +7,10 @@ type EtcdConfig struct {
 }
 
 type Config struct {
-	Name      string       `json:"name"`
-	UserSrv   RPCSrvConfig `json:"user_srv"`
-	BulletSrv RPCSrvConfig `json:"bullet_srv"`
-	PushSrv   RPCSrvConfig `json:"push_srv"`
+	Name       string       `json:"name"`
+	UserSrv    RPCSrvConfig `json:"user_srv"`
+	MessageSrv RPCSrvConfig `json:"message_srv"`
+	PushSrv    RPCSrvConfig `json:"push_srv"`
 }
 
 type RPCSrvConfig struct {

@@ -1,5 +1,5 @@
 package rpc
 
 func Init() {
-	initBullet()
+	initMessage()
 }

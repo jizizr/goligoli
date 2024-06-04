@@ -14,7 +14,7 @@ import (
 	consts2 "github.com/jizizr/goligoli/server/common/consts"
 	"github.com/jizizr/goligoli/server/common/tools"
 	base2 "github.com/jizizr/goligoli/server/kitex_gen/base"
-	"github.com/jizizr/goligoli/server/kitex_gen/bullet"
+	Message "github.com/jizizr/goligoli/server/kitex_gen/message"
 	"github.com/jizizr/goligoli/server/kitex_gen/push"
 	"github.com/jizizr/goligoli/server/kitex_gen/user"
 	"github.com/jizizr/goligoli/server/service/api/biz/errno"
@@ -102,71 +102,72 @@ func Login(ctx context.Context, c *app.RequestContext) {
 	c.JSON(consts.StatusOK, resp)
 }
 
-// SendBullet .
-// @router /bullet/live [POST]
-func SendBullet(ctx context.Context, c *app.RequestContext) {
+// SendMessage .
+// @router /message/live [POST]
+func SendMessage(ctx context.Context, c *app.RequestContext) {
 	var err error
-	var req api.AddBulletRequest
+	var req api.AddMessageRequest
 	err = c.BindAndValidate(&req)
 	if err != nil {
 		c.String(consts.StatusBadRequest, err.Error())
 		return
 	}
 
-	resp := new(api.AddBulletResponse)
+	resp := new(api.AddMessageResponse)
 	uid, _ := tools.GetUID(c)
-	sf, err := snowflake.NewNode(consts2.BulletSnowflakeNode)
+	sf, err := snowflake.NewNode(consts2.MessageSnowflakeNode)
 	if err != nil {
 		klog.Errorf("generate snowflake node failed, %v", err)
 		return
 	}
-	resp.BulletID = sf.Generate().Int64()
-	bul := &base2.Bullet{
-		BulletId: resp.BulletID,
+	resp.ID = sf.Generate().Int64()
+	bul := &base2.LiveMessage{
+		Type:     req.Type,
+		Id:       resp.ID,
 		UserId:   uid,
 		LiveId:   req.LiveID,
-		LiveTime: req.LiveTime,
+		LiveTime: time.Now().Unix(),
 		SendTime: time.Now().Unix(),
 		Content:  req.Content,
 	}
-	err = global.PushClient.PushBullet(ctx, &push.PushBulletRequest{
-		Bullet: bul,
+	err = global.PushClient.PushMessage(ctx, &push.PushMessageRequest{
+		Message: bul,
 	})
 	if err != nil {
-		errno.SendResponse(c, consts2.CodeSendBulletFailed, err.Error())
+		errno.SendResponse(c, consts2.CodeSendMessageFailed, err.Error())
 		return
 	}
 	resp.BaseResp = SuccessBaseResponse()
 	c.JSON(consts.StatusOK, resp)
 }
 
-// GetHistoryBullets .
-// @router /bullet/history/multi [GET]
-func GetHistoryBullets(ctx context.Context, c *app.RequestContext) {
+// GetHistoryMessages .
+// @router /message/history/multi [GET]
+func GetHistoryMessages(ctx context.Context, c *app.RequestContext) {
 	var err error
-	var req api.GetHistoryBulletsRequest
+	var req api.GetHistoryMessagesRequest
 	err = c.BindAndValidate(&req)
 	if err != nil {
 		c.String(consts.StatusBadRequest, err.Error())
 		return
 	}
 
-	resp := new(api.GetHistoryBulletsResponse)
-	res, err := global.BulletClient.GetHistoryBullets(ctx, &bullet.GetHistoryBulletsRequest{
+	resp := new(api.GetHistoryMessagesResponse)
+	res, err := global.MessageClient.GetHistoryMessages(ctx, &Message.GetHistoryMessagesRequest{
 		LiveId:    req.LiveID,
 		StartTime: req.StartTime,
 		Offset:    req.Offset,
 	})
 
 	if err != nil {
-		errno.SendResponse(c, consts2.CodeGetHistoryBulletsFailed, err.Error())
+		errno.SendResponse(c, consts2.CodeGetHistoryMessagesFailed, err.Error())
 		return
 	}
 
 	resp.BaseResp = SuccessBaseResponse()
-	for _, b := range res.Bullets {
-		resp.Bullets = append(resp.Bullets, &base.Bullet{
-			BulletID: b.BulletId,
+	for _, b := range res.Messages {
+		resp.Messages = append(resp.Messages, &base.LiveMessage{
+			ID:       b.Id,
 			UserID:   b.UserId,
 			LiveID:   b.LiveId,
 			LiveTime: b.LiveTime,
@@ -178,32 +179,32 @@ func GetHistoryBullets(ctx context.Context, c *app.RequestContext) {
 	c.JSON(consts.StatusOK, resp)
 }
 
-// GetBulletByID .
-// @router /bullet/history/single/ [GET]
-func GetBulletByID(ctx context.Context, c *app.RequestContext) {
+// GetMessageByID .
+// @router /message/history/single/ [GET]
+func GetMessageByID(ctx context.Context, c *app.RequestContext) {
 	var err error
-	var req api.GetBulletByIDRequest
+	var req api.GetMessageByIDRequest
 	err = c.BindAndValidate(&req)
 	if err != nil {
 		c.String(consts.StatusBadRequest, err.Error())
 		return
 	}
 
-	resp := new(api.GetBulletByIDResponse)
+	resp := new(api.GetMessageByIDResponse)
 
-	res, err := global.BulletClient.GetBullet(ctx, &bullet.GetBulletRequest{
-		BulletId: req.BulletID,
+	res, err := global.MessageClient.GetMessage(ctx, &Message.GetMessageRequest{
+		Id: req.ID,
 	})
 
 	if err != nil {
-		errno.SendResponse(c, consts2.CodeGetBulletByIDFailed, err.Error())
+		errno.SendResponse(c, consts2.CodeGetMessageByIDFailed, err.Error())
 		return
 	}
 	resp.BaseResp = SuccessBaseResponse()
-	b := res.Bullet
+	b := res.Message
 	if b != nil {
-		resp.Bullet = &base.Bullet{
-			BulletID: b.BulletId,
+		resp.Message = &base.LiveMessage{
+			ID:       b.Id,
 			UserID:   b.UserId,
 			LiveID:   b.LiveId,
 			LiveTime: b.LiveTime,
@@ -214,11 +215,11 @@ func GetBulletByID(ctx context.Context, c *app.RequestContext) {
 	c.JSON(consts.StatusOK, resp)
 }
 
-// GetBulletRT .
-// @router /bullet/live [GET]
-func GetBulletRT(ctx context.Context, c *app.RequestContext) {
+// GetMessageRT .
+// @router /message/live [GET]
+func GetMessageRT(ctx context.Context, c *app.RequestContext) {
 	var err error
-	var req api.GetBulletRTRequest
+	var req api.GetMessageRTRequest
 	err = c.BindAndValidate(&req)
 	if err != nil {
 		c.String(consts.StatusBadRequest, err.Error())
@@ -227,13 +228,13 @@ func GetBulletRT(ctx context.Context, c *app.RequestContext) {
 	c.SetStatusCode(http.StatusOK)
 	clientStream := sse.NewStream(c)
 	uid, _ := tools.GetUID(c)
-	serverStream, err := global.ReceiveStreamClient.ReceiveBullet(ctx)
+	serverStream, err := global.ReceiveStreamClient.ReceiveMessage(ctx)
 	if err != nil {
-		klog.Errorf("receive bullet failed, %v", err)
+		klog.Errorf("receive message failed, %v", err)
 		return
 	}
 	defer serverStream.Close()
-	err = serverStream.Send(&push.ReceiveBulletRequest{
+	err = serverStream.Send(&push.ReceiveMessageRequest{
 		LiveId: req.LiveID,
 		UserId: uid,
 	})
@@ -247,13 +248,13 @@ func GetBulletRT(ctx context.Context, c *app.RequestContext) {
 			streaming.FinishStream(serverStream, err)
 			break
 		}
-		payload, err := sonic.Marshal(bul.Bullet)
+		payload, err := sonic.Marshal(bul.Message)
 		if err != nil {
 			klog.Errorf("marshal error: %v", err)
 			break
 		}
 		err = clientStream.Publish(&sse.Event{
-			Event: "bullet",
+			Event: "message",
 			Data:  payload,
 		})
 		if err != nil {

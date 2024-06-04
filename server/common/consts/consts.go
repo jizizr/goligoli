@@ -8,20 +8,28 @@ const (
 
 const (
 	UserSnowflakeNode = iota + 1
-	BulletSnowflakeNode
+	MessageSnowflakeNode
 	EtcdSnowflakeNode
 )
 
 const (
 	ApiServerPort = 8000 + iota
 	UserServerPort
-	BulletServerPort
+	MessageServerPort
 	PushServerPort
+	LiveServerPort
 )
 
 const (
-	ApiSrv    = "api_srv"
-	UserSrv   = "user_srv"
-	BulletSrv = "bullet_srv"
-	PushSrv   = "push_srv"
+	ApiSrv     = "api_srv"
+	UserSrv    = "user_srv"
+	MessageSrv = "message_srv"
+	PushSrv    = "push_srv"
+	LiveSrv    = "live_srv"
+)
+
+const (
+	BULLET = iota
+	GIFT
+	SUPERMSG
 )

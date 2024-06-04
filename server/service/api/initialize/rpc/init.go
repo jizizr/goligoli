@@ -2,7 +2,7 @@ package rpc
 
 func Init() {
 	initUser()
-	initBullet()
+	initMessage()
 	initPush()
 	initReceiveStreamClient()
 }

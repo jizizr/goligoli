@@ -3,7 +3,7 @@ package rpc
 import (
 	"github.com/cloudwego/kitex/client"
 	"github.com/cloudwego/kitex/pkg/rpcinfo"
-	bullet "github.com/jizizr/goligoli/server/kitex_gen/bullet/bulletservice"
+	Message "github.com/jizizr/goligoli/server/kitex_gen/message/messageservice"
 	"github.com/jizizr/goligoli/server/service/api/biz/global"
 	"github.com/jizizr/goligoli/server/service/api/config"
 	"github.com/kitex-contrib/obs-opentelemetry/provider"
@@ -13,7 +13,7 @@ import (
 	"net"
 )
 
-func initBullet() {
+func initMessage() {
 	r, err := etcd.NewEtcdResolver([]string{net.JoinHostPort(config.GlobalEtcdConfig.Host, config.GlobalEtcdConfig.Port)})
 	if err != nil {
 		log.Fatal(err)
@@ -23,17 +23,17 @@ func initBullet() {
 		provider.WithExportEndpoint("localhost:4318"),
 		provider.WithInsecure(),
 	)
-	c, err := bullet.NewClient(
-		config.GlobalServiceConfig.BulletSrv.Name,
+	c, err := Message.NewClient(
+		config.GlobalServiceConfig.MessageSrv.Name,
 		client.WithResolver(r),
 		client.WithSuite(tracing.NewClientSuite()),
 		client.WithClientBasicInfo(
 			&rpcinfo.EndpointBasicInfo{
-				ServiceName: config.GlobalServiceConfig.BulletSrv.Name,
+				ServiceName: config.GlobalServiceConfig.MessageSrv.Name,
 			}),
 	)
 	if err != nil {
 		log.Fatal(err)
 	}
-	global.BulletClient = c
+	global.MessageClient = c
 }

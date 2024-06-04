@@ -26,7 +26,7 @@ var (
 	_ = base.KitexUnusedProtection
 )
 
-func (p *PushBulletRequest) FastRead(buf []byte) (int, error) {
+func (p *PushMessageRequest) FastRead(buf []byte) (int, error) {
 	var err error
 	var offset int
 	var l int
@@ -88,7 +88,7 @@ ReadStructBeginError:
 ReadFieldBeginError:
 	return offset, thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
 ReadFieldError:
-	return offset, thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_PushBulletRequest[fieldId]), err)
+	return offset, thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_PushMessageRequest[fieldId]), err)
 SkipFieldError:
 	return offset, thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
 ReadFieldEndError:
@@ -97,27 +97,27 @@ ReadStructEndError:
 	return offset, thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
 }
 
-func (p *PushBulletRequest) FastReadField1(buf []byte) (int, error) {
+func (p *PushMessageRequest) FastReadField1(buf []byte) (int, error) {
 	offset := 0
 
-	tmp := base.NewBullet()
+	tmp := base.NewLiveMessage()
 	if l, err := tmp.FastRead(buf[offset:]); err != nil {
 		return offset, err
 	} else {
 		offset += l
 	}
-	p.Bullet = tmp
+	p.Message = tmp
 	return offset, nil
 }
 
 // for compatibility
-func (p *PushBulletRequest) FastWrite(buf []byte) int {
+func (p *PushMessageRequest) FastWrite(buf []byte) int {
 	return 0
 }
 
-func (p *PushBulletRequest) FastWriteNocopy(buf []byte, binaryWriter bthrift.BinaryWriter) int {
+func (p *PushMessageRequest) FastWriteNocopy(buf []byte, binaryWriter bthrift.BinaryWriter) int {
 	offset := 0
-	offset += bthrift.Binary.WriteStructBegin(buf[offset:], "PushBulletRequest")
+	offset += bthrift.Binary.WriteStructBegin(buf[offset:], "PushMessageRequest")
 	if p != nil {
 		offset += p.fastWriteField1(buf[offset:], binaryWriter)
 	}
@@ -126,9 +126,9 @@ func (p *PushBulletRequest) FastWriteNocopy(buf []byte, binaryWriter bthrift.Bin
 	return offset
 }
 
-func (p *PushBulletRequest) BLength() int {
+func (p *PushMessageRequest) BLength() int {
 	l := 0
-	l += bthrift.Binary.StructBeginLength("PushBulletRequest")
+	l += bthrift.Binary.StructBeginLength("PushMessageRequest")
 	if p != nil {
 		l += p.field1Length()
 	}
@@ -137,23 +137,23 @@ func (p *PushBulletRequest) BLength() int {
 	return l
 }
 
-func (p *PushBulletRequest) fastWriteField1(buf []byte, binaryWriter bthrift.BinaryWriter) int {
+func (p *PushMessageRequest) fastWriteField1(buf []byte, binaryWriter bthrift.BinaryWriter) int {
 	offset := 0
-	offset += bthrift.Binary.WriteFieldBegin(buf[offset:], "bullet", thrift.STRUCT, 1)
-	offset += p.Bullet.FastWriteNocopy(buf[offset:], binaryWriter)
+	offset += bthrift.Binary.WriteFieldBegin(buf[offset:], "Message", thrift.STRUCT, 1)
+	offset += p.Message.FastWriteNocopy(buf[offset:], binaryWriter)
 	offset += bthrift.Binary.WriteFieldEnd(buf[offset:])
 	return offset
 }
 
-func (p *PushBulletRequest) field1Length() int {
+func (p *PushMessageRequest) field1Length() int {
 	l := 0
-	l += bthrift.Binary.FieldBeginLength("bullet", thrift.STRUCT, 1)
-	l += p.Bullet.BLength()
+	l += bthrift.Binary.FieldBeginLength("Message", thrift.STRUCT, 1)
+	l += p.Message.BLength()
 	l += bthrift.Binary.FieldEndLength()
 	return l
 }
 
-func (p *ReceiveBulletRequest) FastRead(buf []byte) (int, error) {
+func (p *ReceiveMessageRequest) FastRead(buf []byte) (int, error) {
 	var err error
 	var offset int
 	var l int
@@ -229,7 +229,7 @@ ReadStructBeginError:
 ReadFieldBeginError:
 	return offset, thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
 ReadFieldError:
-	return offset, thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_ReceiveBulletRequest[fieldId]), err)
+	return offset, thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_ReceiveMessageRequest[fieldId]), err)
 SkipFieldError:
 	return offset, thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
 ReadFieldEndError:
@@ -238,7 +238,7 @@ ReadStructEndError:
 	return offset, thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
 }
 
-func (p *ReceiveBulletRequest) FastReadField1(buf []byte) (int, error) {
+func (p *ReceiveMessageRequest) FastReadField1(buf []byte) (int, error) {
 	offset := 0
 
 	if v, l, err := bthrift.Binary.ReadI64(buf[offset:]); err != nil {
@@ -252,7 +252,7 @@ func (p *ReceiveBulletRequest) FastReadField1(buf []byte) (int, error) {
 	return offset, nil
 }
 
-func (p *ReceiveBulletRequest) FastReadField2(buf []byte) (int, error) {
+func (p *ReceiveMessageRequest) FastReadField2(buf []byte) (int, error) {
 	offset := 0
 
 	if v, l, err := bthrift.Binary.ReadI64(buf[offset:]); err != nil {
@@ -267,13 +267,13 @@ func (p *ReceiveBulletRequest) FastReadField2(buf []byte) (int, error) {
 }
 
 // for compatibility
-func (p *ReceiveBulletRequest) FastWrite(buf []byte) int {
+func (p *ReceiveMessageRequest) FastWrite(buf []byte) int {
 	return 0
 }
 
-func (p *ReceiveBulletRequest) FastWriteNocopy(buf []byte, binaryWriter bthrift.BinaryWriter) int {
+func (p *ReceiveMessageRequest) FastWriteNocopy(buf []byte, binaryWriter bthrift.BinaryWriter) int {
 	offset := 0
-	offset += bthrift.Binary.WriteStructBegin(buf[offset:], "ReceiveBulletRequest")
+	offset += bthrift.Binary.WriteStructBegin(buf[offset:], "ReceiveMessageRequest")
 	if p != nil {
 		offset += p.fastWriteField1(buf[offset:], binaryWriter)
 		offset += p.fastWriteField2(buf[offset:], binaryWriter)
@@ -283,9 +283,9 @@ func (p *ReceiveBulletRequest) FastWriteNocopy(buf []byte, binaryWriter bthrift.
 	return offset
 }
 
-func (p *ReceiveBulletRequest) BLength() int {
+func (p *ReceiveMessageRequest) BLength() int {
 	l := 0
-	l += bthrift.Binary.StructBeginLength("ReceiveBulletRequest")
+	l += bthrift.Binary.StructBeginLength("ReceiveMessageRequest")
 	if p != nil {
 		l += p.field1Length()
 		l += p.field2Length()
@@ -295,7 +295,7 @@ func (p *ReceiveBulletRequest) BLength() int {
 	return l
 }
 
-func (p *ReceiveBulletRequest) fastWriteField1(buf []byte, binaryWriter bthrift.BinaryWriter) int {
+func (p *ReceiveMessageRequest) fastWriteField1(buf []byte, binaryWriter bthrift.BinaryWriter) int {
 	offset := 0
 	offset += bthrift.Binary.WriteFieldBegin(buf[offset:], "user_id", thrift.I64, 1)
 	offset += bthrift.Binary.WriteI64(buf[offset:], p.UserId)
@@ -304,7 +304,7 @@ func (p *ReceiveBulletRequest) fastWriteField1(buf []byte, binaryWriter bthrift.
 	return offset
 }
 
-func (p *ReceiveBulletRequest) fastWriteField2(buf []byte, binaryWriter bthrift.BinaryWriter) int {
+func (p *ReceiveMessageRequest) fastWriteField2(buf []byte, binaryWriter bthrift.BinaryWriter) int {
 	offset := 0
 	offset += bthrift.Binary.WriteFieldBegin(buf[offset:], "live_id", thrift.I64, 2)
 	offset += bthrift.Binary.WriteI64(buf[offset:], p.LiveId)
@@ -313,7 +313,7 @@ func (p *ReceiveBulletRequest) fastWriteField2(buf []byte, binaryWriter bthrift.
 	return offset
 }
 
-func (p *ReceiveBulletRequest) field1Length() int {
+func (p *ReceiveMessageRequest) field1Length() int {
 	l := 0
 	l += bthrift.Binary.FieldBeginLength("user_id", thrift.I64, 1)
 	l += bthrift.Binary.I64Length(p.UserId)
@@ -322,7 +322,7 @@ func (p *ReceiveBulletRequest) field1Length() int {
 	return l
 }
 
-func (p *ReceiveBulletRequest) field2Length() int {
+func (p *ReceiveMessageRequest) field2Length() int {
 	l := 0
 	l += bthrift.Binary.FieldBeginLength("live_id", thrift.I64, 2)
 	l += bthrift.Binary.I64Length(p.LiveId)
@@ -331,7 +331,7 @@ func (p *ReceiveBulletRequest) field2Length() int {
 	return l
 }
 
-func (p *ReceiveBulletResponse) FastRead(buf []byte) (int, error) {
+func (p *ReceiveMessageResponse) FastRead(buf []byte) (int, error) {
 	var err error
 	var offset int
 	var l int
@@ -393,7 +393,7 @@ ReadStructBeginError:
 ReadFieldBeginError:
 	return offset, thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
 ReadFieldError:
-	return offset, thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_ReceiveBulletResponse[fieldId]), err)
+	return offset, thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_ReceiveMessageResponse[fieldId]), err)
 SkipFieldError:
 	return offset, thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
 ReadFieldEndError:
@@ -402,27 +402,27 @@ ReadStructEndError:
 	return offset, thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
 }
 
-func (p *ReceiveBulletResponse) FastReadField1(buf []byte) (int, error) {
+func (p *ReceiveMessageResponse) FastReadField1(buf []byte) (int, error) {
 	offset := 0
 
-	tmp := base.NewBullet()
+	tmp := base.NewLiveMessage()
 	if l, err := tmp.FastRead(buf[offset:]); err != nil {
 		return offset, err
 	} else {
 		offset += l
 	}
-	p.Bullet = tmp
+	p.Message = tmp
 	return offset, nil
 }
 
 // for compatibility
-func (p *ReceiveBulletResponse) FastWrite(buf []byte) int {
+func (p *ReceiveMessageResponse) FastWrite(buf []byte) int {
 	return 0
 }
 
-func (p *ReceiveBulletResponse) FastWriteNocopy(buf []byte, binaryWriter bthrift.BinaryWriter) int {
+func (p *ReceiveMessageResponse) FastWriteNocopy(buf []byte, binaryWriter bthrift.BinaryWriter) int {
 	offset := 0
-	offset += bthrift.Binary.WriteStructBegin(buf[offset:], "ReceiveBulletResponse")
+	offset += bthrift.Binary.WriteStructBegin(buf[offset:], "ReceiveMessageResponse")
 	if p != nil {
 		offset += p.fastWriteField1(buf[offset:], binaryWriter)
 	}
@@ -431,9 +431,9 @@ func (p *ReceiveBulletResponse) FastWriteNocopy(buf []byte, binaryWriter bthrift
 	return offset
 }
 
-func (p *ReceiveBulletResponse) BLength() int {
+func (p *ReceiveMessageResponse) BLength() int {
 	l := 0
-	l += bthrift.Binary.StructBeginLength("ReceiveBulletResponse")
+	l += bthrift.Binary.StructBeginLength("ReceiveMessageResponse")
 	if p != nil {
 		l += p.field1Length()
 	}
@@ -442,23 +442,23 @@ func (p *ReceiveBulletResponse) BLength() int {
 	return l
 }
 
-func (p *ReceiveBulletResponse) fastWriteField1(buf []byte, binaryWriter bthrift.BinaryWriter) int {
+func (p *ReceiveMessageResponse) fastWriteField1(buf []byte, binaryWriter bthrift.BinaryWriter) int {
 	offset := 0
-	offset += bthrift.Binary.WriteFieldBegin(buf[offset:], "bullet", thrift.STRUCT, 1)
-	offset += p.Bullet.FastWriteNocopy(buf[offset:], binaryWriter)
+	offset += bthrift.Binary.WriteFieldBegin(buf[offset:], "Message", thrift.STRUCT, 1)
+	offset += p.Message.FastWriteNocopy(buf[offset:], binaryWriter)
 	offset += bthrift.Binary.WriteFieldEnd(buf[offset:])
 	return offset
 }
 
-func (p *ReceiveBulletResponse) field1Length() int {
+func (p *ReceiveMessageResponse) field1Length() int {
 	l := 0
-	l += bthrift.Binary.FieldBeginLength("bullet", thrift.STRUCT, 1)
-	l += p.Bullet.BLength()
+	l += bthrift.Binary.FieldBeginLength("Message", thrift.STRUCT, 1)
+	l += p.Message.BLength()
 	l += bthrift.Binary.FieldEndLength()
 	return l
 }
 
-func (p *PushServicePushBulletArgs) FastRead(buf []byte) (int, error) {
+func (p *PushServicePushMessageArgs) FastRead(buf []byte) (int, error) {
 	var err error
 	var offset int
 	var l int
@@ -520,7 +520,7 @@ ReadStructBeginError:
 ReadFieldBeginError:
 	return offset, thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
 ReadFieldError:
-	return offset, thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_PushServicePushBulletArgs[fieldId]), err)
+	return offset, thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_PushServicePushMessageArgs[fieldId]), err)
 SkipFieldError:
 	return offset, thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
 ReadFieldEndError:
@@ -529,10 +529,10 @@ ReadStructEndError:
 	return offset, thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
 }
 
-func (p *PushServicePushBulletArgs) FastReadField1(buf []byte) (int, error) {
+func (p *PushServicePushMessageArgs) FastReadField1(buf []byte) (int, error) {
 	offset := 0
 
-	tmp := NewPushBulletRequest()
+	tmp := NewPushMessageRequest()
 	if l, err := tmp.FastRead(buf[offset:]); err != nil {
 		return offset, err
 	} else {
@@ -543,13 +543,13 @@ func (p *PushServicePushBulletArgs) FastReadField1(buf []byte) (int, error) {
 }
 
 // for compatibility
-func (p *PushServicePushBulletArgs) FastWrite(buf []byte) int {
+func (p *PushServicePushMessageArgs) FastWrite(buf []byte) int {
 	return 0
 }
 
-func (p *PushServicePushBulletArgs) FastWriteNocopy(buf []byte, binaryWriter bthrift.BinaryWriter) int {
+func (p *PushServicePushMessageArgs) FastWriteNocopy(buf []byte, binaryWriter bthrift.BinaryWriter) int {
 	offset := 0
-	offset += bthrift.Binary.WriteStructBegin(buf[offset:], "PushBullet_args")
+	offset += bthrift.Binary.WriteStructBegin(buf[offset:], "PushMessage_args")
 	if p != nil {
 		offset += p.fastWriteField1(buf[offset:], binaryWriter)
 	}
@@ -558,9 +558,9 @@ func (p *PushServicePushBulletArgs) FastWriteNocopy(buf []byte, binaryWriter bth
 	return offset
 }
 
-func (p *PushServicePushBulletArgs) BLength() int {
+func (p *PushServicePushMessageArgs) BLength() int {
 	l := 0
-	l += bthrift.Binary.StructBeginLength("PushBullet_args")
+	l += bthrift.Binary.StructBeginLength("PushMessage_args")
 	if p != nil {
 		l += p.field1Length()
 	}
@@ -569,7 +569,7 @@ func (p *PushServicePushBulletArgs) BLength() int {
 	return l
 }
 
-func (p *PushServicePushBulletArgs) fastWriteField1(buf []byte, binaryWriter bthrift.BinaryWriter) int {
+func (p *PushServicePushMessageArgs) fastWriteField1(buf []byte, binaryWriter bthrift.BinaryWriter) int {
 	offset := 0
 	offset += bthrift.Binary.WriteFieldBegin(buf[offset:], "req", thrift.STRUCT, 1)
 	offset += p.Req.FastWriteNocopy(buf[offset:], binaryWriter)
@@ -577,7 +577,7 @@ func (p *PushServicePushBulletArgs) fastWriteField1(buf []byte, binaryWriter bth
 	return offset
 }
 
-func (p *PushServicePushBulletArgs) field1Length() int {
+func (p *PushServicePushMessageArgs) field1Length() int {
 	l := 0
 	l += bthrift.Binary.FieldBeginLength("req", thrift.STRUCT, 1)
 	l += p.Req.BLength()
@@ -585,7 +585,7 @@ func (p *PushServicePushBulletArgs) field1Length() int {
 	return l
 }
 
-func (p *PushServicePushBulletResult) FastRead(buf []byte) (int, error) {
+func (p *PushServicePushMessageResult) FastRead(buf []byte) (int, error) {
 	var err error
 	var offset int
 	var l int
@@ -638,13 +638,13 @@ ReadStructEndError:
 }
 
 // for compatibility
-func (p *PushServicePushBulletResult) FastWrite(buf []byte) int {
+func (p *PushServicePushMessageResult) FastWrite(buf []byte) int {
 	return 0
 }
 
-func (p *PushServicePushBulletResult) FastWriteNocopy(buf []byte, binaryWriter bthrift.BinaryWriter) int {
+func (p *PushServicePushMessageResult) FastWriteNocopy(buf []byte, binaryWriter bthrift.BinaryWriter) int {
 	offset := 0
-	offset += bthrift.Binary.WriteStructBegin(buf[offset:], "PushBullet_result")
+	offset += bthrift.Binary.WriteStructBegin(buf[offset:], "PushMessage_result")
 	if p != nil {
 	}
 	offset += bthrift.Binary.WriteFieldStop(buf[offset:])
@@ -652,9 +652,9 @@ func (p *PushServicePushBulletResult) FastWriteNocopy(buf []byte, binaryWriter b
 	return offset
 }
 
-func (p *PushServicePushBulletResult) BLength() int {
+func (p *PushServicePushMessageResult) BLength() int {
 	l := 0
-	l += bthrift.Binary.StructBeginLength("PushBullet_result")
+	l += bthrift.Binary.StructBeginLength("PushMessage_result")
 	if p != nil {
 	}
 	l += bthrift.Binary.FieldStopLength()
@@ -662,7 +662,7 @@ func (p *PushServicePushBulletResult) BLength() int {
 	return l
 }
 
-func (p *PushServiceReceiveBulletArgs) FastRead(buf []byte) (int, error) {
+func (p *PushServiceReceiveMessageArgs) FastRead(buf []byte) (int, error) {
 	var err error
 	var offset int
 	var l int
@@ -724,7 +724,7 @@ ReadStructBeginError:
 ReadFieldBeginError:
 	return offset, thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
 ReadFieldError:
-	return offset, thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_PushServiceReceiveBulletArgs[fieldId]), err)
+	return offset, thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_PushServiceReceiveMessageArgs[fieldId]), err)
 SkipFieldError:
 	return offset, thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
 ReadFieldEndError:
@@ -733,10 +733,10 @@ ReadStructEndError:
 	return offset, thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
 }
 
-func (p *PushServiceReceiveBulletArgs) FastReadField1(buf []byte) (int, error) {
+func (p *PushServiceReceiveMessageArgs) FastReadField1(buf []byte) (int, error) {
 	offset := 0
 
-	tmp := NewReceiveBulletRequest()
+	tmp := NewReceiveMessageRequest()
 	if l, err := tmp.FastRead(buf[offset:]); err != nil {
 		return offset, err
 	} else {
@@ -747,13 +747,13 @@ func (p *PushServiceReceiveBulletArgs) FastReadField1(buf []byte) (int, error) {
 }
 
 // for compatibility
-func (p *PushServiceReceiveBulletArgs) FastWrite(buf []byte) int {
+func (p *PushServiceReceiveMessageArgs) FastWrite(buf []byte) int {
 	return 0
 }
 
-func (p *PushServiceReceiveBulletArgs) FastWriteNocopy(buf []byte, binaryWriter bthrift.BinaryWriter) int {
+func (p *PushServiceReceiveMessageArgs) FastWriteNocopy(buf []byte, binaryWriter bthrift.BinaryWriter) int {
 	offset := 0
-	offset += bthrift.Binary.WriteStructBegin(buf[offset:], "ReceiveBullet_args")
+	offset += bthrift.Binary.WriteStructBegin(buf[offset:], "ReceiveMessage_args")
 	if p != nil {
 		offset += p.fastWriteField1(buf[offset:], binaryWriter)
 	}
@@ -762,9 +762,9 @@ func (p *PushServiceReceiveBulletArgs) FastWriteNocopy(buf []byte, binaryWriter 
 	return offset
 }
 
-func (p *PushServiceReceiveBulletArgs) BLength() int {
+func (p *PushServiceReceiveMessageArgs) BLength() int {
 	l := 0
-	l += bthrift.Binary.StructBeginLength("ReceiveBullet_args")
+	l += bthrift.Binary.StructBeginLength("ReceiveMessage_args")
 	if p != nil {
 		l += p.field1Length()
 	}
@@ -773,7 +773,7 @@ func (p *PushServiceReceiveBulletArgs) BLength() int {
 	return l
 }
 
-func (p *PushServiceReceiveBulletArgs) fastWriteField1(buf []byte, binaryWriter bthrift.BinaryWriter) int {
+func (p *PushServiceReceiveMessageArgs) fastWriteField1(buf []byte, binaryWriter bthrift.BinaryWriter) int {
 	offset := 0
 	offset += bthrift.Binary.WriteFieldBegin(buf[offset:], "req", thrift.STRUCT, 1)
 	offset += p.Req.FastWriteNocopy(buf[offset:], binaryWriter)
@@ -781,7 +781,7 @@ func (p *PushServiceReceiveBulletArgs) fastWriteField1(buf []byte, binaryWriter 
 	return offset
 }
 
-func (p *PushServiceReceiveBulletArgs) field1Length() int {
+func (p *PushServiceReceiveMessageArgs) field1Length() int {
 	l := 0
 	l += bthrift.Binary.FieldBeginLength("req", thrift.STRUCT, 1)
 	l += p.Req.BLength()
@@ -789,7 +789,7 @@ func (p *PushServiceReceiveBulletArgs) field1Length() int {
 	return l
 }
 
-func (p *PushServiceReceiveBulletResult) FastRead(buf []byte) (int, error) {
+func (p *PushServiceReceiveMessageResult) FastRead(buf []byte) (int, error) {
 	var err error
 	var offset int
 	var l int
@@ -851,7 +851,7 @@ ReadStructBeginError:
 ReadFieldBeginError:
 	return offset, thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
 ReadFieldError:
-	return offset, thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_PushServiceReceiveBulletResult[fieldId]), err)
+	return offset, thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_PushServiceReceiveMessageResult[fieldId]), err)
 SkipFieldError:
 	return offset, thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
 ReadFieldEndError:
@@ -860,10 +860,10 @@ ReadStructEndError:
 	return offset, thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
 }
 
-func (p *PushServiceReceiveBulletResult) FastReadField0(buf []byte) (int, error) {
+func (p *PushServiceReceiveMessageResult) FastReadField0(buf []byte) (int, error) {
 	offset := 0
 
-	tmp := NewReceiveBulletResponse()
+	tmp := NewReceiveMessageResponse()
 	if l, err := tmp.FastRead(buf[offset:]); err != nil {
 		return offset, err
 	} else {
@@ -874,13 +874,13 @@ func (p *PushServiceReceiveBulletResult) FastReadField0(buf []byte) (int, error)
 }
 
 // for compatibility
-func (p *PushServiceReceiveBulletResult) FastWrite(buf []byte) int {
+func (p *PushServiceReceiveMessageResult) FastWrite(buf []byte) int {
 	return 0
 }
 
-func (p *PushServiceReceiveBulletResult) FastWriteNocopy(buf []byte, binaryWriter bthrift.BinaryWriter) int {
+func (p *PushServiceReceiveMessageResult) FastWriteNocopy(buf []byte, binaryWriter bthrift.BinaryWriter) int {
 	offset := 0
-	offset += bthrift.Binary.WriteStructBegin(buf[offset:], "ReceiveBullet_result")
+	offset += bthrift.Binary.WriteStructBegin(buf[offset:], "ReceiveMessage_result")
 	if p != nil {
 		offset += p.fastWriteField0(buf[offset:], binaryWriter)
 	}
@@ -889,9 +889,9 @@ func (p *PushServiceReceiveBulletResult) FastWriteNocopy(buf []byte, binaryWrite
 	return offset
 }
 
-func (p *PushServiceReceiveBulletResult) BLength() int {
+func (p *PushServiceReceiveMessageResult) BLength() int {
 	l := 0
-	l += bthrift.Binary.StructBeginLength("ReceiveBullet_result")
+	l += bthrift.Binary.StructBeginLength("ReceiveMessage_result")
 	if p != nil {
 		l += p.field0Length()
 	}
@@ -900,7 +900,7 @@ func (p *PushServiceReceiveBulletResult) BLength() int {
 	return l
 }
 
-func (p *PushServiceReceiveBulletResult) fastWriteField0(buf []byte, binaryWriter bthrift.BinaryWriter) int {
+func (p *PushServiceReceiveMessageResult) fastWriteField0(buf []byte, binaryWriter bthrift.BinaryWriter) int {
 	offset := 0
 	if p.IsSetSuccess() {
 		offset += bthrift.Binary.WriteFieldBegin(buf[offset:], "success", thrift.STRUCT, 0)
@@ -910,7 +910,7 @@ func (p *PushServiceReceiveBulletResult) fastWriteField0(buf []byte, binaryWrite
 	return offset
 }
 
-func (p *PushServiceReceiveBulletResult) field0Length() int {
+func (p *PushServiceReceiveMessageResult) field0Length() int {
 	l := 0
 	if p.IsSetSuccess() {
 		l += bthrift.Binary.FieldBeginLength("success", thrift.STRUCT, 0)
@@ -920,18 +920,18 @@ func (p *PushServiceReceiveBulletResult) field0Length() int {
 	return l
 }
 
-func (p *PushServicePushBulletArgs) GetFirstArgument() interface{} {
+func (p *PushServicePushMessageArgs) GetFirstArgument() interface{} {
 	return p.Req
 }
 
-func (p *PushServicePushBulletResult) GetResult() interface{} {
+func (p *PushServicePushMessageResult) GetResult() interface{} {
 	return nil
 }
 
-func (p *PushServiceReceiveBulletArgs) GetFirstArgument() interface{} {
+func (p *PushServiceReceiveMessageArgs) GetFirstArgument() interface{} {
 	return p.Req
 }
 
-func (p *PushServiceReceiveBulletResult) GetResult() interface{} {
+func (p *PushServiceReceiveMessageResult) GetResult() interface{} {
 	return p.Success
 }

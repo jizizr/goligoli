@@ -23,62 +23,62 @@ struct LoginResponse {
     2:string token,
 }
 
-// Bullet
+// Message
 
-struct AddBulletRequest {
+struct AddMessageRequest {
     1:required i64 live_id,
-    2:required i64 live_time,
+    2:required i8  type,
     3:required string content,
 }
 
-struct AddBulletResponse {
+struct AddMessageResponse {
     1:base.BaseResponse base_resp,
-    2:i64 bullet_id,
+    2:i64 id,
 }
 
-struct GetBulletByIDRequest {
-    1:required i64 bullet_id,
+struct GetMessageByIDRequest {
+    1:required i64 id,
 }
 
-struct GetBulletByIDResponse {
+struct GetMessageByIDResponse {
     1:base.BaseResponse base_resp,
-    2:base.Bullet bullet,
+    2:base.LiveMessage message,
 }
 
-struct GetHistoryBulletsRequest {
+struct GetHistoryMessagesRequest {
     1:required i64 live_id,
     2:required i64 start_time,
     3:required i64 offset,
 }
 
-struct GetHistoryBulletsResponse {
+struct GetHistoryMessagesResponse {
     1:base.BaseResponse base_resp,
-    2:list<base.Bullet> bullets,
+    2:list<base.LiveMessage> messages,
 }
 
-struct GetBulletRTRequest {
+struct GetMessageRTRequest {
     1:i64 live_id,
 }
 
-struct GetBulletRTResponse {
+struct GetMessageRTResponse {
     1:base.BaseResponse base_resp,
 }
 
-//struct BroadcastBulletRequest {
+//struct BroadcastMessageRequest {
 //    1:i64 live_id
-//    2:base.Bullet bullet
+//    2:base.LiveMessage message
 //}
 //
-//struct BroadcastBulletResponse{
+//struct BroadcastMessageResponse{
 //    1:base.BaseResponse base_resp
 //}
 
 service ApiService {
     RegisterResponse Register(1:RegisterRequest req)(api.post="/register"),
     LoginResponse Login(1:LoginRequest req)(api.post="/login"),
-    AddBulletResponse SendBullet(1:AddBulletRequest req)(api.post="/bullet/live"),
-    GetBulletByIDResponse GetBulletByID(1:GetBulletByIDRequest req)(api.get="/bullet/history/single"),
-    GetHistoryBulletsResponse GetHistoryBullets(1:GetHistoryBulletsRequest req)(api.get="/bullet/history/multi"),
-    GetBulletRTResponse GetBulletRT(1:GetBulletRTRequest req) (api.get="/bullet/live"),
-//    BroadcastBulletResponse BroadcastBullet(1:BroadcastBulletRequest req) (api.post="/bullet/live"),
+    AddMessageResponse SendMessage(1:AddMessageRequest req)(api.post="/message/live"),
+    GetMessageByIDResponse GetMessageByID(1:GetMessageByIDRequest req)(api.get="/message/history/single"),
+    GetHistoryMessagesResponse GetHistoryMessages(1:GetHistoryMessagesRequest req)(api.get="/message/history/multi"),
+    GetMessageRTResponse GetMessageRT(1:GetMessageRTRequest req) (api.get="/message/live"),
+//    BroadcastMessageResponse BroadcastMessage(1:BroadcastMessageRequest req) (api.post="/message/live"),
 }

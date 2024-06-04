@@ -22,17 +22,16 @@ func _registerMw() []app.HandlerFunc {
 	return nil
 }
 
-func _bulletMw() []app.HandlerFunc {
+func _messageMw() []app.HandlerFunc {
 	// your code...
 	return nil
 }
 
-func _gethistorybulletsMw() []app.HandlerFunc {
-	// your code...
-	return nil
+func _sendmessageMw() []app.HandlerFunc {
+	return []app.HandlerFunc{middleware.JWTAuth()}
 }
 
-func _sendbulletMw() []app.HandlerFunc {
+func _getmessagertMw() []app.HandlerFunc {
 	return []app.HandlerFunc{middleware.JWTAuth()}
 }
 
@@ -41,26 +40,12 @@ func _historyMw() []app.HandlerFunc {
 	return nil
 }
 
-func _multiMw() []app.HandlerFunc {
+func _gethistorymessagesMw() []app.HandlerFunc {
 	// your code...
 	return nil
 }
 
-func _singleMw() []app.HandlerFunc {
-	// your code...
-	return nil
-}
-
-func _getbulletbyidMw() []app.HandlerFunc {
-	// your code...
-	return nil
-}
-
-func _getbulletrtMw() []app.HandlerFunc {
-	return []app.HandlerFunc{middleware.JWTAuth()}
-}
-
-func _broadcastbulletMw() []app.HandlerFunc {
+func _getmessagebyidMw() []app.HandlerFunc {
 	// your code...
 	return nil
 }
