@@ -49,3 +49,12 @@ func _getmessagebyidMw() []app.HandlerFunc {
 	// your code...
 	return nil
 }
+
+func _roomMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _createliveMw() []app.HandlerFunc {
+	return []app.HandlerFunc{middleware.JWTAuth()}
+}

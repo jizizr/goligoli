@@ -38,7 +38,7 @@ func main() {
 			Topic:    "message",
 		},
 		MessageSrv: config.RPCSrvConfig{Name: consts.MessageSrv},
-		ApiSrv:     config.RPCSrvConfig{Name: consts.ApiSrv},
+		LiveSrv:    config.RPCSrvConfig{Name: consts.LiveSrv},
 	}
 	cli, err := clientv3.New(clientv3.Config{
 		Endpoints:   []string{net.JoinHostPort(etcdConf.Host, etcdConf.Port)},

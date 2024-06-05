@@ -73,6 +73,17 @@ struct GetMessageRTResponse {
 //    1:base.BaseResponse base_resp
 //}
 
+// Live
+struct CreateLiveRequest {
+    1:required string room_name,
+    2:required string description,
+}
+
+struct CreateLiveResponse {
+    1:base.BaseResponse base_resp,
+    2:i64 live_id,
+}
+
 service ApiService {
     RegisterResponse Register(1:RegisterRequest req)(api.post="/register"),
     LoginResponse Login(1:LoginRequest req)(api.post="/login"),
@@ -80,5 +91,5 @@ service ApiService {
     GetMessageByIDResponse GetMessageByID(1:GetMessageByIDRequest req)(api.get="/message/history/single"),
     GetHistoryMessagesResponse GetHistoryMessages(1:GetHistoryMessagesRequest req)(api.get="/message/history/multi"),
     GetMessageRTResponse GetMessageRT(1:GetMessageRTRequest req) (api.get="/message/live"),
-//    BroadcastMessageResponse BroadcastMessage(1:BroadcastMessageRequest req) (api.post="/message/live"),
+    CreateLiveResponse CreateLive(1:CreateLiveRequest req)(api.post="room/live"),
 }

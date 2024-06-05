@@ -37,6 +37,9 @@ func main() {
 			Password: "",
 			Name:     "goligoli",
 		},
+		LiveSrv: config.RPCSrvConfig{
+			Name: consts.LiveSrv,
+		},
 	}
 	cli, err := clientv3.New(clientv3.Config{
 		Endpoints:   []string{net.JoinHostPort(etcdConf.Host, etcdConf.Port)},

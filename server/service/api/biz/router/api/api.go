@@ -29,4 +29,8 @@ func Register(r *server.Hertz) {
 			_history.GET("/single", append(_getmessagebyidMw(), api.GetMessageByID)...)
 		}
 	}
+	{
+		_room := root.Group("/room", _roomMw()...)
+		_room.POST("/live", append(_createliveMw(), api.CreateLive)...)
+	}
 }

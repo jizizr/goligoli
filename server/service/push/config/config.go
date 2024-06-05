@@ -28,5 +28,5 @@ type Config struct {
 	Server     ServerConfig `json:"server"`
 	NsqInfo    NsqConfig    `json:"nsq"`
 	MessageSrv RPCSrvConfig `json:"message_srv"`
-	ApiSrv     RPCSrvConfig `json:"api_srv"`
+	LiveSrv    RPCSrvConfig `json:"live_srv"`
 }

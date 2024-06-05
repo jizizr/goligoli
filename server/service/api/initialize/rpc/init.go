@@ -5,4 +5,5 @@ func Init() {
 	initMessage()
 	initPush()
 	initReceiveStreamClient()
+	initLive()
 }

@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"github.com/cloudwego/kitex/pkg/klog"
+	"github.com/jizizr/goligoli/server/common/tools"
 	"github.com/jizizr/goligoli/server/kitex_gen/base"
 	"github.com/jizizr/goligoli/server/kitex_gen/push"
 	"github.com/jizizr/goligoli/server/service/push/config"
@@ -40,6 +41,10 @@ func (s *PushServiceImpl) PushMessage(ctx context.Context, req *push.PushMessage
 func (s *PushServiceImpl) ReceiveMessage(stream push.PushService_ReceiveMessageServer) (err error) {
 	rec := make(chan *base.LiveMessage)
 	req, err := stream.Recv()
+	defer stream.Close()
+	if !tools.CheckLiveRoom(req.LiveId, &config.LiveClient) {
+		return errors.New("live room not exist")
+	}
 	v, _ := config.Receiver.LoadOrStore(req.LiveId, &sync.Map{})
 	v.(*sync.Map).Store(req.UserId, rec)
 	ok := make(chan struct{})

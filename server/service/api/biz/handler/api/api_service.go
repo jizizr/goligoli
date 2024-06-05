@@ -14,6 +14,7 @@ import (
 	consts2 "github.com/jizizr/goligoli/server/common/consts"
 	"github.com/jizizr/goligoli/server/common/tools"
 	base2 "github.com/jizizr/goligoli/server/kitex_gen/base"
+	"github.com/jizizr/goligoli/server/kitex_gen/live"
 	Message "github.com/jizizr/goligoli/server/kitex_gen/message"
 	"github.com/jizizr/goligoli/server/kitex_gen/push"
 	"github.com/jizizr/goligoli/server/kitex_gen/user"
@@ -262,4 +263,36 @@ func GetMessageRT(ctx context.Context, c *app.RequestContext) {
 			break
 		}
 	}
+}
+
+// CreateLive .
+// @router room/live [POST]
+func CreateLive(ctx context.Context, c *app.RequestContext) {
+	var err error
+	var req api.CreateLiveRequest
+	err = c.BindAndValidate(&req)
+	if err != nil {
+		c.String(consts.StatusBadRequest, err.Error())
+		return
+	}
+
+	resp := new(api.CreateLiveResponse)
+	uid, _ := tools.GetUID(c)
+	res, err := global.LiveClient.CreateLiveRoom(ctx, &live.CreateLiveRoomRequest{Room: &base2.Room{
+		RoomName:     req.RoomName,
+		Introduction: req.Description,
+		Owner:        uid,
+		Cover:        "",
+	}})
+	if err != nil {
+		errno.SendResponse(c, consts2.CodeCreateLiveRoomFailed, err.Error())
+		return
+	}
+	if res.LiveId == 0 {
+		errno.SendResponse(c, consts2.CodeLiveRoomAlreadyExists, nil)
+		return
+	}
+	resp.BaseResp = SuccessBaseResponse()
+	resp.LiveID = res.LiveId
+	c.JSON(consts.StatusOK, resp)
 }

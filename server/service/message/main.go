@@ -8,6 +8,7 @@ import (
 	"github.com/jizizr/goligoli/server/service/message/config"
 	"github.com/jizizr/goligoli/server/service/message/dao"
 	"github.com/jizizr/goligoli/server/service/message/initialize"
+	"github.com/jizizr/goligoli/server/service/message/initialize/rpc"
 	"github.com/kitex-contrib/obs-opentelemetry/provider"
 	"github.com/kitex-contrib/obs-opentelemetry/tracing"
 	"log"
@@ -23,6 +24,7 @@ func main() {
 		provider.WithInsecure(),
 	)
 	defer p.Shutdown(context.Background())
+	rpc.Init()
 	svr := Message.NewServer(
 		&MessageServiceImpl{
 			dao.NewMessage(db),

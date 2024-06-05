@@ -18,6 +18,8 @@ const (
 	CodeSendMessageFailed
 	CodeGetHistoryMessagesFailed
 	CodeGetMessageByIDFailed
+	CodeCreateLiveRoomFailed
+	CodeLiveRoomAlreadyExists
 )
 
 var codeMsgMap = map[RespCode]string{
@@ -32,8 +34,10 @@ var codeMsgMap = map[RespCode]string{
 	CodeUserNotFound:             "user not found",
 	CodeWrongPassword:            "wrong password",
 	CodeSendMessageFailed:        "send message failed",
-	CodeGetHistoryMessagesFailed: "get history Messages failed",
+	CodeGetHistoryMessagesFailed: "get history messages failed",
 	CodeGetMessageByIDFailed:     "get message by id failed",
+	CodeCreateLiveRoomFailed:     "create live room failed",
+	CodeLiveRoomAlreadyExists:    "live room already exists",
 }
 
 func (code RespCode) Msg() string {

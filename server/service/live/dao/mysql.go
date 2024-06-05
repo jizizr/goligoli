@@ -52,7 +52,7 @@ func (l *Live) GetLiveRoomByID(id int64) (*base.Room, error) {
 
 func NewLive(db *gorm.DB) *Live {
 	m := db.Migrator()
-	if m.HasTable(&base.Room{}) {
+	if !m.HasTable(&base.Room{}) {
 		err := m.CreateTable(&base.Room{})
 		if err != nil {
 			panic(err)

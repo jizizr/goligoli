@@ -2,9 +2,12 @@ package main
 
 import (
 	"context"
+	"errors"
 	"github.com/cloudwego/kitex/pkg/klog"
+	"github.com/jizizr/goligoli/server/common/tools"
 	"github.com/jizizr/goligoli/server/kitex_gen/base"
 	Message "github.com/jizizr/goligoli/server/kitex_gen/message"
+	"github.com/jizizr/goligoli/server/service/api/biz/global"
 )
 
 // MessageServiceImpl implements the last service interface defined in the IDL.
@@ -20,6 +23,9 @@ type MySqlServiceImpl interface {
 
 // AddMessage implements the MessageServiceImpl interface.
 func (s *MessageServiceImpl) AddMessage(ctx context.Context, req *Message.AddMessageRequest) (err error) {
+	if !tools.CheckLiveRoom(req.Message.LiveId, &global.LiveClient) {
+		return errors.New("live room not exist")
+	}
 	err = s.CreateMessage(req.Message)
 	return
 }

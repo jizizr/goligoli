@@ -11,6 +11,7 @@ type Config struct {
 	UserSrv    RPCSrvConfig `json:"user_srv"`
 	MessageSrv RPCSrvConfig `json:"message_srv"`
 	PushSrv    RPCSrvConfig `json:"push_srv"`
+	LiveSrv    RPCSrvConfig `json:"live_srv"`
 }
 
 type RPCSrvConfig struct {

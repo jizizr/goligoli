@@ -17,6 +17,11 @@ type Config struct {
 	Name      string       `json:"name"`
 	Server    ServerConfig `json:"server"`
 	MysqlInfo MysqlConfig  `json:"mysql"`
+	LiveSrv   RPCSrvConfig `json:"live_srv"`
+}
+
+type RPCSrvConfig struct {
+	Name string `json:"name"`
 }
 
 type EtcdConfig struct {
