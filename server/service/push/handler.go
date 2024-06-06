@@ -26,11 +26,13 @@ func (s *PushServiceImpl) PushMessage(ctx context.Context, req *push.PushMessage
 	if !ok {
 		return errors.New("live not exist")
 	}
-	r.(*sync.Map).Range(func(key, value interface{}) bool {
-		rec := value.(chan *base.LiveMessage)
-		rec <- req.Message
-		return true
-	})
+	if config.Limiter.ShouldSendWord(req.Message.Content) {
+		r.(*sync.Map).Range(func(key, value interface{}) bool {
+			rec := value.(chan *base.LiveMessage)
+			rec <- req.Message
+			return true
+		})
+	}
 	err = s.PushMessageToNsq(ctx, &push.PushMessageRequest{Message: req.Message})
 	if err != nil {
 		klog.Errorf("push message to nsq failed, %v", err)
