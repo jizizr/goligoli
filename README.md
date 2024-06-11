@@ -288,14 +288,24 @@
 ### MySQL
 MySQL 是一种广泛使用的关系型数据库管理系统，主要用于存储结构化数据，支持复杂查询和事务处理。
 
+![mysql.png](static/images/mysql.png)
+
 ### Redis
 Redis 用于缓存数据，提升服务承载能力。
+
+![redis.png](static/images/redis.png)
 
 ### NSQ
 NSQ 是一个实时分布式消息队列系统，实现异步任务，减少请求时间，并实现流量削峰。
 
+![nsq.png](static/images/nsq.png)
+
 ### Jaeger
 Jaeger 是一个开源的分布式追踪系统，监控和故障排查微服务架构中的请求链路。
 
+![jaeger.png](static/images/jaeger.png)
+
 ### etcd
 etcd 是一个分布式键值存储，用于配置共享和服务发现，提供可靠的数据存储和一致性保证，使用配置中心对配置文件进行统一管理。
+
+![etcd.png](static/images/etcd.png)
