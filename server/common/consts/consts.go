@@ -10,6 +10,8 @@ const (
 	UserSnowflakeNode = iota + 1
 	MessageSnowflakeNode
 	EtcdSnowflakeNode
+	LiveSnowflakeNode
+	LotterySnowflakeNode
 )
 
 const (
@@ -18,6 +20,7 @@ const (
 	MessageServerPort
 	PushServerPort
 	LiveServerPort
+	LotteryServerPort
 )
 
 const (
@@ -26,6 +29,7 @@ const (
 	MessageSrv = "message_srv"
 	PushSrv    = "push_srv"
 	LiveSrv    = "live_srv"
+	LotterySrv = "lottery_srv"
 )
 
 const (

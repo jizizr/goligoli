@@ -58,3 +58,26 @@ func _roomMw() []app.HandlerFunc {
 func _createliveMw() []app.HandlerFunc {
 	return []app.HandlerFunc{middleware.JWTAuth()}
 }
+
+func _lotteryMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _publishlotteryMw() []app.HandlerFunc {
+	return []app.HandlerFunc{middleware.JWTAuth()}
+}
+
+func _joinlotteryMw() []app.HandlerFunc {
+	return []app.HandlerFunc{middleware.JWTAuth()}
+}
+
+func _getliveroomlotteryMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _getlotterybyidMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}

@@ -18,6 +18,11 @@ func Register(r *server.Hertz) {
 
 	root := r.Group("/", rootMw()...)
 	root.POST("/login", append(_loginMw(), api.Login)...)
+	root.POST("/lottery", append(_publishlotteryMw(), api.PublishLottery)...)
+	_lottery := root.Group("/lottery", _lotteryMw()...)
+	_lottery.POST("/entry", append(_joinlotteryMw(), api.JoinLottery)...)
+	_lottery.GET("/multi", append(_getliveroomlotteryMw(), api.GetLiveRoomLottery)...)
+	_lottery.GET("/single", append(_getlotterybyidMw(), api.GetLotteryByID)...)
 	root.POST("/register", append(_registerMw(), api.Register)...)
 	{
 		_message := root.Group("/message", _messageMw()...)

@@ -14,7 +14,7 @@ func (l *Live) AddLiveRoom(room *base.Room) (int64, error) {
 	var temp base.Room
 	err := l.db.Where("owner = ?", room.Owner).Find(&temp).Error
 
-	if err != gorm.ErrRecordNotFound || err != nil {
+	if err != gorm.ErrRecordNotFound && err != nil {
 		klog.Errorf("MySql Error in AddLiveRoom: %v", err)
 		return temp.LiveId, err
 	}

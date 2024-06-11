@@ -84,6 +84,42 @@ struct CreateLiveResponse {
     2:i64 live_id,
 }
 
+// Lottery
+struct PublishLotteryRequest {
+    1:required base.Gift gift,
+}
+
+struct PublishLotteryResponse {
+    1:base.BaseResponse base_resp,
+    2:i64 id,
+}
+
+struct GetLotteryByIDRequest {
+    1:required i64 id,
+}
+
+struct GetLotteryByIDResponse {
+    1:base.BaseResponse base_resp,
+    2:base.Gift gift,
+}
+
+struct GetLiveRoomLotteryRequest {
+    1:required i64 live_id,
+}
+
+struct GetLiveRoomLotteryResponse {
+    1:base.BaseResponse base_resp,
+    2:list<base.Gift> gifts,
+}
+
+struct JoinLotteryRequest {
+    1:required i64 lottery_id,
+}
+
+struct JoinLotteryResponse {
+    1:base.BaseResponse base_resp,
+}
+
 service ApiService {
     RegisterResponse Register(1:RegisterRequest req)(api.post="/register"),
     LoginResponse Login(1:LoginRequest req)(api.post="/login"),
@@ -91,5 +127,9 @@ service ApiService {
     GetMessageByIDResponse GetMessageByID(1:GetMessageByIDRequest req)(api.get="/message/history/single"),
     GetHistoryMessagesResponse GetHistoryMessages(1:GetHistoryMessagesRequest req)(api.get="/message/history/multi"),
     GetMessageRTResponse GetMessageRT(1:GetMessageRTRequest req) (api.get="/message/live"),
-    CreateLiveResponse CreateLive(1:CreateLiveRequest req)(api.post="room/live"),
+    CreateLiveResponse CreateLive(1:CreateLiveRequest req)(api.post="/room/live"),
+    PublishLotteryResponse PublishLottery(1:PublishLotteryRequest req)(api.post="/lottery"),
+    GetLotteryByIDResponse GetLotteryByID(1:GetLotteryByIDRequest req)(api.get="/lottery/single"),
+    GetLiveRoomLotteryResponse GetLiveRoomLottery(1:GetLiveRoomLotteryRequest req)(api.get="/lottery/multi"),
+    JoinLotteryResponse JoinLottery(1:JoinLotteryRequest req)(api.post="/lottery/entry"),
 }

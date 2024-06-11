@@ -8,13 +8,13 @@ import (
 )
 
 type Response struct {
-	Base *base.BaseResponse
-	Data interface{}
+	BaseResp *base.BaseResponse `json:"base_resp"`
+	Data     interface{}        `json:"data"`
 }
 
 func SendResponse(c *app.RequestContext, err consts.RespCode, data interface{}) {
 	c.JSON(http.StatusOK, Response{
-		Base: &base.BaseResponse{
+		BaseResp: &base.BaseResponse{
 			StatusCode: int32(err),
 			StatusMsg:  err.Msg(),
 		},

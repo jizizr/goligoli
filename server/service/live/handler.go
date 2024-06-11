@@ -22,7 +22,7 @@ type MySqlServiceImpl interface {
 // CreateLiveRoom implements the LiveServiceImpl interface.
 func (s *LiveServiceImpl) CreateLiveRoom(ctx context.Context, req *live.CreateLiveRoomRequest) (resp *live.CreateLiveRoomResponse, err error) {
 	resp = new(live.CreateLiveRoomResponse)
-	sf, err := snowflake.NewNode(consts.UserSnowflakeNode)
+	sf, err := snowflake.NewNode(consts.LiveSnowflakeNode)
 	if err != nil {
 		return
 	}

@@ -6,4 +6,5 @@ func Init() {
 	initPush()
 	initReceiveStreamClient()
 	initLive()
+	initLottery()
 }

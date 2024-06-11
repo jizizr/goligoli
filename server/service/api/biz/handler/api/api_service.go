@@ -15,6 +15,7 @@ import (
 	"github.com/jizizr/goligoli/server/common/tools"
 	base2 "github.com/jizizr/goligoli/server/kitex_gen/base"
 	"github.com/jizizr/goligoli/server/kitex_gen/live"
+	"github.com/jizizr/goligoli/server/kitex_gen/lottery"
 	Message "github.com/jizizr/goligoli/server/kitex_gen/message"
 	"github.com/jizizr/goligoli/server/kitex_gen/push"
 	"github.com/jizizr/goligoli/server/kitex_gen/user"
@@ -294,5 +295,167 @@ func CreateLive(ctx context.Context, c *app.RequestContext) {
 	}
 	resp.BaseResp = SuccessBaseResponse()
 	resp.LiveID = res.LiveId
+	c.JSON(consts.StatusOK, resp)
+}
+
+// PublishLottery .
+// @router lottery [POST]
+func PublishLottery(ctx context.Context, c *app.RequestContext) {
+	var err error
+	var req api.PublishLotteryRequest
+	err = c.BindAndValidate(&req)
+	if err != nil {
+		c.String(consts.StatusBadRequest, err.Error())
+		return
+	}
+	uid, err := tools.GetUID(c)
+	if err != nil {
+		panic(err)
+	}
+	liveMsg, err := global.LiveClient.GetLiveRoomOwner(ctx, &live.GetLiveRoomOwnerRequest{
+		LiveId: req.Gift.LiveID,
+	})
+	if err != nil {
+		errno.SendResponse(c, consts2.CodeInternalError, err.Error())
+		return
+	}
+	if uid != liveMsg.Owner {
+		errno.SendResponse(c, consts2.CodeNoLiveRoomRight, "you are not the owner of the live room")
+		return
+	}
+	resp := new(api.PublishLotteryResponse)
+	res, err := global.LotteryClient.SetLottery(ctx, &lottery.SetLotteryRequest{
+		Gift: &base2.Gift{
+			LiveId:  req.Gift.LiveID,
+			Gift:    req.Gift.Gift,
+			Count:   req.Gift.Count,
+			EndTime: req.Gift.EndTime,
+		},
+	})
+	if err != nil {
+		errno.SendResponse(c, consts2.CodeInternalError, err.Error())
+		return
+	}
+	resp.BaseResp = SuccessBaseResponse()
+	resp.ID = res.Id
+	c.JSON(consts.StatusOK, resp)
+}
+
+// GetLotteryByID .
+// @router lottery/single [GET]
+func GetLotteryByID(ctx context.Context, c *app.RequestContext) {
+	var err error
+	var req api.GetLotteryByIDRequest
+	err = c.BindAndValidate(&req)
+	if err != nil {
+		c.String(consts.StatusBadRequest, err.Error())
+		return
+	}
+
+	resp := new(api.GetLotteryByIDResponse)
+	res, err := global.LotteryClient.GetLottery(ctx, &lottery.GetLotteryRequest{
+		Id: req.ID,
+	})
+	if err != nil {
+		errno.SendResponse(c, consts2.CodeInternalError, err.Error())
+		return
+	}
+	resp.BaseResp = SuccessBaseResponse()
+	if res.Gift == nil {
+		resp.Gift = nil
+	} else {
+		resp.Gift = &base.Gift{
+			ID:      res.Gift.Id,
+			LiveID:  res.Gift.LiveId,
+			Gift:    res.Gift.Gift,
+			Count:   res.Gift.Count,
+			EndTime: res.Gift.EndTime,
+		}
+	}
+	c.JSON(consts.StatusOK, resp)
+}
+
+// GetLiveRoomLottery .
+// @router lottery/multi [GET]
+func GetLiveRoomLottery(ctx context.Context, c *app.RequestContext) {
+	var err error
+	var req api.GetLiveRoomLotteryRequest
+	err = c.BindAndValidate(&req)
+	if err != nil {
+		c.String(consts.StatusBadRequest, err.Error())
+		return
+	}
+
+	resp := new(api.GetLiveRoomLotteryResponse)
+	liveMsg, err := global.LiveClient.GetLiveRoomOwner(ctx, &live.GetLiveRoomOwnerRequest{
+		LiveId: req.LiveID,
+	})
+	if err != nil {
+		errno.SendResponse(c, consts2.CodeInternalError, err.Error())
+		return
+	}
+	if liveMsg == nil {
+		errno.SendResponse(c, consts2.CodeNoLiveRoomRight, "live room not found")
+		return
+	}
+	res, err := global.LotteryClient.GetLiveRoomLottery(ctx, &lottery.GetLiveRoomLotteryRequest{
+		LiveId: req.LiveID,
+	})
+	if err != nil {
+		errno.SendResponse(c, consts2.CodeInternalError, err.Error())
+		return
+	}
+	resp.BaseResp = SuccessBaseResponse()
+	if res.Gifts == nil {
+		resp.Gifts = nil
+	} else {
+		for _, b := range res.Gifts {
+			resp.Gifts = append(resp.Gifts, &base.Gift{
+				ID:      b.Id,
+				LiveID:  b.LiveId,
+				Gift:    b.Gift,
+				Count:   b.Count,
+				EndTime: b.EndTime,
+			})
+		}
+	}
+	c.JSON(consts.StatusOK, resp)
+}
+
+// JoinLottery .
+// @router lottery/entry [POST]
+func JoinLottery(ctx context.Context, c *app.RequestContext) {
+	var err error
+	var req api.JoinLotteryRequest
+	err = c.BindAndValidate(&req)
+	if err != nil {
+		c.String(consts.StatusBadRequest, err.Error())
+		return
+	}
+	uid, err := tools.GetUID(c)
+	if err != nil {
+		panic(err)
+	}
+	lot, err := global.LotteryClient.GetLottery(ctx, &lottery.GetLotteryRequest{
+		Id: req.LotteryID,
+	})
+	if err != nil {
+		errno.SendResponse(c, consts2.CodeInternalError, err.Error())
+		return
+	}
+	if lot == nil {
+		errno.SendResponse(c, consts2.CodeLotteryNotFound, nil)
+		return
+	}
+	resp := new(api.JoinLotteryResponse)
+	_, err = global.LotteryClient.JoinLottery(ctx, &lottery.JoinLotteryRequest{
+		Id:  req.LotteryID,
+		Uid: uid,
+	})
+	if err != nil {
+		errno.SendResponse(c, consts2.CodeInternalError, err.Error())
+		return
+	}
+	resp.BaseResp = SuccessBaseResponse()
 	c.JSON(consts.StatusOK, resp)
 }

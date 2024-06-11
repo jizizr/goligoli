@@ -20,3 +20,11 @@ struct Room{
     4:i64 owner,
     5:string cover,
 }
+
+struct Gift{
+    1:i64 id (go.tag = "gorm:\"primaryKey;autoIncrement:false\"")
+    2:required i64 live_id (go.tag = "gorm:\"index\"")
+    3:required string gift
+    4:required i32 count
+    5:required i32 end_time
+}
