@@ -21,6 +21,7 @@ const (
 	PushServerPort
 	LiveServerPort
 	LotteryServerPort
+	DelayServerPort
 )
 
 const (
@@ -30,10 +31,13 @@ const (
 	PushSrv    = "push_srv"
 	LiveSrv    = "live_srv"
 	LotterySrv = "lottery_srv"
+	DelaySrv   = "delay_srv"
 )
 
 const (
 	BULLET = iota
 	GIFT
 	SUPERMSG
+	LOTTERY
+	WINNERS
 )

@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/bytedance/sonic"
 	"github.com/jizizr/goligoli/server/common/consts"
-	"github.com/jizizr/goligoli/server/service/lottery/config"
+	"github.com/jizizr/goligoli/server/service/delay/config"
 	"github.com/spf13/viper"
 	"go.etcd.io/etcd/client/v3"
 	"log"
@@ -25,10 +25,10 @@ func main() {
 		panic("viper unmarshal config failed, err: " + err.Error())
 	}
 	c := config.Config{
-		Name: consts.LotterySrv,
+		Name: consts.DelaySrv,
 		Server: config.ServerConfig{
 			Host: "127.0.0.1",
-			Port: consts.LotteryServerPort,
+			Port: consts.DelayServerPort,
 		},
 		MysqlInfo: config.MysqlConfig{
 			Host:     "127.0.0.1",
@@ -48,13 +48,10 @@ func main() {
 			Port:     4150,
 			User:     "",
 			Password: "",
-			Topic:    "lottery",
+			Topic:    "delay",
 		},
-		DelaySrv: config.RPCSrvConfig{
-			Name: consts.DelaySrv,
-		},
-		PushSrv: config.RPCSrvConfig{
-			Name: consts.PushSrv,
+		LotterySrv: config.RPCSrvConfig{
+			Name: consts.LotterySrv,
 		},
 	}
 	cli, err := clientv3.New(clientv3.Config{

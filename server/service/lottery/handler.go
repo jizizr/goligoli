@@ -2,11 +2,17 @@ package main
 
 import (
 	"context"
+	"errors"
 	"github.com/bwmarrin/snowflake"
+	"github.com/bytedance/sonic"
 	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/jizizr/goligoli/server/common/consts"
 	"github.com/jizizr/goligoli/server/kitex_gen/base"
+	"github.com/jizizr/goligoli/server/kitex_gen/delay"
 	"github.com/jizizr/goligoli/server/kitex_gen/lottery"
+	"github.com/jizizr/goligoli/server/kitex_gen/push"
+	"github.com/jizizr/goligoli/server/service/lottery/config"
+	"time"
 )
 
 // LotteryServiceImpl implements the last service interface defined in the IDL.
@@ -43,12 +49,38 @@ type NsqServiceImpl interface {
 
 // SetLottery implements the LotteryServiceImpl interface.
 func (s *LotteryServiceImpl) SetLottery(ctx context.Context, req *lottery.SetLotteryRequest) (resp *lottery.SetLotteryResponse, err error) {
+	if req.Gift.EndTime <= time.Now().Unix() {
+		return nil, errors.New("end time should be greater than now")
+	}
 	sf, err := snowflake.NewNode(consts.LotterySnowflakeNode)
 	if err != nil {
 		return nil, err
 	}
 	req.Gift.Id = sf.Generate().Int64()
 	if err := s.SetLotteryCache(ctx, req.Gift); err != nil {
+		return nil, err
+	}
+	err = config.DelayClient.DelayTask(
+		ctx,
+		&delay.DelayTaskRequest{
+			Id:      req.Gift.Id,
+			EndTime: req.Gift.EndTime,
+		},
+	)
+	if err != nil {
+		return nil, err
+	}
+	err = config.PushClient.PushMessage(ctx, &push.PushMessageRequest{
+		Message: &base.LiveMessage{
+			Type:     consts.LOTTERY,
+			Id:       req.Gift.Id,
+			LiveId:   req.Gift.LiveId,
+			LiveTime: 0, //TODO
+			SendTime: time.Now().Unix(),
+			Content:  req.Gift.Gift,
+		},
+	})
+	if err != nil {
 		return nil, err
 	}
 	if err := s.SetLotteryDB(req.Gift); err != nil {
@@ -109,7 +141,14 @@ func (s *LotteryServiceImpl) GetLiveRoomLottery(ctx context.Context, req *lotter
 
 // DrawLottery implements the LotteryServiceImpl interface.
 func (s *LotteryServiceImpl) DrawLottery(ctx context.Context, req *lottery.DrawLotteryRequest) (resp *lottery.DrawLotteryResponse, err error) {
-	winners, err := s.DrawLotteryCache(ctx, req.Id, req.Count)
+	lot, err := s.GetLottery(ctx, &lottery.GetLotteryRequest{Id: req.Id})
+	if err != nil {
+		return
+	}
+	if lot.Gift == nil {
+		return nil, errors.New("lottery not exist")
+	}
+	winners, err := s.DrawLotteryCache(ctx, req.Id, lot.Gift.Count)
 	if err != nil {
 		return
 	}
@@ -117,6 +156,20 @@ func (s *LotteryServiceImpl) DrawLottery(ctx context.Context, req *lottery.DrawL
 	if winners == nil {
 		resp.Msg = "no joiners"
 		return
+	}
+	winnersRaw, _ := sonic.Marshal(winners)
+	err = config.PushClient.PushMessage(ctx, &push.PushMessageRequest{
+		Message: &base.LiveMessage{
+			Type:     consts.WINNERS,
+			Id:       req.Id,
+			LiveId:   lot.Gift.LiveId,
+			LiveTime: 0, //TODO
+			SendTime: time.Now().Unix(),
+			Content:  string(winnersRaw),
+		},
+	})
+	if err != nil {
+		return nil, err
 	}
 	if err = s.AddWinnersCache(ctx, req.Id, winners); err != nil {
 		klog.Errorf("failed to add winners: %v", err)

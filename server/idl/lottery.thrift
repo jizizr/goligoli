@@ -37,7 +37,6 @@ struct GetLiveRoomLotteryResponse {
 
 struct DrawLotteryRequest {
     1:i64 id
-    2:i32 count
 }
 
 struct DrawLotteryResponse {

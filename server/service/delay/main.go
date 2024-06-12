@@ -5,20 +5,20 @@ import (
 	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/cloudwego/kitex/pkg/rpcinfo"
 	"github.com/cloudwego/kitex/server"
-	lottery "github.com/jizizr/goligoli/server/kitex_gen/lottery/lotteryservice"
-	"github.com/jizizr/goligoli/server/service/lottery/config"
-	"github.com/jizizr/goligoli/server/service/lottery/dao"
-	"github.com/jizizr/goligoli/server/service/lottery/initialize"
-	"github.com/jizizr/goligoli/server/service/lottery/initialize/rpc"
-	"github.com/jizizr/goligoli/server/service/lottery/mq"
+	delay "github.com/jizizr/goligoli/server/kitex_gen/delay/delaytaskservice"
+	"github.com/jizizr/goligoli/server/service/delay/config"
+	"github.com/jizizr/goligoli/server/service/delay/dqueue"
+	"github.com/jizizr/goligoli/server/service/delay/initialize"
+	"github.com/jizizr/goligoli/server/service/delay/initialize/rpc"
+	"github.com/jizizr/goligoli/server/service/delay/mq"
 	"github.com/kitex-contrib/obs-opentelemetry/provider"
 	"github.com/kitex-contrib/obs-opentelemetry/tracing"
 	"log"
+	"time"
 )
 
 func main() {
 	initialize.InitConfig()
-	db := initialize.InitMySql()
 	rd := initialize.InitRedis()
 	publisher := initialize.InitProducer()
 	subscriber := initialize.InitConsumer()
@@ -30,20 +30,20 @@ func main() {
 		provider.WithInsecure(),
 	)
 	defer p.Shutdown(context.Background())
-	config.WinnerDB = dao.NewWinner(db)
 	go func() {
 		MessageSub := mq.NewSubscriberManager(subscriber)
-		err := MessageSub.SubscribeFromNsq(mq.HandleWinnersFunc)
+		err := MessageSub.SubscribeFromNsq(mq.HandleMessage)
 		if err != nil {
 			klog.Error(err)
 		}
 	}()
-	svr := lottery.NewServer(
-		&LotteryServiceImpl{
-			config.WinnerDB,
-			dao.NewLottery(db),
-			dao.NewLotteryRedis(rd),
-			mq.NewPublisherManager(publisher),
+	pub := mq.NewPublisherManager(publisher)
+	dq := dqueue.NewDelayQueue("lottery", time.Second, rd, pub.PushToNsq)
+	dq.Start()
+	defer dq.Stop()
+	svr := delay.NewServer(
+		&DelayTaskServiceImpl{
+			dq,
 		},
 		server.WithServiceAddr(info.Addr),
 		server.WithRegistry(r),
@@ -53,7 +53,6 @@ func main() {
 			ServiceName: config.GlobalServerConfig.Name,
 		}),
 	)
-
 	err := svr.Run()
 
 	if err != nil {

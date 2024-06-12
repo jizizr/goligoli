@@ -2,7 +2,7 @@ package initialize
 
 import (
 	"fmt"
-	"github.com/jizizr/goligoli/server/service/lottery/config"
+	"github.com/jizizr/goligoli/server/service/delay/config"
 	"github.com/nsqio/go-nsq"
 )
 

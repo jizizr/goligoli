@@ -1154,7 +1154,7 @@ type Gift struct {
 	LiveId  int64  `thrift:"live_id,2,required" frugal:"2,required,i64" gorm:"index"`
 	Gift    string `thrift:"gift,3,required" frugal:"3,required,string" json:"gift"`
 	Count   int32  `thrift:"count,4,required" frugal:"4,required,i32" json:"count"`
-	EndTime int32  `thrift:"end_time,5,required" frugal:"5,required,i32" json:"end_time"`
+	EndTime int64  `thrift:"end_time,5,required" frugal:"5,required,i64" json:"end_time"`
 }
 
 func NewGift() *Gift {
@@ -1181,7 +1181,7 @@ func (p *Gift) GetCount() (v int32) {
 	return p.Count
 }
 
-func (p *Gift) GetEndTime() (v int32) {
+func (p *Gift) GetEndTime() (v int64) {
 	return p.EndTime
 }
 func (p *Gift) SetId(val int64) {
@@ -1196,7 +1196,7 @@ func (p *Gift) SetGift(val string) {
 func (p *Gift) SetCount(val int32) {
 	p.Count = val
 }
-func (p *Gift) SetEndTime(val int32) {
+func (p *Gift) SetEndTime(val int64) {
 	p.EndTime = val
 }
 
@@ -1267,7 +1267,7 @@ func (p *Gift) Read(iprot thrift.TProtocol) (err error) {
 				goto SkipFieldError
 			}
 		case 5:
-			if fieldTypeId == thrift.I32 {
+			if fieldTypeId == thrift.I64 {
 				if err = p.ReadField5(iprot); err != nil {
 					goto ReadFieldError
 				}
@@ -1371,8 +1371,8 @@ func (p *Gift) ReadField4(iprot thrift.TProtocol) error {
 }
 func (p *Gift) ReadField5(iprot thrift.TProtocol) error {
 
-	var _field int32
-	if v, err := iprot.ReadI32(); err != nil {
+	var _field int64
+	if v, err := iprot.ReadI64(); err != nil {
 		return err
 	} else {
 		_field = v
@@ -1494,10 +1494,10 @@ WriteFieldEndError:
 }
 
 func (p *Gift) writeField5(oprot thrift.TProtocol) (err error) {
-	if err = oprot.WriteFieldBegin("end_time", thrift.I32, 5); err != nil {
+	if err = oprot.WriteFieldBegin("end_time", thrift.I64, 5); err != nil {
 		goto WriteFieldBeginError
 	}
-	if err := oprot.WriteI32(p.EndTime); err != nil {
+	if err := oprot.WriteI64(p.EndTime); err != nil {
 		return err
 	}
 	if err = oprot.WriteFieldEnd(); err != nil {
@@ -1570,7 +1570,7 @@ func (p *Gift) Field4DeepEqual(src int32) bool {
 	}
 	return true
 }
-func (p *Gift) Field5DeepEqual(src int32) bool {
+func (p *Gift) Field5DeepEqual(src int64) bool {
 
 	if p.EndTime != src {
 		return false

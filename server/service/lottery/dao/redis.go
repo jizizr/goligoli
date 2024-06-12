@@ -46,13 +46,13 @@ func (l *LotteryRedis) GetLotteryCache(ctx context.Context, lotteryID int64) (in
 	}
 	liveId, _ := strconv.ParseInt(res["live_id"], 10, 64)
 	count, _ := strconv.Atoi(res["count"])
-	endTime, _ := strconv.Atoi(res["end_time"])
+	endTime, _ := strconv.ParseInt(res["end_time"], 10, 64)
 	info = &base.Gift{
 		Id:      lotteryID,
 		LiveId:  liveId,
 		Gift:    res["gift"],
 		Count:   int32(count),
-		EndTime: int32(endTime),
+		EndTime: endTime,
 	}
 	return
 }
@@ -96,7 +96,11 @@ func (l *LotteryRedis) DrawLotteryCache(ctx context.Context, lotteryID int64, co
 }
 
 func (l *LotteryRedis) AddWinnersCache(ctx context.Context, lotteryID int64, winners []int64) error {
-	err := l.client.SAdd(ctx, fmt.Sprintf("lo:w:%d", lotteryID), winners).Err()
+	winnersRaw := make([]interface{}, len(winners))
+	for i, winner := range winners {
+		winnersRaw[i] = winner
+	}
+	err := l.client.SAdd(ctx, fmt.Sprintf("lo:w:%d", lotteryID), winnersRaw...).Err()
 	if err != nil {
 		klog.Errorf("failed to add winners: %v", err)
 	}

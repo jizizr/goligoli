@@ -1167,20 +1167,6 @@ func (p *DrawLotteryRequest) FastRead(buf []byte) (int, error) {
 					goto SkipFieldError
 				}
 			}
-		case 2:
-			if fieldTypeId == thrift.I32 {
-				l, err = p.FastReadField2(buf[offset:])
-				offset += l
-				if err != nil {
-					goto ReadFieldError
-				}
-			} else {
-				l, err = bthrift.Binary.Skip(buf[offset:], fieldTypeId)
-				offset += l
-				if err != nil {
-					goto SkipFieldError
-				}
-			}
 		default:
 			l, err = bthrift.Binary.Skip(buf[offset:], fieldTypeId)
 			offset += l
@@ -1230,20 +1216,6 @@ func (p *DrawLotteryRequest) FastReadField1(buf []byte) (int, error) {
 	return offset, nil
 }
 
-func (p *DrawLotteryRequest) FastReadField2(buf []byte) (int, error) {
-	offset := 0
-
-	if v, l, err := bthrift.Binary.ReadI32(buf[offset:]); err != nil {
-		return offset, err
-	} else {
-		offset += l
-
-		p.Count = v
-
-	}
-	return offset, nil
-}
-
 // for compatibility
 func (p *DrawLotteryRequest) FastWrite(buf []byte) int {
 	return 0
@@ -1254,7 +1226,6 @@ func (p *DrawLotteryRequest) FastWriteNocopy(buf []byte, binaryWriter bthrift.Bi
 	offset += bthrift.Binary.WriteStructBegin(buf[offset:], "DrawLotteryRequest")
 	if p != nil {
 		offset += p.fastWriteField1(buf[offset:], binaryWriter)
-		offset += p.fastWriteField2(buf[offset:], binaryWriter)
 	}
 	offset += bthrift.Binary.WriteFieldStop(buf[offset:])
 	offset += bthrift.Binary.WriteStructEnd(buf[offset:])
@@ -1266,7 +1237,6 @@ func (p *DrawLotteryRequest) BLength() int {
 	l += bthrift.Binary.StructBeginLength("DrawLotteryRequest")
 	if p != nil {
 		l += p.field1Length()
-		l += p.field2Length()
 	}
 	l += bthrift.Binary.FieldStopLength()
 	l += bthrift.Binary.StructEndLength()
@@ -1282,28 +1252,10 @@ func (p *DrawLotteryRequest) fastWriteField1(buf []byte, binaryWriter bthrift.Bi
 	return offset
 }
 
-func (p *DrawLotteryRequest) fastWriteField2(buf []byte, binaryWriter bthrift.BinaryWriter) int {
-	offset := 0
-	offset += bthrift.Binary.WriteFieldBegin(buf[offset:], "count", thrift.I32, 2)
-	offset += bthrift.Binary.WriteI32(buf[offset:], p.Count)
-
-	offset += bthrift.Binary.WriteFieldEnd(buf[offset:])
-	return offset
-}
-
 func (p *DrawLotteryRequest) field1Length() int {
 	l := 0
 	l += bthrift.Binary.FieldBeginLength("id", thrift.I64, 1)
 	l += bthrift.Binary.I64Length(p.Id)
-
-	l += bthrift.Binary.FieldEndLength()
-	return l
-}
-
-func (p *DrawLotteryRequest) field2Length() int {
-	l := 0
-	l += bthrift.Binary.FieldBeginLength("count", thrift.I32, 2)
-	l += bthrift.Binary.I32Length(p.Count)
 
 	l += bthrift.Binary.FieldEndLength()
 	return l

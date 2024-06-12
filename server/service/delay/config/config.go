@@ -33,13 +33,12 @@ type RPCSrvConfig struct {
 }
 
 type Config struct {
-	Name      string       `json:"name"`
-	Server    ServerConfig `json:"server"`
-	MysqlInfo MysqlConfig  `json:"mysql"`
-	RedisInfo RedisConfig  `json:"redis"`
-	NsqInfo   NsqConfig    `json:"nsq"`
-	DelaySrv  RPCSrvConfig `json:"delay_srv"`
-	PushSrv   RPCSrvConfig `json:"push_srv"`
+	Name       string       `json:"name"`
+	Server     ServerConfig `json:"server"`
+	MysqlInfo  MysqlConfig  `json:"mysql"`
+	RedisInfo  RedisConfig  `json:"redis"`
+	NsqInfo    NsqConfig    `json:"nsq"`
+	LotterySrv RPCSrvConfig `json:"lottery_srv"`
 }
 
 type EtcdConfig struct {

@@ -1027,7 +1027,7 @@ func (p *Gift) FastRead(buf []byte) (int, error) {
 				}
 			}
 		case 5:
-			if fieldTypeId == thrift.I32 {
+			if fieldTypeId == thrift.I64 {
 				l, err = p.FastReadField5(buf[offset:])
 				offset += l
 				if err != nil {
@@ -1156,7 +1156,7 @@ func (p *Gift) FastReadField4(buf []byte) (int, error) {
 func (p *Gift) FastReadField5(buf []byte) (int, error) {
 	offset := 0
 
-	if v, l, err := bthrift.Binary.ReadI32(buf[offset:]); err != nil {
+	if v, l, err := bthrift.Binary.ReadI64(buf[offset:]); err != nil {
 		return offset, err
 	} else {
 		offset += l
@@ -1240,8 +1240,8 @@ func (p *Gift) fastWriteField4(buf []byte, binaryWriter bthrift.BinaryWriter) in
 
 func (p *Gift) fastWriteField5(buf []byte, binaryWriter bthrift.BinaryWriter) int {
 	offset := 0
-	offset += bthrift.Binary.WriteFieldBegin(buf[offset:], "end_time", thrift.I32, 5)
-	offset += bthrift.Binary.WriteI32(buf[offset:], p.EndTime)
+	offset += bthrift.Binary.WriteFieldBegin(buf[offset:], "end_time", thrift.I64, 5)
+	offset += bthrift.Binary.WriteI64(buf[offset:], p.EndTime)
 
 	offset += bthrift.Binary.WriteFieldEnd(buf[offset:])
 	return offset
@@ -1285,8 +1285,8 @@ func (p *Gift) field4Length() int {
 
 func (p *Gift) field5Length() int {
 	l := 0
-	l += bthrift.Binary.FieldBeginLength("end_time", thrift.I32, 5)
-	l += bthrift.Binary.I32Length(p.EndTime)
+	l += bthrift.Binary.FieldBeginLength("end_time", thrift.I64, 5)
+	l += bthrift.Binary.I64Length(p.EndTime)
 
 	l += bthrift.Binary.FieldEndLength()
 	return l

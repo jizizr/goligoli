@@ -929,7 +929,7 @@ type Gift struct {
 	LiveID  int64  `thrift:"live_id,2,required" gorm:"index" form:"live_id,required" json:"live_id,required" query:"live_id,required"`
 	Gift    string `thrift:"gift,3,required" form:"gift,required" json:"gift,required" query:"gift,required"`
 	Count   int32  `thrift:"count,4,required" form:"count,required" json:"count,required" query:"count,required"`
-	EndTime int32  `thrift:"end_time,5,required" form:"end_time,required" json:"end_time,required" query:"end_time,required"`
+	EndTime int64  `thrift:"end_time,5,required" form:"end_time,required" json:"end_time,required" query:"end_time,required"`
 }
 
 func NewGift() *Gift {
@@ -952,7 +952,7 @@ func (p *Gift) GetCount() (v int32) {
 	return p.Count
 }
 
-func (p *Gift) GetEndTime() (v int32) {
+func (p *Gift) GetEndTime() (v int64) {
 	return p.EndTime
 }
 
@@ -1023,7 +1023,7 @@ func (p *Gift) Read(iprot thrift.TProtocol) (err error) {
 				goto SkipFieldError
 			}
 		case 5:
-			if fieldTypeId == thrift.I32 {
+			if fieldTypeId == thrift.I64 {
 				if err = p.ReadField5(iprot); err != nil {
 					goto ReadFieldError
 				}
@@ -1127,8 +1127,8 @@ func (p *Gift) ReadField4(iprot thrift.TProtocol) error {
 }
 func (p *Gift) ReadField5(iprot thrift.TProtocol) error {
 
-	var _field int32
-	if v, err := iprot.ReadI32(); err != nil {
+	var _field int64
+	if v, err := iprot.ReadI64(); err != nil {
 		return err
 	} else {
 		_field = v
@@ -1250,10 +1250,10 @@ WriteFieldEndError:
 }
 
 func (p *Gift) writeField5(oprot thrift.TProtocol) (err error) {
-	if err = oprot.WriteFieldBegin("end_time", thrift.I32, 5); err != nil {
+	if err = oprot.WriteFieldBegin("end_time", thrift.I64, 5); err != nil {
 		goto WriteFieldBeginError
 	}
-	if err := oprot.WriteI32(p.EndTime); err != nil {
+	if err := oprot.WriteI64(p.EndTime); err != nil {
 		return err
 	}
 	if err = oprot.WriteFieldEnd(); err != nil {

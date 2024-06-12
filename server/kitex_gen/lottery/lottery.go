@@ -1419,8 +1419,7 @@ func (p *GetLiveRoomLotteryResponse) Field2DeepEqual(src []*base.Gift) bool {
 }
 
 type DrawLotteryRequest struct {
-	Id    int64 `thrift:"id,1" frugal:"1,default,i64" json:"id"`
-	Count int32 `thrift:"count,2" frugal:"2,default,i32" json:"count"`
+	Id int64 `thrift:"id,1" frugal:"1,default,i64" json:"id"`
 }
 
 func NewDrawLotteryRequest() *DrawLotteryRequest {
@@ -1434,20 +1433,12 @@ func (p *DrawLotteryRequest) InitDefault() {
 func (p *DrawLotteryRequest) GetId() (v int64) {
 	return p.Id
 }
-
-func (p *DrawLotteryRequest) GetCount() (v int32) {
-	return p.Count
-}
 func (p *DrawLotteryRequest) SetId(val int64) {
 	p.Id = val
-}
-func (p *DrawLotteryRequest) SetCount(val int32) {
-	p.Count = val
 }
 
 var fieldIDToName_DrawLotteryRequest = map[int16]string{
 	1: "id",
-	2: "count",
 }
 
 func (p *DrawLotteryRequest) Read(iprot thrift.TProtocol) (err error) {
@@ -1472,14 +1463,6 @@ func (p *DrawLotteryRequest) Read(iprot thrift.TProtocol) (err error) {
 		case 1:
 			if fieldTypeId == thrift.I64 {
 				if err = p.ReadField1(iprot); err != nil {
-					goto ReadFieldError
-				}
-			} else if err = iprot.Skip(fieldTypeId); err != nil {
-				goto SkipFieldError
-			}
-		case 2:
-			if fieldTypeId == thrift.I32 {
-				if err = p.ReadField2(iprot); err != nil {
 					goto ReadFieldError
 				}
 			} else if err = iprot.Skip(fieldTypeId); err != nil {
@@ -1525,17 +1508,6 @@ func (p *DrawLotteryRequest) ReadField1(iprot thrift.TProtocol) error {
 	p.Id = _field
 	return nil
 }
-func (p *DrawLotteryRequest) ReadField2(iprot thrift.TProtocol) error {
-
-	var _field int32
-	if v, err := iprot.ReadI32(); err != nil {
-		return err
-	} else {
-		_field = v
-	}
-	p.Count = _field
-	return nil
-}
 
 func (p *DrawLotteryRequest) Write(oprot thrift.TProtocol) (err error) {
 	var fieldId int16
@@ -1545,10 +1517,6 @@ func (p *DrawLotteryRequest) Write(oprot thrift.TProtocol) (err error) {
 	if p != nil {
 		if err = p.writeField1(oprot); err != nil {
 			fieldId = 1
-			goto WriteFieldError
-		}
-		if err = p.writeField2(oprot); err != nil {
-			fieldId = 2
 			goto WriteFieldError
 		}
 	}
@@ -1586,23 +1554,6 @@ WriteFieldEndError:
 	return thrift.PrependError(fmt.Sprintf("%T write field 1 end error: ", p), err)
 }
 
-func (p *DrawLotteryRequest) writeField2(oprot thrift.TProtocol) (err error) {
-	if err = oprot.WriteFieldBegin("count", thrift.I32, 2); err != nil {
-		goto WriteFieldBeginError
-	}
-	if err := oprot.WriteI32(p.Count); err != nil {
-		return err
-	}
-	if err = oprot.WriteFieldEnd(); err != nil {
-		goto WriteFieldEndError
-	}
-	return nil
-WriteFieldBeginError:
-	return thrift.PrependError(fmt.Sprintf("%T write field 2 begin error: ", p), err)
-WriteFieldEndError:
-	return thrift.PrependError(fmt.Sprintf("%T write field 2 end error: ", p), err)
-}
-
 func (p *DrawLotteryRequest) String() string {
 	if p == nil {
 		return "<nil>"
@@ -1620,22 +1571,12 @@ func (p *DrawLotteryRequest) DeepEqual(ano *DrawLotteryRequest) bool {
 	if !p.Field1DeepEqual(ano.Id) {
 		return false
 	}
-	if !p.Field2DeepEqual(ano.Count) {
-		return false
-	}
 	return true
 }
 
 func (p *DrawLotteryRequest) Field1DeepEqual(src int64) bool {
 
 	if p.Id != src {
-		return false
-	}
-	return true
-}
-func (p *DrawLotteryRequest) Field2DeepEqual(src int32) bool {
-
-	if p.Count != src {
 		return false
 	}
 	return true

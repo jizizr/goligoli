@@ -29,7 +29,7 @@ func InitRegistry() (registry.Registry, *registry.Info) {
 	}
 	info := &registry.Info{
 		ServiceName: config.GlobalServerConfig.Name,
-		Addr:        utils.NewNetAddr("tcp", net.JoinHostPort("127.0.0.1", strconv.Itoa(consts.LiveServerPort))),
+		Addr:        utils.NewNetAddr("tcp", net.JoinHostPort("127.0.0.1", strconv.Itoa(config.GlobalServerConfig.Server.Port))),
 		Tags: map[string]string{
 			"ID": sf.Generate().Base36(),
 		},

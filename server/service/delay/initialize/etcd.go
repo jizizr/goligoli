@@ -6,7 +6,7 @@ import (
 	"github.com/cloudwego/kitex/pkg/registry"
 	"github.com/cloudwego/kitex/pkg/utils"
 	"github.com/jizizr/goligoli/server/common/consts"
-	"github.com/jizizr/goligoli/server/service/user/config"
+	"github.com/jizizr/goligoli/server/service/delay/config"
 	etcd "github.com/kitex-contrib/registry-etcd"
 	"net"
 	"strconv"
