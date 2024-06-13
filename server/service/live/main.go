@@ -16,6 +16,7 @@ import (
 func main() {
 	initialize.InitConfig()
 	db := initialize.InitDB()
+	rd := initialize.InitRedis()
 	r, info := initialize.InitRegistry()
 	p := provider.NewOpenTelemetryProvider(
 		provider.WithServiceName(config.GlobalServerConfig.Name),
@@ -24,7 +25,10 @@ func main() {
 	)
 	defer p.Shutdown(context.Background())
 	svr := live.NewServer(
-		&LiveServiceImpl{dao.NewLive(db)},
+		&LiveServiceImpl{
+			dao.NewLive(db),
+			dao.NewLiveRedis(rd),
+		},
 		server.WithServiceAddr(info.Addr),
 		server.WithRegistry(r),
 		server.WithRegistryInfo(info),

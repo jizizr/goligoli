@@ -37,6 +37,12 @@ func main() {
 			Password: "",
 			Name:     "goligoli",
 		},
+		RedisInfo: config.RedisConfig{
+			Host:     "127.0.0.1",
+			Port:     6379,
+			Password: "",
+			DB:       0,
+		},
 	}
 	cli, err := clientv3.New(clientv3.Config{
 		Endpoints:   []string{net.JoinHostPort(etcdConf.Host, etcdConf.Port)},
