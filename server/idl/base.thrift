@@ -19,6 +19,7 @@ struct Room{
     3:string introduction,
     4:i64 owner,
     5:string cover,
+    6:i64 start_time,
 }
 
 struct Gift{

@@ -13,6 +13,7 @@ import (
 type Client interface {
 	CreateLiveRoom(ctx context.Context, req *live.CreateLiveRoomRequest, callOptions ...callopt.Option) (r *live.CreateLiveRoomResponse, err error)
 	GetLiveRoomOwner(ctx context.Context, req *live.GetLiveRoomOwnerRequest, callOptions ...callopt.Option) (r *live.GetLiveRoomOwnerResponse, err error)
+	GetLiveRoom(ctx context.Context, req *live.GetLiveRoomRequest, callOptions ...callopt.Option) (r *live.GetLiveRoomResponse, err error)
 }
 
 // NewClient creates a client for the service defined in IDL.
@@ -52,4 +53,9 @@ func (p *kLiveServiceClient) CreateLiveRoom(ctx context.Context, req *live.Creat
 func (p *kLiveServiceClient) GetLiveRoomOwner(ctx context.Context, req *live.GetLiveRoomOwnerRequest, callOptions ...callopt.Option) (r *live.GetLiveRoomOwnerResponse, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
 	return p.kClient.GetLiveRoomOwner(ctx, req)
+}
+
+func (p *kLiveServiceClient) GetLiveRoom(ctx context.Context, req *live.GetLiveRoomRequest, callOptions ...callopt.Option) (r *live.GetLiveRoomResponse, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.GetLiveRoom(ctx, req)
 }

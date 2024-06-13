@@ -53,6 +53,9 @@ func main() {
 		LotterySrv: config.RPCSrvConfig{
 			Name: consts.LotterySrv,
 		},
+		LiveSrv: config.RPCSrvConfig{
+			Name: consts.LiveSrv,
+		},
 	}
 	cli, err := clientv3.New(clientv3.Config{
 		Endpoints:   []string{net.JoinHostPort(etcdConf.Host, etcdConf.Port)},

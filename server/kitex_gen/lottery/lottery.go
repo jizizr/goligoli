@@ -11,7 +11,8 @@ import (
 )
 
 type SetLotteryRequest struct {
-	Gift *base.Gift `thrift:"gift,1" frugal:"1,default,base.Gift" json:"gift"`
+	Gift     *base.Gift `thrift:"gift,1" frugal:"1,default,base.Gift" json:"gift"`
+	LiveTime int64      `thrift:"live_time,2" frugal:"2,default,i64" json:"live_time"`
 }
 
 func NewSetLotteryRequest() *SetLotteryRequest {
@@ -30,12 +31,20 @@ func (p *SetLotteryRequest) GetGift() (v *base.Gift) {
 	}
 	return p.Gift
 }
+
+func (p *SetLotteryRequest) GetLiveTime() (v int64) {
+	return p.LiveTime
+}
 func (p *SetLotteryRequest) SetGift(val *base.Gift) {
 	p.Gift = val
+}
+func (p *SetLotteryRequest) SetLiveTime(val int64) {
+	p.LiveTime = val
 }
 
 var fieldIDToName_SetLotteryRequest = map[int16]string{
 	1: "gift",
+	2: "live_time",
 }
 
 func (p *SetLotteryRequest) IsSetGift() bool {
@@ -64,6 +73,14 @@ func (p *SetLotteryRequest) Read(iprot thrift.TProtocol) (err error) {
 		case 1:
 			if fieldTypeId == thrift.STRUCT {
 				if err = p.ReadField1(iprot); err != nil {
+					goto ReadFieldError
+				}
+			} else if err = iprot.Skip(fieldTypeId); err != nil {
+				goto SkipFieldError
+			}
+		case 2:
+			if fieldTypeId == thrift.I64 {
+				if err = p.ReadField2(iprot); err != nil {
 					goto ReadFieldError
 				}
 			} else if err = iprot.Skip(fieldTypeId); err != nil {
@@ -106,6 +123,17 @@ func (p *SetLotteryRequest) ReadField1(iprot thrift.TProtocol) error {
 	p.Gift = _field
 	return nil
 }
+func (p *SetLotteryRequest) ReadField2(iprot thrift.TProtocol) error {
+
+	var _field int64
+	if v, err := iprot.ReadI64(); err != nil {
+		return err
+	} else {
+		_field = v
+	}
+	p.LiveTime = _field
+	return nil
+}
 
 func (p *SetLotteryRequest) Write(oprot thrift.TProtocol) (err error) {
 	var fieldId int16
@@ -115,6 +143,10 @@ func (p *SetLotteryRequest) Write(oprot thrift.TProtocol) (err error) {
 	if p != nil {
 		if err = p.writeField1(oprot); err != nil {
 			fieldId = 1
+			goto WriteFieldError
+		}
+		if err = p.writeField2(oprot); err != nil {
+			fieldId = 2
 			goto WriteFieldError
 		}
 	}
@@ -152,6 +184,23 @@ WriteFieldEndError:
 	return thrift.PrependError(fmt.Sprintf("%T write field 1 end error: ", p), err)
 }
 
+func (p *SetLotteryRequest) writeField2(oprot thrift.TProtocol) (err error) {
+	if err = oprot.WriteFieldBegin("live_time", thrift.I64, 2); err != nil {
+		goto WriteFieldBeginError
+	}
+	if err := oprot.WriteI64(p.LiveTime); err != nil {
+		return err
+	}
+	if err = oprot.WriteFieldEnd(); err != nil {
+		goto WriteFieldEndError
+	}
+	return nil
+WriteFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 2 begin error: ", p), err)
+WriteFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 2 end error: ", p), err)
+}
+
 func (p *SetLotteryRequest) String() string {
 	if p == nil {
 		return "<nil>"
@@ -169,12 +218,22 @@ func (p *SetLotteryRequest) DeepEqual(ano *SetLotteryRequest) bool {
 	if !p.Field1DeepEqual(ano.Gift) {
 		return false
 	}
+	if !p.Field2DeepEqual(ano.LiveTime) {
+		return false
+	}
 	return true
 }
 
 func (p *SetLotteryRequest) Field1DeepEqual(src *base.Gift) bool {
 
 	if !p.Gift.DeepEqual(src) {
+		return false
+	}
+	return true
+}
+func (p *SetLotteryRequest) Field2DeepEqual(src int64) bool {
+
+	if p.LiveTime != src {
 		return false
 	}
 	return true

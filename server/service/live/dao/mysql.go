@@ -50,6 +50,18 @@ func (l *Live) GetLiveRoomByID(id int64) (*base.Room, error) {
 	return &room, err
 }
 
+func (l *Live) GetLiveRoomOwnerByID(id int64) (int64, error) {
+	var owner int64
+	err := l.db.Model(&base.Room{}).Where("live_id = ?", id).Select("owner").First(&owner).Error
+	if err == gorm.ErrRecordNotFound {
+		return 0, nil
+	} else if err != nil {
+		klog.Errorf("query liveroom owner failed: %v", err)
+		return 0, err
+	}
+	return owner, err
+}
+
 func NewLive(db *gorm.DB) *Live {
 	m := db.Migrator()
 	if !m.HasTable(&base.Room{}) {

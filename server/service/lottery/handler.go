@@ -75,7 +75,7 @@ func (s *LotteryServiceImpl) SetLottery(ctx context.Context, req *lottery.SetLot
 			Type:     consts.LOTTERY,
 			Id:       req.Gift.Id,
 			LiveId:   req.Gift.LiveId,
-			LiveTime: 0, //TODO
+			LiveTime: req.LiveTime,
 			SendTime: time.Now().Unix(),
 			Content:  req.Gift.Gift,
 		},
@@ -96,6 +96,7 @@ func (s *LotteryServiceImpl) GetLottery(ctx context.Context, req *lottery.GetLot
 	resp = new(lottery.GetLotteryResponse)
 	resp.Gift, err = s.GetLotteryCache(ctx, req.Id)
 	if err != nil {
+		klog.Errorf("failed to get lottery: %v", err)
 		return nil, err
 	}
 	if resp.Gift != nil {
@@ -103,10 +104,10 @@ func (s *LotteryServiceImpl) GetLottery(ctx context.Context, req *lottery.GetLot
 	}
 	resp.Gift, err = s.GetLotteryByID(req.Id)
 	if err != nil {
-		return nil, err
+		klog.Errorf("failed to get lottery: %v", err)
 	}
 	if resp.Gift == nil {
-		return nil, nil
+		resp = nil
 	}
 	return
 }
@@ -163,7 +164,6 @@ func (s *LotteryServiceImpl) DrawLottery(ctx context.Context, req *lottery.DrawL
 			Type:     consts.WINNERS,
 			Id:       req.Id,
 			LiveId:   lot.Gift.LiveId,
-			LiveTime: 0, //TODO
 			SendTime: time.Now().Unix(),
 			Content:  string(winnersRaw),
 		},

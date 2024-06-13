@@ -39,6 +39,7 @@ type Config struct {
 	RedisInfo  RedisConfig  `json:"redis"`
 	NsqInfo    NsqConfig    `json:"nsq"`
 	LotterySrv RPCSrvConfig `json:"lottery_srv"`
+	LiveSrv    RPCSrvConfig `json:"live_srv"`
 }
 
 type EtcdConfig struct {

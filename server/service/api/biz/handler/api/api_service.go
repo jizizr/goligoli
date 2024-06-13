@@ -123,12 +123,18 @@ func SendMessage(ctx context.Context, c *app.RequestContext) {
 		return
 	}
 	resp.ID = sf.Generate().Int64()
+	res, err := global.LiveClient.GetLiveRoom(ctx, &live.GetLiveRoomRequest{
+		LiveId: req.LiveID,
+	})
+	if err != nil {
+		klog.Errorf("get live room owner failed, %v", err)
+	}
 	bul := &base2.LiveMessage{
 		Type:     req.Type,
 		Id:       resp.ID,
 		UserId:   uid,
 		LiveId:   req.LiveID,
-		LiveTime: time.Now().Unix(),
+		LiveTime: time.Now().Unix() - res.Room.StartTime,
 		SendTime: time.Now().Unix(),
 		Content:  req.Content,
 	}
@@ -312,14 +318,14 @@ func PublishLottery(ctx context.Context, c *app.RequestContext) {
 	if err != nil {
 		panic(err)
 	}
-	liveMsg, err := global.LiveClient.GetLiveRoomOwner(ctx, &live.GetLiveRoomOwnerRequest{
+	liveMsg, err := global.LiveClient.GetLiveRoom(ctx, &live.GetLiveRoomRequest{
 		LiveId: req.Gift.LiveID,
 	})
 	if err != nil {
 		errno.SendResponse(c, consts2.CodeInternalError, err.Error())
 		return
 	}
-	if uid != liveMsg.Owner {
+	if uid != liveMsg.Room.Owner {
 		errno.SendResponse(c, consts2.CodeNoLiveRoomRight, "you are not the owner of the live room")
 		return
 	}
@@ -331,6 +337,7 @@ func PublishLottery(ctx context.Context, c *app.RequestContext) {
 			Count:   req.Gift.Count,
 			EndTime: req.Gift.EndTime,
 		},
+		LiveTime: time.Now().Unix() - liveMsg.Room.StartTime,
 	})
 	if err != nil {
 		errno.SendResponse(c, consts2.CodeInternalError, err.Error())
@@ -361,7 +368,7 @@ func GetLotteryByID(ctx context.Context, c *app.RequestContext) {
 		return
 	}
 	resp.BaseResp = SuccessBaseResponse()
-	if res.Gift == nil {
+	if res == nil {
 		resp.Gift = nil
 	} else {
 		resp.Gift = &base.Gift{
@@ -387,17 +394,6 @@ func GetLiveRoomLottery(ctx context.Context, c *app.RequestContext) {
 	}
 
 	resp := new(api.GetLiveRoomLotteryResponse)
-	liveMsg, err := global.LiveClient.GetLiveRoomOwner(ctx, &live.GetLiveRoomOwnerRequest{
-		LiveId: req.LiveID,
-	})
-	if err != nil {
-		errno.SendResponse(c, consts2.CodeInternalError, err.Error())
-		return
-	}
-	if liveMsg == nil {
-		errno.SendResponse(c, consts2.CodeNoLiveRoomRight, "live room not found")
-		return
-	}
 	res, err := global.LotteryClient.GetLiveRoomLottery(ctx, &lottery.GetLiveRoomLotteryRequest{
 		LiveId: req.LiveID,
 	})
@@ -443,7 +439,7 @@ func JoinLottery(ctx context.Context, c *app.RequestContext) {
 		errno.SendResponse(c, consts2.CodeInternalError, err.Error())
 		return
 	}
-	if lot == nil {
+	if lot.Gift == nil {
 		errno.SendResponse(c, consts2.CodeLotteryNotFound, nil)
 		return
 	}

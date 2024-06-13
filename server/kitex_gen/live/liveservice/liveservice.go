@@ -27,6 +27,13 @@ var serviceMethods = map[string]kitex.MethodInfo{
 		false,
 		kitex.WithStreamingMode(kitex.StreamingNone),
 	),
+	"GetLiveRoom": kitex.NewMethodInfo(
+		getLiveRoomHandler,
+		newLiveServiceGetLiveRoomArgs,
+		newLiveServiceGetLiveRoomResult,
+		false,
+		kitex.WithStreamingMode(kitex.StreamingNone),
+	),
 }
 
 var (
@@ -129,6 +136,24 @@ func newLiveServiceGetLiveRoomOwnerResult() interface{} {
 	return live.NewLiveServiceGetLiveRoomOwnerResult()
 }
 
+func getLiveRoomHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	realArg := arg.(*live.LiveServiceGetLiveRoomArgs)
+	realResult := result.(*live.LiveServiceGetLiveRoomResult)
+	success, err := handler.(live.LiveService).GetLiveRoom(ctx, realArg.Req)
+	if err != nil {
+		return err
+	}
+	realResult.Success = success
+	return nil
+}
+func newLiveServiceGetLiveRoomArgs() interface{} {
+	return live.NewLiveServiceGetLiveRoomArgs()
+}
+
+func newLiveServiceGetLiveRoomResult() interface{} {
+	return live.NewLiveServiceGetLiveRoomResult()
+}
+
 type kClient struct {
 	c client.Client
 }
@@ -154,6 +179,16 @@ func (p *kClient) GetLiveRoomOwner(ctx context.Context, req *live.GetLiveRoomOwn
 	_args.Req = req
 	var _result live.LiveServiceGetLiveRoomOwnerResult
 	if err = p.c.Call(ctx, "GetLiveRoomOwner", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) GetLiveRoom(ctx context.Context, req *live.GetLiveRoomRequest) (r *live.GetLiveRoomResponse, err error) {
+	var _args live.LiveServiceGetLiveRoomArgs
+	_args.Req = req
+	var _result live.LiveServiceGetLiveRoomResult
+	if err = p.c.Call(ctx, "GetLiveRoom", &_args, &_result); err != nil {
 		return
 	}
 	return _result.GetSuccess(), nil

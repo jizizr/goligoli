@@ -4,6 +4,7 @@ include "base.thrift"
 
 struct SetLotteryRequest {
     1:base.Gift gift
+    2:i64 live_time
 }
 
 struct SetLotteryResponse {

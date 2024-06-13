@@ -755,6 +755,7 @@ type Room struct {
 	Introduction string `thrift:"introduction,3" frugal:"3,default,string" json:"introduction"`
 	Owner        int64  `thrift:"owner,4" frugal:"4,default,i64" json:"owner"`
 	Cover        string `thrift:"cover,5" frugal:"5,default,string" json:"cover"`
+	StartTime    int64  `thrift:"start_time,6" frugal:"6,default,i64" json:"start_time"`
 }
 
 func NewRoom() *Room {
@@ -784,6 +785,10 @@ func (p *Room) GetOwner() (v int64) {
 func (p *Room) GetCover() (v string) {
 	return p.Cover
 }
+
+func (p *Room) GetStartTime() (v int64) {
+	return p.StartTime
+}
 func (p *Room) SetLiveId(val int64) {
 	p.LiveId = val
 }
@@ -799,6 +804,9 @@ func (p *Room) SetOwner(val int64) {
 func (p *Room) SetCover(val string) {
 	p.Cover = val
 }
+func (p *Room) SetStartTime(val int64) {
+	p.StartTime = val
+}
 
 var fieldIDToName_Room = map[int16]string{
 	1: "live_id",
@@ -806,6 +814,7 @@ var fieldIDToName_Room = map[int16]string{
 	3: "introduction",
 	4: "owner",
 	5: "cover",
+	6: "start_time",
 }
 
 func (p *Room) Read(iprot thrift.TProtocol) (err error) {
@@ -862,6 +871,14 @@ func (p *Room) Read(iprot thrift.TProtocol) (err error) {
 		case 5:
 			if fieldTypeId == thrift.STRING {
 				if err = p.ReadField5(iprot); err != nil {
+					goto ReadFieldError
+				}
+			} else if err = iprot.Skip(fieldTypeId); err != nil {
+				goto SkipFieldError
+			}
+		case 6:
+			if fieldTypeId == thrift.I64 {
+				if err = p.ReadField6(iprot); err != nil {
 					goto ReadFieldError
 				}
 			} else if err = iprot.Skip(fieldTypeId); err != nil {
@@ -951,6 +968,17 @@ func (p *Room) ReadField5(iprot thrift.TProtocol) error {
 	p.Cover = _field
 	return nil
 }
+func (p *Room) ReadField6(iprot thrift.TProtocol) error {
+
+	var _field int64
+	if v, err := iprot.ReadI64(); err != nil {
+		return err
+	} else {
+		_field = v
+	}
+	p.StartTime = _field
+	return nil
+}
 
 func (p *Room) Write(oprot thrift.TProtocol) (err error) {
 	var fieldId int16
@@ -976,6 +1004,10 @@ func (p *Room) Write(oprot thrift.TProtocol) (err error) {
 		}
 		if err = p.writeField5(oprot); err != nil {
 			fieldId = 5
+			goto WriteFieldError
+		}
+		if err = p.writeField6(oprot); err != nil {
+			fieldId = 6
 			goto WriteFieldError
 		}
 	}
@@ -1081,6 +1113,23 @@ WriteFieldEndError:
 	return thrift.PrependError(fmt.Sprintf("%T write field 5 end error: ", p), err)
 }
 
+func (p *Room) writeField6(oprot thrift.TProtocol) (err error) {
+	if err = oprot.WriteFieldBegin("start_time", thrift.I64, 6); err != nil {
+		goto WriteFieldBeginError
+	}
+	if err := oprot.WriteI64(p.StartTime); err != nil {
+		return err
+	}
+	if err = oprot.WriteFieldEnd(); err != nil {
+		goto WriteFieldEndError
+	}
+	return nil
+WriteFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 6 begin error: ", p), err)
+WriteFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 6 end error: ", p), err)
+}
+
 func (p *Room) String() string {
 	if p == nil {
 		return "<nil>"
@@ -1108,6 +1157,9 @@ func (p *Room) DeepEqual(ano *Room) bool {
 		return false
 	}
 	if !p.Field5DeepEqual(ano.Cover) {
+		return false
+	}
+	if !p.Field6DeepEqual(ano.StartTime) {
 		return false
 	}
 	return true
@@ -1144,6 +1196,13 @@ func (p *Room) Field4DeepEqual(src int64) bool {
 func (p *Room) Field5DeepEqual(src string) bool {
 
 	if strings.Compare(p.Cover, src) != 0 {
+		return false
+	}
+	return true
+}
+func (p *Room) Field6DeepEqual(src int64) bool {
+
+	if p.StartTime != src {
 		return false
 	}
 	return true

@@ -62,6 +62,20 @@ func (p *SetLotteryRequest) FastRead(buf []byte) (int, error) {
 					goto SkipFieldError
 				}
 			}
+		case 2:
+			if fieldTypeId == thrift.I64 {
+				l, err = p.FastReadField2(buf[offset:])
+				offset += l
+				if err != nil {
+					goto ReadFieldError
+				}
+			} else {
+				l, err = bthrift.Binary.Skip(buf[offset:], fieldTypeId)
+				offset += l
+				if err != nil {
+					goto SkipFieldError
+				}
+			}
 		default:
 			l, err = bthrift.Binary.Skip(buf[offset:], fieldTypeId)
 			offset += l
@@ -110,6 +124,20 @@ func (p *SetLotteryRequest) FastReadField1(buf []byte) (int, error) {
 	return offset, nil
 }
 
+func (p *SetLotteryRequest) FastReadField2(buf []byte) (int, error) {
+	offset := 0
+
+	if v, l, err := bthrift.Binary.ReadI64(buf[offset:]); err != nil {
+		return offset, err
+	} else {
+		offset += l
+
+		p.LiveTime = v
+
+	}
+	return offset, nil
+}
+
 // for compatibility
 func (p *SetLotteryRequest) FastWrite(buf []byte) int {
 	return 0
@@ -119,6 +147,7 @@ func (p *SetLotteryRequest) FastWriteNocopy(buf []byte, binaryWriter bthrift.Bin
 	offset := 0
 	offset += bthrift.Binary.WriteStructBegin(buf[offset:], "SetLotteryRequest")
 	if p != nil {
+		offset += p.fastWriteField2(buf[offset:], binaryWriter)
 		offset += p.fastWriteField1(buf[offset:], binaryWriter)
 	}
 	offset += bthrift.Binary.WriteFieldStop(buf[offset:])
@@ -131,6 +160,7 @@ func (p *SetLotteryRequest) BLength() int {
 	l += bthrift.Binary.StructBeginLength("SetLotteryRequest")
 	if p != nil {
 		l += p.field1Length()
+		l += p.field2Length()
 	}
 	l += bthrift.Binary.FieldStopLength()
 	l += bthrift.Binary.StructEndLength()
@@ -145,10 +175,28 @@ func (p *SetLotteryRequest) fastWriteField1(buf []byte, binaryWriter bthrift.Bin
 	return offset
 }
 
+func (p *SetLotteryRequest) fastWriteField2(buf []byte, binaryWriter bthrift.BinaryWriter) int {
+	offset := 0
+	offset += bthrift.Binary.WriteFieldBegin(buf[offset:], "live_time", thrift.I64, 2)
+	offset += bthrift.Binary.WriteI64(buf[offset:], p.LiveTime)
+
+	offset += bthrift.Binary.WriteFieldEnd(buf[offset:])
+	return offset
+}
+
 func (p *SetLotteryRequest) field1Length() int {
 	l := 0
 	l += bthrift.Binary.FieldBeginLength("gift", thrift.STRUCT, 1)
 	l += p.Gift.BLength()
+	l += bthrift.Binary.FieldEndLength()
+	return l
+}
+
+func (p *SetLotteryRequest) field2Length() int {
+	l := 0
+	l += bthrift.Binary.FieldBeginLength("live_time", thrift.I64, 2)
+	l += bthrift.Binary.I64Length(p.LiveTime)
+
 	l += bthrift.Binary.FieldEndLength()
 	return l
 }

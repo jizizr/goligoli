@@ -40,6 +40,7 @@ type Config struct {
 	NsqInfo   NsqConfig    `json:"nsq"`
 	DelaySrv  RPCSrvConfig `json:"delay_srv"`
 	PushSrv   RPCSrvConfig `json:"push_srv"`
+	LiveSrv   RPCSrvConfig `json:"live_srv"`
 }
 
 type EtcdConfig struct {
