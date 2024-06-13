@@ -29,13 +29,12 @@ func (l *Live) AddLiveRoom(room *base.Room) (int64, error) {
 	return temp.LiveId, nil
 }
 
-func (l *Live) DeleteLiveRoom(id int64) error {
-	err := l.db.Where("live_id = ?", id).Delete(&base.Room{}).Error
+func (l *Live) TagStopLiveRoom(id int64) error {
+	err := l.db.Model(&base.Room{}).Where("live_id = ?", id).Update("is_live", false).Error
 	if err != nil {
-		klog.Errorf("DeleteLiveRoom failed: %v", err)
-		return err
+		klog.Errorf("TagStopLiveRoom failed: %v", err)
 	}
-	return nil
+	return err
 }
 
 func (l *Live) GetLiveRoomByID(id int64) (*base.Room, error) {

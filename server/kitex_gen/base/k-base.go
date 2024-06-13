@@ -725,6 +725,20 @@ func (p *Room) FastRead(buf []byte) (int, error) {
 					goto SkipFieldError
 				}
 			}
+		case 7:
+			if fieldTypeId == thrift.BOOL {
+				l, err = p.FastReadField7(buf[offset:])
+				offset += l
+				if err != nil {
+					goto ReadFieldError
+				}
+			} else {
+				l, err = bthrift.Binary.Skip(buf[offset:], fieldTypeId)
+				offset += l
+				if err != nil {
+					goto SkipFieldError
+				}
+			}
 		default:
 			l, err = bthrift.Binary.Skip(buf[offset:], fieldTypeId)
 			offset += l
@@ -844,6 +858,20 @@ func (p *Room) FastReadField6(buf []byte) (int, error) {
 	return offset, nil
 }
 
+func (p *Room) FastReadField7(buf []byte) (int, error) {
+	offset := 0
+
+	if v, l, err := bthrift.Binary.ReadBool(buf[offset:]); err != nil {
+		return offset, err
+	} else {
+		offset += l
+
+		p.IsLive = v
+
+	}
+	return offset, nil
+}
+
 // for compatibility
 func (p *Room) FastWrite(buf []byte) int {
 	return 0
@@ -856,6 +884,7 @@ func (p *Room) FastWriteNocopy(buf []byte, binaryWriter bthrift.BinaryWriter) in
 		offset += p.fastWriteField1(buf[offset:], binaryWriter)
 		offset += p.fastWriteField4(buf[offset:], binaryWriter)
 		offset += p.fastWriteField6(buf[offset:], binaryWriter)
+		offset += p.fastWriteField7(buf[offset:], binaryWriter)
 		offset += p.fastWriteField2(buf[offset:], binaryWriter)
 		offset += p.fastWriteField3(buf[offset:], binaryWriter)
 		offset += p.fastWriteField5(buf[offset:], binaryWriter)
@@ -875,6 +904,7 @@ func (p *Room) BLength() int {
 		l += p.field4Length()
 		l += p.field5Length()
 		l += p.field6Length()
+		l += p.field7Length()
 	}
 	l += bthrift.Binary.FieldStopLength()
 	l += bthrift.Binary.StructEndLength()
@@ -935,6 +965,15 @@ func (p *Room) fastWriteField6(buf []byte, binaryWriter bthrift.BinaryWriter) in
 	return offset
 }
 
+func (p *Room) fastWriteField7(buf []byte, binaryWriter bthrift.BinaryWriter) int {
+	offset := 0
+	offset += bthrift.Binary.WriteFieldBegin(buf[offset:], "is_live", thrift.BOOL, 7)
+	offset += bthrift.Binary.WriteBool(buf[offset:], p.IsLive)
+
+	offset += bthrift.Binary.WriteFieldEnd(buf[offset:])
+	return offset
+}
+
 func (p *Room) field1Length() int {
 	l := 0
 	l += bthrift.Binary.FieldBeginLength("live_id", thrift.I64, 1)
@@ -984,6 +1023,15 @@ func (p *Room) field6Length() int {
 	l := 0
 	l += bthrift.Binary.FieldBeginLength("start_time", thrift.I64, 6)
 	l += bthrift.Binary.I64Length(p.StartTime)
+
+	l += bthrift.Binary.FieldEndLength()
+	return l
+}
+
+func (p *Room) field7Length() int {
+	l := 0
+	l += bthrift.Binary.FieldBeginLength("is_live", thrift.BOOL, 7)
+	l += bthrift.Binary.BoolLength(p.IsLive)
 
 	l += bthrift.Binary.FieldEndLength()
 	return l

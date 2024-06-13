@@ -20,6 +20,7 @@ struct Room{
     4:i64 owner,
     5:string cover,
     6:i64 start_time,
+    7:bool is_live,
 }
 
 struct Gift{

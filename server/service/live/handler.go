@@ -18,7 +18,7 @@ type LiveServiceImpl struct {
 
 type MySqlServiceImpl interface {
 	AddLiveRoom(room *base.Room) (int64, error)
-	DeleteLiveRoom(id int64) error
+	TagStopLiveRoom(id int64) error
 	GetLiveRoomByID(id int64) (*base.Room, error)
 	GetLiveRoomOwnerByID(id int64) (int64, error)
 }
@@ -39,6 +39,7 @@ func (s *LiveServiceImpl) CreateLiveRoom(ctx context.Context, req *live.CreateLi
 	}
 	req.Room.LiveId = sf.Generate().Int64()
 	req.Room.StartTime = time.Now().Unix()
+	req.Room.IsLive = true
 	id, err := s.AddLiveRoom(req.Room)
 	if err != nil {
 		return
@@ -91,6 +92,19 @@ func (s *LiveServiceImpl) GetLiveRoom(ctx context.Context, req *live.GetLiveRoom
 		if err := s.AddLiveRoomCache(ctx, resp.Room); err != nil {
 			klog.Errorf("AddLiveRoomCache failed: %v", err)
 		}
+	}
+	return
+}
+
+// StopLiveRoom implements the LiveServiceImpl interface.
+func (s *LiveServiceImpl) StopLiveRoom(ctx context.Context, req *live.StopLiveRoomRequest) (err error) {
+	err = s.TagStopLiveRoom(req.LiveId)
+	if err != nil {
+		klog.Errorf("TagStopLiveRoom failed: %v", err)
+		return
+	}
+	if err := s.DeleteLiveRoomCache(ctx, req.LiveId); err != nil {
+		klog.Errorf("DeleteLiveRoomCache failed: %v", err)
 	}
 	return
 }

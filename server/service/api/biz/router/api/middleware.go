@@ -81,3 +81,8 @@ func _getlotterybyidMw() []app.HandlerFunc {
 	// your code...
 	return nil
 }
+
+func _deleteliveMw() []app.HandlerFunc {
+	// your code...
+	return []app.HandlerFunc{middleware.JWTAuth()}
+}

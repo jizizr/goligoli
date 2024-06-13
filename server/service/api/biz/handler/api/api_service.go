@@ -304,6 +304,41 @@ func CreateLive(ctx context.Context, c *app.RequestContext) {
 	c.JSON(consts.StatusOK, resp)
 }
 
+// DeleteLive .
+// @router /room/live [DELETE]
+func DeleteLive(ctx context.Context, c *app.RequestContext) {
+	var err error
+	var req api.DeleteLiveRequest
+	err = c.BindAndValidate(&req)
+	if err != nil {
+		c.String(consts.StatusBadRequest, err.Error())
+		return
+	}
+
+	resp := new(api.DeleteLiveResponse)
+	uid, _ := tools.GetUID(c)
+	LiveMsg, err := global.LiveClient.GetLiveRoomOwner(ctx, &live.GetLiveRoomOwnerRequest{
+		LiveId: req.LiveID,
+	})
+	if err != nil {
+		errno.SendResponse(c, consts2.CodeInternalError, err.Error())
+		return
+	}
+	if uid != LiveMsg.Owner {
+		errno.SendResponse(c, consts2.CodeNoLiveRoomRight, "you are not the owner of the live room")
+		return
+	}
+	err = global.LiveClient.StopLiveRoom(ctx, &live.StopLiveRoomRequest{
+		LiveId: req.LiveID,
+	})
+	if err != nil {
+		errno.SendResponse(c, consts2.CodeInternalError, err.Error())
+		return
+	}
+	resp.BaseResp = SuccessBaseResponse()
+	c.JSON(consts.StatusOK, resp)
+}
+
 // PublishLottery .
 // @router lottery [POST]
 func PublishLottery(ctx context.Context, c *app.RequestContext) {

@@ -34,6 +34,13 @@ var serviceMethods = map[string]kitex.MethodInfo{
 		false,
 		kitex.WithStreamingMode(kitex.StreamingNone),
 	),
+	"StopLiveRoom": kitex.NewMethodInfo(
+		stopLiveRoomHandler,
+		newLiveServiceStopLiveRoomArgs,
+		newLiveServiceStopLiveRoomResult,
+		false,
+		kitex.WithStreamingMode(kitex.StreamingNone),
+	),
 }
 
 var (
@@ -154,6 +161,24 @@ func newLiveServiceGetLiveRoomResult() interface{} {
 	return live.NewLiveServiceGetLiveRoomResult()
 }
 
+func stopLiveRoomHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	realArg := arg.(*live.LiveServiceStopLiveRoomArgs)
+
+	err := handler.(live.LiveService).StopLiveRoom(ctx, realArg.Req)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+func newLiveServiceStopLiveRoomArgs() interface{} {
+	return live.NewLiveServiceStopLiveRoomArgs()
+}
+
+func newLiveServiceStopLiveRoomResult() interface{} {
+	return live.NewLiveServiceStopLiveRoomResult()
+}
+
 type kClient struct {
 	c client.Client
 }
@@ -192,4 +217,14 @@ func (p *kClient) GetLiveRoom(ctx context.Context, req *live.GetLiveRoomRequest)
 		return
 	}
 	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) StopLiveRoom(ctx context.Context, req *live.StopLiveRoomRequest) (err error) {
+	var _args live.LiveServiceStopLiveRoomArgs
+	_args.Req = req
+	var _result live.LiveServiceStopLiveRoomResult
+	if err = p.c.Call(ctx, "StopLiveRoom", &_args, &_result); err != nil {
+		return
+	}
+	return nil
 }

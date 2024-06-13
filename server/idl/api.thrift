@@ -84,6 +84,14 @@ struct CreateLiveResponse {
     2:i64 live_id,
 }
 
+struct DeleteLiveRequest {
+    1:required i64 live_id,
+}
+
+struct DeleteLiveResponse {
+    1:base.BaseResponse base_resp,
+}
+
 // Lottery
 struct PublishLotteryRequest {
     1:required base.Gift gift,
@@ -128,6 +136,7 @@ service ApiService {
     GetHistoryMessagesResponse GetHistoryMessages(1:GetHistoryMessagesRequest req)(api.get="/message/history/multi"),
     GetMessageRTResponse GetMessageRT(1:GetMessageRTRequest req) (api.get="/message/live"),
     CreateLiveResponse CreateLive(1:CreateLiveRequest req)(api.post="/room/live"),
+    DeleteLiveResponse DeleteLive(1:DeleteLiveRequest req)(api.delete="/room/live"),
     PublishLotteryResponse PublishLottery(1:PublishLotteryRequest req)(api.post="/lottery"),
     GetLotteryByIDResponse GetLotteryByID(1:GetLotteryByIDRequest req)(api.get="/lottery/single"),
     GetLiveRoomLotteryResponse GetLiveRoomLottery(1:GetLiveRoomLotteryRequest req)(api.get="/lottery/multi"),

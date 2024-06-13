@@ -26,8 +26,13 @@ struct GetLiveRoomResponse {
     1:base.Room room;
 }
 
+struct StopLiveRoomRequest {
+    1:i64 live_id;
+}
+
 service LiveService {
     CreateLiveRoomResponse CreateLiveRoom(1:CreateLiveRoomRequest req);
     GetLiveRoomOwnerResponse GetLiveRoomOwner(1:GetLiveRoomOwnerRequest req);
     GetLiveRoomResponse GetLiveRoom(1:GetLiveRoomRequest req);
+    void StopLiveRoom(1:StopLiveRoomRequest req);
 }

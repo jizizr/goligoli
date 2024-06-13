@@ -609,6 +609,8 @@ type Room struct {
 	Introduction string `thrift:"introduction,3" form:"introduction" json:"introduction" query:"introduction"`
 	Owner        int64  `thrift:"owner,4" form:"owner" json:"owner" query:"owner"`
 	Cover        string `thrift:"cover,5" form:"cover" json:"cover" query:"cover"`
+	StartTime    int64  `thrift:"start_time,6" form:"start_time" json:"start_time" query:"start_time"`
+	IsLive       bool   `thrift:"is_live,7" form:"is_live" json:"is_live" query:"is_live"`
 }
 
 func NewRoom() *Room {
@@ -635,12 +637,22 @@ func (p *Room) GetCover() (v string) {
 	return p.Cover
 }
 
+func (p *Room) GetStartTime() (v int64) {
+	return p.StartTime
+}
+
+func (p *Room) GetIsLive() (v bool) {
+	return p.IsLive
+}
+
 var fieldIDToName_Room = map[int16]string{
 	1: "live_id",
 	2: "room_name",
 	3: "introduction",
 	4: "owner",
 	5: "cover",
+	6: "start_time",
+	7: "is_live",
 }
 
 func (p *Room) Read(iprot thrift.TProtocol) (err error) {
@@ -697,6 +709,22 @@ func (p *Room) Read(iprot thrift.TProtocol) (err error) {
 		case 5:
 			if fieldTypeId == thrift.STRING {
 				if err = p.ReadField5(iprot); err != nil {
+					goto ReadFieldError
+				}
+			} else if err = iprot.Skip(fieldTypeId); err != nil {
+				goto SkipFieldError
+			}
+		case 6:
+			if fieldTypeId == thrift.I64 {
+				if err = p.ReadField6(iprot); err != nil {
+					goto ReadFieldError
+				}
+			} else if err = iprot.Skip(fieldTypeId); err != nil {
+				goto SkipFieldError
+			}
+		case 7:
+			if fieldTypeId == thrift.BOOL {
+				if err = p.ReadField7(iprot); err != nil {
 					goto ReadFieldError
 				}
 			} else if err = iprot.Skip(fieldTypeId); err != nil {
@@ -786,6 +814,28 @@ func (p *Room) ReadField5(iprot thrift.TProtocol) error {
 	p.Cover = _field
 	return nil
 }
+func (p *Room) ReadField6(iprot thrift.TProtocol) error {
+
+	var _field int64
+	if v, err := iprot.ReadI64(); err != nil {
+		return err
+	} else {
+		_field = v
+	}
+	p.StartTime = _field
+	return nil
+}
+func (p *Room) ReadField7(iprot thrift.TProtocol) error {
+
+	var _field bool
+	if v, err := iprot.ReadBool(); err != nil {
+		return err
+	} else {
+		_field = v
+	}
+	p.IsLive = _field
+	return nil
+}
 
 func (p *Room) Write(oprot thrift.TProtocol) (err error) {
 	var fieldId int16
@@ -811,6 +861,14 @@ func (p *Room) Write(oprot thrift.TProtocol) (err error) {
 		}
 		if err = p.writeField5(oprot); err != nil {
 			fieldId = 5
+			goto WriteFieldError
+		}
+		if err = p.writeField6(oprot); err != nil {
+			fieldId = 6
+			goto WriteFieldError
+		}
+		if err = p.writeField7(oprot); err != nil {
+			fieldId = 7
 			goto WriteFieldError
 		}
 	}
@@ -914,6 +972,40 @@ WriteFieldBeginError:
 	return thrift.PrependError(fmt.Sprintf("%T write field 5 begin error: ", p), err)
 WriteFieldEndError:
 	return thrift.PrependError(fmt.Sprintf("%T write field 5 end error: ", p), err)
+}
+
+func (p *Room) writeField6(oprot thrift.TProtocol) (err error) {
+	if err = oprot.WriteFieldBegin("start_time", thrift.I64, 6); err != nil {
+		goto WriteFieldBeginError
+	}
+	if err := oprot.WriteI64(p.StartTime); err != nil {
+		return err
+	}
+	if err = oprot.WriteFieldEnd(); err != nil {
+		goto WriteFieldEndError
+	}
+	return nil
+WriteFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 6 begin error: ", p), err)
+WriteFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 6 end error: ", p), err)
+}
+
+func (p *Room) writeField7(oprot thrift.TProtocol) (err error) {
+	if err = oprot.WriteFieldBegin("is_live", thrift.BOOL, 7); err != nil {
+		goto WriteFieldBeginError
+	}
+	if err := oprot.WriteBool(p.IsLive); err != nil {
+		return err
+	}
+	if err = oprot.WriteFieldEnd(); err != nil {
+		goto WriteFieldEndError
+	}
+	return nil
+WriteFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 7 begin error: ", p), err)
+WriteFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 7 end error: ", p), err)
 }
 
 func (p *Room) String() string {

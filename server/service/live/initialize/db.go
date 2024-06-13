@@ -1,6 +1,7 @@
 package initialize
 
 import (
+	"context"
 	"fmt"
 	"github.com/cloudwego/kitex/pkg/klog"
 	"github.com/jizizr/goligoli/server/common/consts"

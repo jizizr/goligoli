@@ -19,6 +19,7 @@ func (l *LiveRedis) AddLiveRoomCache(ctx context.Context, room *base.Room) error
 		"owner":        room.Owner,
 		"cover":        room.Cover,
 		"start_time":   room.StartTime,
+		"is_live":      room.IsLive,
 	}).Err()
 }
 
@@ -43,6 +44,7 @@ func (l *LiveRedis) GetLiveRoomCache(ctx context.Context, id int64) (*base.Room,
 		Owner:        owner,
 		Cover:        res["cover"],
 		StartTime:    startTime,
+		IsLive:       res["is_live"] == "true",
 	}, nil
 }
 
