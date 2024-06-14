@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/bytedance/sonic"
 	"github.com/jizizr/goligoli/server/common/consts"
-	"github.com/jizizr/goligoli/server/service/api/config"
+	"github.com/jizizr/goligoli/server/service/record/config"
 	"github.com/spf13/viper"
 	"go.etcd.io/etcd/client/v3"
 	"log"
@@ -25,24 +25,19 @@ func main() {
 		panic("viper unmarshal config failed, err: " + err.Error())
 	}
 	c := config.Config{
-		Name: consts.ApiSrv,
-		UserSrv: config.RPCSrvConfig{
-			Name: consts.UserSrv,
+		Name: consts.RecordSrv,
+		Server: config.ServerConfig{
+			Host: "127.0.0.1",
+			Port: consts.RecordServerPort,
 		},
-		MessageSrv: config.RPCSrvConfig{
-			Name: consts.MessageSrv,
+		MinioInfo: config.MinioConfig{
+			Endpoint: "127.0.0.1:9000",
+			ID:       "RvT568oblWFE2dX5rj6K",
+			Secret:   "4WKBSMcVy7KILrBo0iNqGma5CZLgqensFpYZMRDd",
+			Bucket:   "video",
 		},
-		PushSrv: config.RPCSrvConfig{
-			Name: consts.PushSrv,
-		},
-		LiveSrv: config.RPCSrvConfig{
-			Name: consts.LiveSrv,
-		},
-		LotterySrv: config.RPCSrvConfig{
-			Name: consts.LotterySrv,
-		},
-		RecordSrv: config.RPCSrvConfig{
-			Name: consts.RecordSrv,
+		Stream: config.StreamConfig{
+			Address: "http://127.0.0.1:7001/live",
 		},
 	}
 	cli, err := clientv3.New(clientv3.Config{

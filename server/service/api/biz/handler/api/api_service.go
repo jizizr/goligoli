@@ -18,6 +18,7 @@ import (
 	"github.com/jizizr/goligoli/server/kitex_gen/lottery"
 	Message "github.com/jizizr/goligoli/server/kitex_gen/message"
 	"github.com/jizizr/goligoli/server/kitex_gen/push"
+	"github.com/jizizr/goligoli/server/kitex_gen/record"
 	"github.com/jizizr/goligoli/server/kitex_gen/user"
 	"github.com/jizizr/goligoli/server/service/api/biz/errno"
 	"github.com/jizizr/goligoli/server/service/api/biz/global"
@@ -308,6 +309,9 @@ func CreateLive(ctx context.Context, c *app.RequestContext) {
 		errno.SendResponse(c, consts2.CodeLiveRoomAlreadyExists, nil)
 		return
 	}
+	_ = global.RecordClient.StartRecord(ctx, &record.StartRecordRecordRequest{
+		LiveId: res.LiveId,
+	})
 	resp.BaseResp = SuccessBaseResponse()
 	resp.LiveID = res.LiveId
 	resp.Key = res.Key
@@ -381,6 +385,9 @@ func DeleteLive(ctx context.Context, c *app.RequestContext) {
 		errno.SendResponse(c, consts2.CodeInternalError, err.Error())
 		return
 	}
+	_ = global.RecordClient.StopRecord(ctx, &record.StopRecordRecordRequest{
+		LiveId: req.LiveID,
+	})
 	resp.BaseResp = SuccessBaseResponse()
 	c.JSON(consts.StatusOK, resp)
 }

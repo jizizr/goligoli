@@ -13,6 +13,7 @@ type Config struct {
 	PushSrv    RPCSrvConfig `json:"push_srv"`
 	LiveSrv    RPCSrvConfig `json:"live_srv"`
 	LotterySrv RPCSrvConfig `json:"lottery_srv"`
+	RecordSrv  RPCSrvConfig `json:"record_srv"`
 }
 
 type RPCSrvConfig struct {

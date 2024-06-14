@@ -7,4 +7,5 @@ func Init() {
 	initReceiveStreamClient()
 	initLive()
 	initLottery()
+	initRecord()
 }

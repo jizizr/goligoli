@@ -22,6 +22,7 @@ const (
 	LiveServerPort
 	LotteryServerPort
 	DelayServerPort
+	RecordServerPort
 )
 
 const (
@@ -32,6 +33,7 @@ const (
 	LiveSrv    = "live_srv"
 	LotterySrv = "lottery_srv"
 	DelaySrv   = "delay_srv"
+	RecordSrv  = "record_srv"
 )
 
 const (
