@@ -23,6 +23,7 @@ const (
 	CodeInternalError
 	CodeNoLiveRoomRight
 	CodeLotteryNotFound
+	CodeLiveRoomNotLive
 )
 
 var codeMsgMap = map[RespCode]string{
@@ -44,6 +45,7 @@ var codeMsgMap = map[RespCode]string{
 	CodeInternalError:            "internal error",
 	CodeNoLiveRoomRight:          "no live room right",
 	CodeLotteryNotFound:          "lottery not found",
+	CodeLiveRoomNotLive:          "live room not live",
 }
 
 func (code RespCode) Msg() string {

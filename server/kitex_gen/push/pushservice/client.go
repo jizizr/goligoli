@@ -16,6 +16,8 @@ import (
 // Client is designed to provide IDL-compatible methods with call-option parameter for kitex framework.
 type Client interface {
 	PushMessage(ctx context.Context, req *push.PushMessageRequest, callOptions ...callopt.Option) (err error)
+	StopMessage(ctx context.Context, req *push.StopMessageRequest, callOptions ...callopt.Option) (err error)
+	InitLiveRoomReciver(ctx context.Context, req *push.InitLiveRoomReciverRequest, callOptions ...callopt.Option) (err error)
 }
 
 // StreamClient is designed to provide Interface for Streaming APIs.
@@ -61,6 +63,16 @@ type kPushServiceClient struct {
 func (p *kPushServiceClient) PushMessage(ctx context.Context, req *push.PushMessageRequest, callOptions ...callopt.Option) (err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
 	return p.kClient.PushMessage(ctx, req)
+}
+
+func (p *kPushServiceClient) StopMessage(ctx context.Context, req *push.StopMessageRequest, callOptions ...callopt.Option) (err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.StopMessage(ctx, req)
+}
+
+func (p *kPushServiceClient) InitLiveRoomReciver(ctx context.Context, req *push.InitLiveRoomReciverRequest, callOptions ...callopt.Option) (err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.InitLiveRoomReciver(ctx, req)
 }
 
 // NewStreamClient creates a stream client for the service's streaming APIs defined in IDL.

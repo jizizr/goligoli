@@ -22,6 +22,20 @@ var serviceMethods = map[string]kitex.MethodInfo{
 		false,
 		kitex.WithStreamingMode(kitex.StreamingNone),
 	),
+	"StopMessage": kitex.NewMethodInfo(
+		stopMessageHandler,
+		newPushServiceStopMessageArgs,
+		newPushServiceStopMessageResult,
+		false,
+		kitex.WithStreamingMode(kitex.StreamingNone),
+	),
+	"InitLiveRoomReciver": kitex.NewMethodInfo(
+		initLiveRoomReciverHandler,
+		newPushServiceInitLiveRoomReciverArgs,
+		newPushServiceInitLiveRoomReciverResult,
+		false,
+		kitex.WithStreamingMode(kitex.StreamingNone),
+	),
 	"ReceiveMessage": kitex.NewMethodInfo(
 		receiveMessageHandler,
 		newPushServiceReceiveMessageArgs,
@@ -113,6 +127,42 @@ func newPushServicePushMessageResult() interface{} {
 	return push.NewPushServicePushMessageResult()
 }
 
+func stopMessageHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	realArg := arg.(*push.PushServiceStopMessageArgs)
+
+	err := handler.(push.PushService).StopMessage(ctx, realArg.Req)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+func newPushServiceStopMessageArgs() interface{} {
+	return push.NewPushServiceStopMessageArgs()
+}
+
+func newPushServiceStopMessageResult() interface{} {
+	return push.NewPushServiceStopMessageResult()
+}
+
+func initLiveRoomReciverHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	realArg := arg.(*push.PushServiceInitLiveRoomReciverArgs)
+
+	err := handler.(push.PushService).InitLiveRoomReciver(ctx, realArg.Req)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+func newPushServiceInitLiveRoomReciverArgs() interface{} {
+	return push.NewPushServiceInitLiveRoomReciverArgs()
+}
+
+func newPushServiceInitLiveRoomReciverResult() interface{} {
+	return push.NewPushServiceInitLiveRoomReciverResult()
+}
+
 func receiveMessageHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
 	st, ok := arg.(*streaming.Args)
 	if !ok {
@@ -177,6 +227,26 @@ func (p *kClient) PushMessage(ctx context.Context, req *push.PushMessageRequest)
 	_args.Req = req
 	var _result push.PushServicePushMessageResult
 	if err = p.c.Call(ctx, "PushMessage", &_args, &_result); err != nil {
+		return
+	}
+	return nil
+}
+
+func (p *kClient) StopMessage(ctx context.Context, req *push.StopMessageRequest) (err error) {
+	var _args push.PushServiceStopMessageArgs
+	_args.Req = req
+	var _result push.PushServiceStopMessageResult
+	if err = p.c.Call(ctx, "StopMessage", &_args, &_result); err != nil {
+		return
+	}
+	return nil
+}
+
+func (p *kClient) InitLiveRoomReciver(ctx context.Context, req *push.InitLiveRoomReciverRequest) (err error) {
+	var _args push.PushServiceInitLiveRoomReciverArgs
+	_args.Req = req
+	var _result push.PushServiceInitLiveRoomReciverResult
+	if err = p.c.Call(ctx, "InitLiveRoomReciver", &_args, &_result); err != nil {
 		return
 	}
 	return nil

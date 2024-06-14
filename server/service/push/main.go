@@ -27,6 +27,7 @@ func main() {
 	)
 	defer p.Shutdown(context.Background())
 	rpc.Init()
+	initialize.InitReciver()
 	go func() {
 		MessageSub := mq.NewSubscriberManager(subscriber)
 		err := MessageSub.SubscribeMessageFromNsq(context.Background())

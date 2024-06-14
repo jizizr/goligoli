@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"github.com/apache/thrift/lib/go/thrift"
 	"github.com/jizizr/goligoli/server/kitex_gen/base"
+	"strings"
 )
 
 type CreateLiveRoomRequest struct {
@@ -180,7 +181,8 @@ func (p *CreateLiveRoomRequest) Field1DeepEqual(src *base.Room) bool {
 }
 
 type CreateLiveRoomResponse struct {
-	LiveId int64 `thrift:"live_id,1" frugal:"1,default,i64" json:"live_id"`
+	LiveId int64  `thrift:"live_id,1" frugal:"1,default,i64" json:"live_id"`
+	Key    string `thrift:"key,2" frugal:"2,default,string" json:"key"`
 }
 
 func NewCreateLiveRoomResponse() *CreateLiveRoomResponse {
@@ -194,12 +196,20 @@ func (p *CreateLiveRoomResponse) InitDefault() {
 func (p *CreateLiveRoomResponse) GetLiveId() (v int64) {
 	return p.LiveId
 }
+
+func (p *CreateLiveRoomResponse) GetKey() (v string) {
+	return p.Key
+}
 func (p *CreateLiveRoomResponse) SetLiveId(val int64) {
 	p.LiveId = val
+}
+func (p *CreateLiveRoomResponse) SetKey(val string) {
+	p.Key = val
 }
 
 var fieldIDToName_CreateLiveRoomResponse = map[int16]string{
 	1: "live_id",
+	2: "key",
 }
 
 func (p *CreateLiveRoomResponse) Read(iprot thrift.TProtocol) (err error) {
@@ -224,6 +234,14 @@ func (p *CreateLiveRoomResponse) Read(iprot thrift.TProtocol) (err error) {
 		case 1:
 			if fieldTypeId == thrift.I64 {
 				if err = p.ReadField1(iprot); err != nil {
+					goto ReadFieldError
+				}
+			} else if err = iprot.Skip(fieldTypeId); err != nil {
+				goto SkipFieldError
+			}
+		case 2:
+			if fieldTypeId == thrift.STRING {
+				if err = p.ReadField2(iprot); err != nil {
 					goto ReadFieldError
 				}
 			} else if err = iprot.Skip(fieldTypeId); err != nil {
@@ -269,6 +287,17 @@ func (p *CreateLiveRoomResponse) ReadField1(iprot thrift.TProtocol) error {
 	p.LiveId = _field
 	return nil
 }
+func (p *CreateLiveRoomResponse) ReadField2(iprot thrift.TProtocol) error {
+
+	var _field string
+	if v, err := iprot.ReadString(); err != nil {
+		return err
+	} else {
+		_field = v
+	}
+	p.Key = _field
+	return nil
+}
 
 func (p *CreateLiveRoomResponse) Write(oprot thrift.TProtocol) (err error) {
 	var fieldId int16
@@ -278,6 +307,10 @@ func (p *CreateLiveRoomResponse) Write(oprot thrift.TProtocol) (err error) {
 	if p != nil {
 		if err = p.writeField1(oprot); err != nil {
 			fieldId = 1
+			goto WriteFieldError
+		}
+		if err = p.writeField2(oprot); err != nil {
+			fieldId = 2
 			goto WriteFieldError
 		}
 	}
@@ -315,6 +348,23 @@ WriteFieldEndError:
 	return thrift.PrependError(fmt.Sprintf("%T write field 1 end error: ", p), err)
 }
 
+func (p *CreateLiveRoomResponse) writeField2(oprot thrift.TProtocol) (err error) {
+	if err = oprot.WriteFieldBegin("key", thrift.STRING, 2); err != nil {
+		goto WriteFieldBeginError
+	}
+	if err := oprot.WriteString(p.Key); err != nil {
+		return err
+	}
+	if err = oprot.WriteFieldEnd(); err != nil {
+		goto WriteFieldEndError
+	}
+	return nil
+WriteFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 2 begin error: ", p), err)
+WriteFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 2 end error: ", p), err)
+}
+
 func (p *CreateLiveRoomResponse) String() string {
 	if p == nil {
 		return "<nil>"
@@ -332,12 +382,22 @@ func (p *CreateLiveRoomResponse) DeepEqual(ano *CreateLiveRoomResponse) bool {
 	if !p.Field1DeepEqual(ano.LiveId) {
 		return false
 	}
+	if !p.Field2DeepEqual(ano.Key) {
+		return false
+	}
 	return true
 }
 
 func (p *CreateLiveRoomResponse) Field1DeepEqual(src int64) bool {
 
 	if p.LiveId != src {
+		return false
+	}
+	return true
+}
+func (p *CreateLiveRoomResponse) Field2DeepEqual(src string) bool {
+
+	if strings.Compare(p.Key, src) != 0 {
 		return false
 	}
 	return true
@@ -666,6 +726,334 @@ func (p *GetLiveRoomOwnerResponse) DeepEqual(ano *GetLiveRoomOwnerResponse) bool
 func (p *GetLiveRoomOwnerResponse) Field1DeepEqual(src int64) bool {
 
 	if p.Owner != src {
+		return false
+	}
+	return true
+}
+
+type GetLiveRoomStatusRequest struct {
+	LiveId int64 `thrift:"live_id,1" frugal:"1,default,i64" json:"live_id"`
+}
+
+func NewGetLiveRoomStatusRequest() *GetLiveRoomStatusRequest {
+	return &GetLiveRoomStatusRequest{}
+}
+
+func (p *GetLiveRoomStatusRequest) InitDefault() {
+	*p = GetLiveRoomStatusRequest{}
+}
+
+func (p *GetLiveRoomStatusRequest) GetLiveId() (v int64) {
+	return p.LiveId
+}
+func (p *GetLiveRoomStatusRequest) SetLiveId(val int64) {
+	p.LiveId = val
+}
+
+var fieldIDToName_GetLiveRoomStatusRequest = map[int16]string{
+	1: "live_id",
+}
+
+func (p *GetLiveRoomStatusRequest) Read(iprot thrift.TProtocol) (err error) {
+
+	var fieldTypeId thrift.TType
+	var fieldId int16
+
+	if _, err = iprot.ReadStructBegin(); err != nil {
+		goto ReadStructBeginError
+	}
+
+	for {
+		_, fieldTypeId, fieldId, err = iprot.ReadFieldBegin()
+		if err != nil {
+			goto ReadFieldBeginError
+		}
+		if fieldTypeId == thrift.STOP {
+			break
+		}
+
+		switch fieldId {
+		case 1:
+			if fieldTypeId == thrift.I64 {
+				if err = p.ReadField1(iprot); err != nil {
+					goto ReadFieldError
+				}
+			} else if err = iprot.Skip(fieldTypeId); err != nil {
+				goto SkipFieldError
+			}
+		default:
+			if err = iprot.Skip(fieldTypeId); err != nil {
+				goto SkipFieldError
+			}
+		}
+		if err = iprot.ReadFieldEnd(); err != nil {
+			goto ReadFieldEndError
+		}
+	}
+	if err = iprot.ReadStructEnd(); err != nil {
+		goto ReadStructEndError
+	}
+
+	return nil
+ReadStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct begin error: ", p), err)
+ReadFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
+ReadFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_GetLiveRoomStatusRequest[fieldId]), err)
+SkipFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
+
+ReadFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read field end error", p), err)
+ReadStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
+}
+
+func (p *GetLiveRoomStatusRequest) ReadField1(iprot thrift.TProtocol) error {
+
+	var _field int64
+	if v, err := iprot.ReadI64(); err != nil {
+		return err
+	} else {
+		_field = v
+	}
+	p.LiveId = _field
+	return nil
+}
+
+func (p *GetLiveRoomStatusRequest) Write(oprot thrift.TProtocol) (err error) {
+	var fieldId int16
+	if err = oprot.WriteStructBegin("GetLiveRoomStatusRequest"); err != nil {
+		goto WriteStructBeginError
+	}
+	if p != nil {
+		if err = p.writeField1(oprot); err != nil {
+			fieldId = 1
+			goto WriteFieldError
+		}
+	}
+	if err = oprot.WriteFieldStop(); err != nil {
+		goto WriteFieldStopError
+	}
+	if err = oprot.WriteStructEnd(); err != nil {
+		goto WriteStructEndError
+	}
+	return nil
+WriteStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct begin error: ", p), err)
+WriteFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T write field %d error: ", p, fieldId), err)
+WriteFieldStopError:
+	return thrift.PrependError(fmt.Sprintf("%T write field stop error: ", p), err)
+WriteStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct end error: ", p), err)
+}
+
+func (p *GetLiveRoomStatusRequest) writeField1(oprot thrift.TProtocol) (err error) {
+	if err = oprot.WriteFieldBegin("live_id", thrift.I64, 1); err != nil {
+		goto WriteFieldBeginError
+	}
+	if err := oprot.WriteI64(p.LiveId); err != nil {
+		return err
+	}
+	if err = oprot.WriteFieldEnd(); err != nil {
+		goto WriteFieldEndError
+	}
+	return nil
+WriteFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 1 begin error: ", p), err)
+WriteFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 1 end error: ", p), err)
+}
+
+func (p *GetLiveRoomStatusRequest) String() string {
+	if p == nil {
+		return "<nil>"
+	}
+	return fmt.Sprintf("GetLiveRoomStatusRequest(%+v)", *p)
+
+}
+
+func (p *GetLiveRoomStatusRequest) DeepEqual(ano *GetLiveRoomStatusRequest) bool {
+	if p == ano {
+		return true
+	} else if p == nil || ano == nil {
+		return false
+	}
+	if !p.Field1DeepEqual(ano.LiveId) {
+		return false
+	}
+	return true
+}
+
+func (p *GetLiveRoomStatusRequest) Field1DeepEqual(src int64) bool {
+
+	if p.LiveId != src {
+		return false
+	}
+	return true
+}
+
+type GetLiveRoomStatusResponse struct {
+	IsLive bool `thrift:"is_live,1" frugal:"1,default,bool" json:"is_live"`
+}
+
+func NewGetLiveRoomStatusResponse() *GetLiveRoomStatusResponse {
+	return &GetLiveRoomStatusResponse{}
+}
+
+func (p *GetLiveRoomStatusResponse) InitDefault() {
+	*p = GetLiveRoomStatusResponse{}
+}
+
+func (p *GetLiveRoomStatusResponse) GetIsLive() (v bool) {
+	return p.IsLive
+}
+func (p *GetLiveRoomStatusResponse) SetIsLive(val bool) {
+	p.IsLive = val
+}
+
+var fieldIDToName_GetLiveRoomStatusResponse = map[int16]string{
+	1: "is_live",
+}
+
+func (p *GetLiveRoomStatusResponse) Read(iprot thrift.TProtocol) (err error) {
+
+	var fieldTypeId thrift.TType
+	var fieldId int16
+
+	if _, err = iprot.ReadStructBegin(); err != nil {
+		goto ReadStructBeginError
+	}
+
+	for {
+		_, fieldTypeId, fieldId, err = iprot.ReadFieldBegin()
+		if err != nil {
+			goto ReadFieldBeginError
+		}
+		if fieldTypeId == thrift.STOP {
+			break
+		}
+
+		switch fieldId {
+		case 1:
+			if fieldTypeId == thrift.BOOL {
+				if err = p.ReadField1(iprot); err != nil {
+					goto ReadFieldError
+				}
+			} else if err = iprot.Skip(fieldTypeId); err != nil {
+				goto SkipFieldError
+			}
+		default:
+			if err = iprot.Skip(fieldTypeId); err != nil {
+				goto SkipFieldError
+			}
+		}
+		if err = iprot.ReadFieldEnd(); err != nil {
+			goto ReadFieldEndError
+		}
+	}
+	if err = iprot.ReadStructEnd(); err != nil {
+		goto ReadStructEndError
+	}
+
+	return nil
+ReadStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct begin error: ", p), err)
+ReadFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
+ReadFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_GetLiveRoomStatusResponse[fieldId]), err)
+SkipFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
+
+ReadFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read field end error", p), err)
+ReadStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
+}
+
+func (p *GetLiveRoomStatusResponse) ReadField1(iprot thrift.TProtocol) error {
+
+	var _field bool
+	if v, err := iprot.ReadBool(); err != nil {
+		return err
+	} else {
+		_field = v
+	}
+	p.IsLive = _field
+	return nil
+}
+
+func (p *GetLiveRoomStatusResponse) Write(oprot thrift.TProtocol) (err error) {
+	var fieldId int16
+	if err = oprot.WriteStructBegin("GetLiveRoomStatusResponse"); err != nil {
+		goto WriteStructBeginError
+	}
+	if p != nil {
+		if err = p.writeField1(oprot); err != nil {
+			fieldId = 1
+			goto WriteFieldError
+		}
+	}
+	if err = oprot.WriteFieldStop(); err != nil {
+		goto WriteFieldStopError
+	}
+	if err = oprot.WriteStructEnd(); err != nil {
+		goto WriteStructEndError
+	}
+	return nil
+WriteStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct begin error: ", p), err)
+WriteFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T write field %d error: ", p, fieldId), err)
+WriteFieldStopError:
+	return thrift.PrependError(fmt.Sprintf("%T write field stop error: ", p), err)
+WriteStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct end error: ", p), err)
+}
+
+func (p *GetLiveRoomStatusResponse) writeField1(oprot thrift.TProtocol) (err error) {
+	if err = oprot.WriteFieldBegin("is_live", thrift.BOOL, 1); err != nil {
+		goto WriteFieldBeginError
+	}
+	if err := oprot.WriteBool(p.IsLive); err != nil {
+		return err
+	}
+	if err = oprot.WriteFieldEnd(); err != nil {
+		goto WriteFieldEndError
+	}
+	return nil
+WriteFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 1 begin error: ", p), err)
+WriteFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 1 end error: ", p), err)
+}
+
+func (p *GetLiveRoomStatusResponse) String() string {
+	if p == nil {
+		return "<nil>"
+	}
+	return fmt.Sprintf("GetLiveRoomStatusResponse(%+v)", *p)
+
+}
+
+func (p *GetLiveRoomStatusResponse) DeepEqual(ano *GetLiveRoomStatusResponse) bool {
+	if p == ano {
+		return true
+	} else if p == nil || ano == nil {
+		return false
+	}
+	if !p.Field1DeepEqual(ano.IsLive) {
+		return false
+	}
+	return true
+}
+
+func (p *GetLiveRoomStatusResponse) Field1DeepEqual(src bool) bool {
+
+	if p.IsLive != src {
 		return false
 	}
 	return true
@@ -1005,6 +1393,334 @@ func (p *GetLiveRoomResponse) Field1DeepEqual(src *base.Room) bool {
 	return true
 }
 
+type GetLiveRoomKeyRequest struct {
+	LiveId int64 `thrift:"live_id,1" frugal:"1,default,i64" json:"live_id"`
+}
+
+func NewGetLiveRoomKeyRequest() *GetLiveRoomKeyRequest {
+	return &GetLiveRoomKeyRequest{}
+}
+
+func (p *GetLiveRoomKeyRequest) InitDefault() {
+	*p = GetLiveRoomKeyRequest{}
+}
+
+func (p *GetLiveRoomKeyRequest) GetLiveId() (v int64) {
+	return p.LiveId
+}
+func (p *GetLiveRoomKeyRequest) SetLiveId(val int64) {
+	p.LiveId = val
+}
+
+var fieldIDToName_GetLiveRoomKeyRequest = map[int16]string{
+	1: "live_id",
+}
+
+func (p *GetLiveRoomKeyRequest) Read(iprot thrift.TProtocol) (err error) {
+
+	var fieldTypeId thrift.TType
+	var fieldId int16
+
+	if _, err = iprot.ReadStructBegin(); err != nil {
+		goto ReadStructBeginError
+	}
+
+	for {
+		_, fieldTypeId, fieldId, err = iprot.ReadFieldBegin()
+		if err != nil {
+			goto ReadFieldBeginError
+		}
+		if fieldTypeId == thrift.STOP {
+			break
+		}
+
+		switch fieldId {
+		case 1:
+			if fieldTypeId == thrift.I64 {
+				if err = p.ReadField1(iprot); err != nil {
+					goto ReadFieldError
+				}
+			} else if err = iprot.Skip(fieldTypeId); err != nil {
+				goto SkipFieldError
+			}
+		default:
+			if err = iprot.Skip(fieldTypeId); err != nil {
+				goto SkipFieldError
+			}
+		}
+		if err = iprot.ReadFieldEnd(); err != nil {
+			goto ReadFieldEndError
+		}
+	}
+	if err = iprot.ReadStructEnd(); err != nil {
+		goto ReadStructEndError
+	}
+
+	return nil
+ReadStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct begin error: ", p), err)
+ReadFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
+ReadFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_GetLiveRoomKeyRequest[fieldId]), err)
+SkipFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
+
+ReadFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read field end error", p), err)
+ReadStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
+}
+
+func (p *GetLiveRoomKeyRequest) ReadField1(iprot thrift.TProtocol) error {
+
+	var _field int64
+	if v, err := iprot.ReadI64(); err != nil {
+		return err
+	} else {
+		_field = v
+	}
+	p.LiveId = _field
+	return nil
+}
+
+func (p *GetLiveRoomKeyRequest) Write(oprot thrift.TProtocol) (err error) {
+	var fieldId int16
+	if err = oprot.WriteStructBegin("GetLiveRoomKeyRequest"); err != nil {
+		goto WriteStructBeginError
+	}
+	if p != nil {
+		if err = p.writeField1(oprot); err != nil {
+			fieldId = 1
+			goto WriteFieldError
+		}
+	}
+	if err = oprot.WriteFieldStop(); err != nil {
+		goto WriteFieldStopError
+	}
+	if err = oprot.WriteStructEnd(); err != nil {
+		goto WriteStructEndError
+	}
+	return nil
+WriteStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct begin error: ", p), err)
+WriteFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T write field %d error: ", p, fieldId), err)
+WriteFieldStopError:
+	return thrift.PrependError(fmt.Sprintf("%T write field stop error: ", p), err)
+WriteStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct end error: ", p), err)
+}
+
+func (p *GetLiveRoomKeyRequest) writeField1(oprot thrift.TProtocol) (err error) {
+	if err = oprot.WriteFieldBegin("live_id", thrift.I64, 1); err != nil {
+		goto WriteFieldBeginError
+	}
+	if err := oprot.WriteI64(p.LiveId); err != nil {
+		return err
+	}
+	if err = oprot.WriteFieldEnd(); err != nil {
+		goto WriteFieldEndError
+	}
+	return nil
+WriteFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 1 begin error: ", p), err)
+WriteFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 1 end error: ", p), err)
+}
+
+func (p *GetLiveRoomKeyRequest) String() string {
+	if p == nil {
+		return "<nil>"
+	}
+	return fmt.Sprintf("GetLiveRoomKeyRequest(%+v)", *p)
+
+}
+
+func (p *GetLiveRoomKeyRequest) DeepEqual(ano *GetLiveRoomKeyRequest) bool {
+	if p == ano {
+		return true
+	} else if p == nil || ano == nil {
+		return false
+	}
+	if !p.Field1DeepEqual(ano.LiveId) {
+		return false
+	}
+	return true
+}
+
+func (p *GetLiveRoomKeyRequest) Field1DeepEqual(src int64) bool {
+
+	if p.LiveId != src {
+		return false
+	}
+	return true
+}
+
+type GetLiveRoomKeyResponse struct {
+	Key string `thrift:"key,1" frugal:"1,default,string" json:"key"`
+}
+
+func NewGetLiveRoomKeyResponse() *GetLiveRoomKeyResponse {
+	return &GetLiveRoomKeyResponse{}
+}
+
+func (p *GetLiveRoomKeyResponse) InitDefault() {
+	*p = GetLiveRoomKeyResponse{}
+}
+
+func (p *GetLiveRoomKeyResponse) GetKey() (v string) {
+	return p.Key
+}
+func (p *GetLiveRoomKeyResponse) SetKey(val string) {
+	p.Key = val
+}
+
+var fieldIDToName_GetLiveRoomKeyResponse = map[int16]string{
+	1: "key",
+}
+
+func (p *GetLiveRoomKeyResponse) Read(iprot thrift.TProtocol) (err error) {
+
+	var fieldTypeId thrift.TType
+	var fieldId int16
+
+	if _, err = iprot.ReadStructBegin(); err != nil {
+		goto ReadStructBeginError
+	}
+
+	for {
+		_, fieldTypeId, fieldId, err = iprot.ReadFieldBegin()
+		if err != nil {
+			goto ReadFieldBeginError
+		}
+		if fieldTypeId == thrift.STOP {
+			break
+		}
+
+		switch fieldId {
+		case 1:
+			if fieldTypeId == thrift.STRING {
+				if err = p.ReadField1(iprot); err != nil {
+					goto ReadFieldError
+				}
+			} else if err = iprot.Skip(fieldTypeId); err != nil {
+				goto SkipFieldError
+			}
+		default:
+			if err = iprot.Skip(fieldTypeId); err != nil {
+				goto SkipFieldError
+			}
+		}
+		if err = iprot.ReadFieldEnd(); err != nil {
+			goto ReadFieldEndError
+		}
+	}
+	if err = iprot.ReadStructEnd(); err != nil {
+		goto ReadStructEndError
+	}
+
+	return nil
+ReadStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct begin error: ", p), err)
+ReadFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
+ReadFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_GetLiveRoomKeyResponse[fieldId]), err)
+SkipFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
+
+ReadFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read field end error", p), err)
+ReadStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
+}
+
+func (p *GetLiveRoomKeyResponse) ReadField1(iprot thrift.TProtocol) error {
+
+	var _field string
+	if v, err := iprot.ReadString(); err != nil {
+		return err
+	} else {
+		_field = v
+	}
+	p.Key = _field
+	return nil
+}
+
+func (p *GetLiveRoomKeyResponse) Write(oprot thrift.TProtocol) (err error) {
+	var fieldId int16
+	if err = oprot.WriteStructBegin("GetLiveRoomKeyResponse"); err != nil {
+		goto WriteStructBeginError
+	}
+	if p != nil {
+		if err = p.writeField1(oprot); err != nil {
+			fieldId = 1
+			goto WriteFieldError
+		}
+	}
+	if err = oprot.WriteFieldStop(); err != nil {
+		goto WriteFieldStopError
+	}
+	if err = oprot.WriteStructEnd(); err != nil {
+		goto WriteStructEndError
+	}
+	return nil
+WriteStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct begin error: ", p), err)
+WriteFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T write field %d error: ", p, fieldId), err)
+WriteFieldStopError:
+	return thrift.PrependError(fmt.Sprintf("%T write field stop error: ", p), err)
+WriteStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct end error: ", p), err)
+}
+
+func (p *GetLiveRoomKeyResponse) writeField1(oprot thrift.TProtocol) (err error) {
+	if err = oprot.WriteFieldBegin("key", thrift.STRING, 1); err != nil {
+		goto WriteFieldBeginError
+	}
+	if err := oprot.WriteString(p.Key); err != nil {
+		return err
+	}
+	if err = oprot.WriteFieldEnd(); err != nil {
+		goto WriteFieldEndError
+	}
+	return nil
+WriteFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 1 begin error: ", p), err)
+WriteFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 1 end error: ", p), err)
+}
+
+func (p *GetLiveRoomKeyResponse) String() string {
+	if p == nil {
+		return "<nil>"
+	}
+	return fmt.Sprintf("GetLiveRoomKeyResponse(%+v)", *p)
+
+}
+
+func (p *GetLiveRoomKeyResponse) DeepEqual(ano *GetLiveRoomKeyResponse) bool {
+	if p == ano {
+		return true
+	} else if p == nil || ano == nil {
+		return false
+	}
+	if !p.Field1DeepEqual(ano.Key) {
+		return false
+	}
+	return true
+}
+
+func (p *GetLiveRoomKeyResponse) Field1DeepEqual(src string) bool {
+
+	if strings.Compare(p.Key, src) != 0 {
+		return false
+	}
+	return true
+}
+
 type StopLiveRoomRequest struct {
 	LiveId int64 `thrift:"live_id,1" frugal:"1,default,i64" json:"live_id"`
 }
@@ -1169,12 +1885,208 @@ func (p *StopLiveRoomRequest) Field1DeepEqual(src int64) bool {
 	return true
 }
 
+type GetAllOnlineLiveRoomResponse struct {
+	LiveIds []int64 `thrift:"live_ids,1" frugal:"1,default,list<i64>" json:"live_ids"`
+}
+
+func NewGetAllOnlineLiveRoomResponse() *GetAllOnlineLiveRoomResponse {
+	return &GetAllOnlineLiveRoomResponse{}
+}
+
+func (p *GetAllOnlineLiveRoomResponse) InitDefault() {
+	*p = GetAllOnlineLiveRoomResponse{}
+}
+
+func (p *GetAllOnlineLiveRoomResponse) GetLiveIds() (v []int64) {
+	return p.LiveIds
+}
+func (p *GetAllOnlineLiveRoomResponse) SetLiveIds(val []int64) {
+	p.LiveIds = val
+}
+
+var fieldIDToName_GetAllOnlineLiveRoomResponse = map[int16]string{
+	1: "live_ids",
+}
+
+func (p *GetAllOnlineLiveRoomResponse) Read(iprot thrift.TProtocol) (err error) {
+
+	var fieldTypeId thrift.TType
+	var fieldId int16
+
+	if _, err = iprot.ReadStructBegin(); err != nil {
+		goto ReadStructBeginError
+	}
+
+	for {
+		_, fieldTypeId, fieldId, err = iprot.ReadFieldBegin()
+		if err != nil {
+			goto ReadFieldBeginError
+		}
+		if fieldTypeId == thrift.STOP {
+			break
+		}
+
+		switch fieldId {
+		case 1:
+			if fieldTypeId == thrift.LIST {
+				if err = p.ReadField1(iprot); err != nil {
+					goto ReadFieldError
+				}
+			} else if err = iprot.Skip(fieldTypeId); err != nil {
+				goto SkipFieldError
+			}
+		default:
+			if err = iprot.Skip(fieldTypeId); err != nil {
+				goto SkipFieldError
+			}
+		}
+		if err = iprot.ReadFieldEnd(); err != nil {
+			goto ReadFieldEndError
+		}
+	}
+	if err = iprot.ReadStructEnd(); err != nil {
+		goto ReadStructEndError
+	}
+
+	return nil
+ReadStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct begin error: ", p), err)
+ReadFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
+ReadFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_GetAllOnlineLiveRoomResponse[fieldId]), err)
+SkipFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
+
+ReadFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read field end error", p), err)
+ReadStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
+}
+
+func (p *GetAllOnlineLiveRoomResponse) ReadField1(iprot thrift.TProtocol) error {
+	_, size, err := iprot.ReadListBegin()
+	if err != nil {
+		return err
+	}
+	_field := make([]int64, 0, size)
+	for i := 0; i < size; i++ {
+
+		var _elem int64
+		if v, err := iprot.ReadI64(); err != nil {
+			return err
+		} else {
+			_elem = v
+		}
+
+		_field = append(_field, _elem)
+	}
+	if err := iprot.ReadListEnd(); err != nil {
+		return err
+	}
+	p.LiveIds = _field
+	return nil
+}
+
+func (p *GetAllOnlineLiveRoomResponse) Write(oprot thrift.TProtocol) (err error) {
+	var fieldId int16
+	if err = oprot.WriteStructBegin("GetAllOnlineLiveRoomResponse"); err != nil {
+		goto WriteStructBeginError
+	}
+	if p != nil {
+		if err = p.writeField1(oprot); err != nil {
+			fieldId = 1
+			goto WriteFieldError
+		}
+	}
+	if err = oprot.WriteFieldStop(); err != nil {
+		goto WriteFieldStopError
+	}
+	if err = oprot.WriteStructEnd(); err != nil {
+		goto WriteStructEndError
+	}
+	return nil
+WriteStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct begin error: ", p), err)
+WriteFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T write field %d error: ", p, fieldId), err)
+WriteFieldStopError:
+	return thrift.PrependError(fmt.Sprintf("%T write field stop error: ", p), err)
+WriteStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct end error: ", p), err)
+}
+
+func (p *GetAllOnlineLiveRoomResponse) writeField1(oprot thrift.TProtocol) (err error) {
+	if err = oprot.WriteFieldBegin("live_ids", thrift.LIST, 1); err != nil {
+		goto WriteFieldBeginError
+	}
+	if err := oprot.WriteListBegin(thrift.I64, len(p.LiveIds)); err != nil {
+		return err
+	}
+	for _, v := range p.LiveIds {
+		if err := oprot.WriteI64(v); err != nil {
+			return err
+		}
+	}
+	if err := oprot.WriteListEnd(); err != nil {
+		return err
+	}
+	if err = oprot.WriteFieldEnd(); err != nil {
+		goto WriteFieldEndError
+	}
+	return nil
+WriteFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 1 begin error: ", p), err)
+WriteFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 1 end error: ", p), err)
+}
+
+func (p *GetAllOnlineLiveRoomResponse) String() string {
+	if p == nil {
+		return "<nil>"
+	}
+	return fmt.Sprintf("GetAllOnlineLiveRoomResponse(%+v)", *p)
+
+}
+
+func (p *GetAllOnlineLiveRoomResponse) DeepEqual(ano *GetAllOnlineLiveRoomResponse) bool {
+	if p == ano {
+		return true
+	} else if p == nil || ano == nil {
+		return false
+	}
+	if !p.Field1DeepEqual(ano.LiveIds) {
+		return false
+	}
+	return true
+}
+
+func (p *GetAllOnlineLiveRoomResponse) Field1DeepEqual(src []int64) bool {
+
+	if len(p.LiveIds) != len(src) {
+		return false
+	}
+	for i, v := range p.LiveIds {
+		_src := src[i]
+		if v != _src {
+			return false
+		}
+	}
+	return true
+}
+
 type LiveService interface {
 	CreateLiveRoom(ctx context.Context, req *CreateLiveRoomRequest) (r *CreateLiveRoomResponse, err error)
 
 	GetLiveRoomOwner(ctx context.Context, req *GetLiveRoomOwnerRequest) (r *GetLiveRoomOwnerResponse, err error)
 
+	GetLiveRoomStatus(ctx context.Context, req *GetLiveRoomStatusRequest) (r *GetLiveRoomStatusResponse, err error)
+
 	GetLiveRoom(ctx context.Context, req *GetLiveRoomRequest) (r *GetLiveRoomResponse, err error)
+
+	GetLiveRoomKey(ctx context.Context, req *GetLiveRoomKeyRequest) (r *GetLiveRoomKeyResponse, err error)
+
+	GetAllOnlineLiveRoom(ctx context.Context) (r *GetAllOnlineLiveRoomResponse, err error)
 
 	StopLiveRoom(ctx context.Context, req *StopLiveRoomRequest) (err error)
 }
@@ -1223,11 +2135,37 @@ func (p *LiveServiceClient) GetLiveRoomOwner(ctx context.Context, req *GetLiveRo
 	}
 	return _result.GetSuccess(), nil
 }
+func (p *LiveServiceClient) GetLiveRoomStatus(ctx context.Context, req *GetLiveRoomStatusRequest) (r *GetLiveRoomStatusResponse, err error) {
+	var _args LiveServiceGetLiveRoomStatusArgs
+	_args.Req = req
+	var _result LiveServiceGetLiveRoomStatusResult
+	if err = p.Client_().Call(ctx, "GetLiveRoomStatus", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
 func (p *LiveServiceClient) GetLiveRoom(ctx context.Context, req *GetLiveRoomRequest) (r *GetLiveRoomResponse, err error) {
 	var _args LiveServiceGetLiveRoomArgs
 	_args.Req = req
 	var _result LiveServiceGetLiveRoomResult
 	if err = p.Client_().Call(ctx, "GetLiveRoom", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+func (p *LiveServiceClient) GetLiveRoomKey(ctx context.Context, req *GetLiveRoomKeyRequest) (r *GetLiveRoomKeyResponse, err error) {
+	var _args LiveServiceGetLiveRoomKeyArgs
+	_args.Req = req
+	var _result LiveServiceGetLiveRoomKeyResult
+	if err = p.Client_().Call(ctx, "GetLiveRoomKey", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+func (p *LiveServiceClient) GetAllOnlineLiveRoom(ctx context.Context) (r *GetAllOnlineLiveRoomResponse, err error) {
+	var _args LiveServiceGetAllOnlineLiveRoomArgs
+	var _result LiveServiceGetAllOnlineLiveRoomResult
+	if err = p.Client_().Call(ctx, "GetAllOnlineLiveRoom", &_args, &_result); err != nil {
 		return
 	}
 	return _result.GetSuccess(), nil
@@ -1264,7 +2202,10 @@ func NewLiveServiceProcessor(handler LiveService) *LiveServiceProcessor {
 	self := &LiveServiceProcessor{handler: handler, processorMap: make(map[string]thrift.TProcessorFunction)}
 	self.AddToProcessorMap("CreateLiveRoom", &liveServiceProcessorCreateLiveRoom{handler: handler})
 	self.AddToProcessorMap("GetLiveRoomOwner", &liveServiceProcessorGetLiveRoomOwner{handler: handler})
+	self.AddToProcessorMap("GetLiveRoomStatus", &liveServiceProcessorGetLiveRoomStatus{handler: handler})
 	self.AddToProcessorMap("GetLiveRoom", &liveServiceProcessorGetLiveRoom{handler: handler})
+	self.AddToProcessorMap("GetLiveRoomKey", &liveServiceProcessorGetLiveRoomKey{handler: handler})
+	self.AddToProcessorMap("GetAllOnlineLiveRoom", &liveServiceProcessorGetAllOnlineLiveRoom{handler: handler})
 	self.AddToProcessorMap("StopLiveRoom", &liveServiceProcessorStopLiveRoom{handler: handler})
 	return self
 }
@@ -1382,6 +2323,54 @@ func (p *liveServiceProcessorGetLiveRoomOwner) Process(ctx context.Context, seqI
 	return true, err
 }
 
+type liveServiceProcessorGetLiveRoomStatus struct {
+	handler LiveService
+}
+
+func (p *liveServiceProcessorGetLiveRoomStatus) Process(ctx context.Context, seqId int32, iprot, oprot thrift.TProtocol) (success bool, err thrift.TException) {
+	args := LiveServiceGetLiveRoomStatusArgs{}
+	if err = args.Read(iprot); err != nil {
+		iprot.ReadMessageEnd()
+		x := thrift.NewTApplicationException(thrift.PROTOCOL_ERROR, err.Error())
+		oprot.WriteMessageBegin("GetLiveRoomStatus", thrift.EXCEPTION, seqId)
+		x.Write(oprot)
+		oprot.WriteMessageEnd()
+		oprot.Flush(ctx)
+		return false, err
+	}
+
+	iprot.ReadMessageEnd()
+	var err2 error
+	result := LiveServiceGetLiveRoomStatusResult{}
+	var retval *GetLiveRoomStatusResponse
+	if retval, err2 = p.handler.GetLiveRoomStatus(ctx, args.Req); err2 != nil {
+		x := thrift.NewTApplicationException(thrift.INTERNAL_ERROR, "Internal error processing GetLiveRoomStatus: "+err2.Error())
+		oprot.WriteMessageBegin("GetLiveRoomStatus", thrift.EXCEPTION, seqId)
+		x.Write(oprot)
+		oprot.WriteMessageEnd()
+		oprot.Flush(ctx)
+		return true, err2
+	} else {
+		result.Success = retval
+	}
+	if err2 = oprot.WriteMessageBegin("GetLiveRoomStatus", thrift.REPLY, seqId); err2 != nil {
+		err = err2
+	}
+	if err2 = result.Write(oprot); err == nil && err2 != nil {
+		err = err2
+	}
+	if err2 = oprot.WriteMessageEnd(); err == nil && err2 != nil {
+		err = err2
+	}
+	if err2 = oprot.Flush(ctx); err == nil && err2 != nil {
+		err = err2
+	}
+	if err != nil {
+		return
+	}
+	return true, err
+}
+
 type liveServiceProcessorGetLiveRoom struct {
 	handler LiveService
 }
@@ -1413,6 +2402,102 @@ func (p *liveServiceProcessorGetLiveRoom) Process(ctx context.Context, seqId int
 		result.Success = retval
 	}
 	if err2 = oprot.WriteMessageBegin("GetLiveRoom", thrift.REPLY, seqId); err2 != nil {
+		err = err2
+	}
+	if err2 = result.Write(oprot); err == nil && err2 != nil {
+		err = err2
+	}
+	if err2 = oprot.WriteMessageEnd(); err == nil && err2 != nil {
+		err = err2
+	}
+	if err2 = oprot.Flush(ctx); err == nil && err2 != nil {
+		err = err2
+	}
+	if err != nil {
+		return
+	}
+	return true, err
+}
+
+type liveServiceProcessorGetLiveRoomKey struct {
+	handler LiveService
+}
+
+func (p *liveServiceProcessorGetLiveRoomKey) Process(ctx context.Context, seqId int32, iprot, oprot thrift.TProtocol) (success bool, err thrift.TException) {
+	args := LiveServiceGetLiveRoomKeyArgs{}
+	if err = args.Read(iprot); err != nil {
+		iprot.ReadMessageEnd()
+		x := thrift.NewTApplicationException(thrift.PROTOCOL_ERROR, err.Error())
+		oprot.WriteMessageBegin("GetLiveRoomKey", thrift.EXCEPTION, seqId)
+		x.Write(oprot)
+		oprot.WriteMessageEnd()
+		oprot.Flush(ctx)
+		return false, err
+	}
+
+	iprot.ReadMessageEnd()
+	var err2 error
+	result := LiveServiceGetLiveRoomKeyResult{}
+	var retval *GetLiveRoomKeyResponse
+	if retval, err2 = p.handler.GetLiveRoomKey(ctx, args.Req); err2 != nil {
+		x := thrift.NewTApplicationException(thrift.INTERNAL_ERROR, "Internal error processing GetLiveRoomKey: "+err2.Error())
+		oprot.WriteMessageBegin("GetLiveRoomKey", thrift.EXCEPTION, seqId)
+		x.Write(oprot)
+		oprot.WriteMessageEnd()
+		oprot.Flush(ctx)
+		return true, err2
+	} else {
+		result.Success = retval
+	}
+	if err2 = oprot.WriteMessageBegin("GetLiveRoomKey", thrift.REPLY, seqId); err2 != nil {
+		err = err2
+	}
+	if err2 = result.Write(oprot); err == nil && err2 != nil {
+		err = err2
+	}
+	if err2 = oprot.WriteMessageEnd(); err == nil && err2 != nil {
+		err = err2
+	}
+	if err2 = oprot.Flush(ctx); err == nil && err2 != nil {
+		err = err2
+	}
+	if err != nil {
+		return
+	}
+	return true, err
+}
+
+type liveServiceProcessorGetAllOnlineLiveRoom struct {
+	handler LiveService
+}
+
+func (p *liveServiceProcessorGetAllOnlineLiveRoom) Process(ctx context.Context, seqId int32, iprot, oprot thrift.TProtocol) (success bool, err thrift.TException) {
+	args := LiveServiceGetAllOnlineLiveRoomArgs{}
+	if err = args.Read(iprot); err != nil {
+		iprot.ReadMessageEnd()
+		x := thrift.NewTApplicationException(thrift.PROTOCOL_ERROR, err.Error())
+		oprot.WriteMessageBegin("GetAllOnlineLiveRoom", thrift.EXCEPTION, seqId)
+		x.Write(oprot)
+		oprot.WriteMessageEnd()
+		oprot.Flush(ctx)
+		return false, err
+	}
+
+	iprot.ReadMessageEnd()
+	var err2 error
+	result := LiveServiceGetAllOnlineLiveRoomResult{}
+	var retval *GetAllOnlineLiveRoomResponse
+	if retval, err2 = p.handler.GetAllOnlineLiveRoom(ctx); err2 != nil {
+		x := thrift.NewTApplicationException(thrift.INTERNAL_ERROR, "Internal error processing GetAllOnlineLiveRoom: "+err2.Error())
+		oprot.WriteMessageBegin("GetAllOnlineLiveRoom", thrift.EXCEPTION, seqId)
+		x.Write(oprot)
+		oprot.WriteMessageEnd()
+		oprot.Flush(ctx)
+		return true, err2
+	} else {
+		result.Success = retval
+	}
+	if err2 = oprot.WriteMessageBegin("GetAllOnlineLiveRoom", thrift.REPLY, seqId); err2 != nil {
 		err = err2
 	}
 	if err2 = result.Write(oprot); err == nil && err2 != nil {
@@ -2159,6 +3244,348 @@ func (p *LiveServiceGetLiveRoomOwnerResult) Field0DeepEqual(src *GetLiveRoomOwne
 	return true
 }
 
+type LiveServiceGetLiveRoomStatusArgs struct {
+	Req *GetLiveRoomStatusRequest `thrift:"req,1" frugal:"1,default,GetLiveRoomStatusRequest" json:"req"`
+}
+
+func NewLiveServiceGetLiveRoomStatusArgs() *LiveServiceGetLiveRoomStatusArgs {
+	return &LiveServiceGetLiveRoomStatusArgs{}
+}
+
+func (p *LiveServiceGetLiveRoomStatusArgs) InitDefault() {
+	*p = LiveServiceGetLiveRoomStatusArgs{}
+}
+
+var LiveServiceGetLiveRoomStatusArgs_Req_DEFAULT *GetLiveRoomStatusRequest
+
+func (p *LiveServiceGetLiveRoomStatusArgs) GetReq() (v *GetLiveRoomStatusRequest) {
+	if !p.IsSetReq() {
+		return LiveServiceGetLiveRoomStatusArgs_Req_DEFAULT
+	}
+	return p.Req
+}
+func (p *LiveServiceGetLiveRoomStatusArgs) SetReq(val *GetLiveRoomStatusRequest) {
+	p.Req = val
+}
+
+var fieldIDToName_LiveServiceGetLiveRoomStatusArgs = map[int16]string{
+	1: "req",
+}
+
+func (p *LiveServiceGetLiveRoomStatusArgs) IsSetReq() bool {
+	return p.Req != nil
+}
+
+func (p *LiveServiceGetLiveRoomStatusArgs) Read(iprot thrift.TProtocol) (err error) {
+
+	var fieldTypeId thrift.TType
+	var fieldId int16
+
+	if _, err = iprot.ReadStructBegin(); err != nil {
+		goto ReadStructBeginError
+	}
+
+	for {
+		_, fieldTypeId, fieldId, err = iprot.ReadFieldBegin()
+		if err != nil {
+			goto ReadFieldBeginError
+		}
+		if fieldTypeId == thrift.STOP {
+			break
+		}
+
+		switch fieldId {
+		case 1:
+			if fieldTypeId == thrift.STRUCT {
+				if err = p.ReadField1(iprot); err != nil {
+					goto ReadFieldError
+				}
+			} else if err = iprot.Skip(fieldTypeId); err != nil {
+				goto SkipFieldError
+			}
+		default:
+			if err = iprot.Skip(fieldTypeId); err != nil {
+				goto SkipFieldError
+			}
+		}
+		if err = iprot.ReadFieldEnd(); err != nil {
+			goto ReadFieldEndError
+		}
+	}
+	if err = iprot.ReadStructEnd(); err != nil {
+		goto ReadStructEndError
+	}
+
+	return nil
+ReadStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct begin error: ", p), err)
+ReadFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
+ReadFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_LiveServiceGetLiveRoomStatusArgs[fieldId]), err)
+SkipFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
+
+ReadFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read field end error", p), err)
+ReadStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
+}
+
+func (p *LiveServiceGetLiveRoomStatusArgs) ReadField1(iprot thrift.TProtocol) error {
+	_field := NewGetLiveRoomStatusRequest()
+	if err := _field.Read(iprot); err != nil {
+		return err
+	}
+	p.Req = _field
+	return nil
+}
+
+func (p *LiveServiceGetLiveRoomStatusArgs) Write(oprot thrift.TProtocol) (err error) {
+	var fieldId int16
+	if err = oprot.WriteStructBegin("GetLiveRoomStatus_args"); err != nil {
+		goto WriteStructBeginError
+	}
+	if p != nil {
+		if err = p.writeField1(oprot); err != nil {
+			fieldId = 1
+			goto WriteFieldError
+		}
+	}
+	if err = oprot.WriteFieldStop(); err != nil {
+		goto WriteFieldStopError
+	}
+	if err = oprot.WriteStructEnd(); err != nil {
+		goto WriteStructEndError
+	}
+	return nil
+WriteStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct begin error: ", p), err)
+WriteFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T write field %d error: ", p, fieldId), err)
+WriteFieldStopError:
+	return thrift.PrependError(fmt.Sprintf("%T write field stop error: ", p), err)
+WriteStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct end error: ", p), err)
+}
+
+func (p *LiveServiceGetLiveRoomStatusArgs) writeField1(oprot thrift.TProtocol) (err error) {
+	if err = oprot.WriteFieldBegin("req", thrift.STRUCT, 1); err != nil {
+		goto WriteFieldBeginError
+	}
+	if err := p.Req.Write(oprot); err != nil {
+		return err
+	}
+	if err = oprot.WriteFieldEnd(); err != nil {
+		goto WriteFieldEndError
+	}
+	return nil
+WriteFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 1 begin error: ", p), err)
+WriteFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 1 end error: ", p), err)
+}
+
+func (p *LiveServiceGetLiveRoomStatusArgs) String() string {
+	if p == nil {
+		return "<nil>"
+	}
+	return fmt.Sprintf("LiveServiceGetLiveRoomStatusArgs(%+v)", *p)
+
+}
+
+func (p *LiveServiceGetLiveRoomStatusArgs) DeepEqual(ano *LiveServiceGetLiveRoomStatusArgs) bool {
+	if p == ano {
+		return true
+	} else if p == nil || ano == nil {
+		return false
+	}
+	if !p.Field1DeepEqual(ano.Req) {
+		return false
+	}
+	return true
+}
+
+func (p *LiveServiceGetLiveRoomStatusArgs) Field1DeepEqual(src *GetLiveRoomStatusRequest) bool {
+
+	if !p.Req.DeepEqual(src) {
+		return false
+	}
+	return true
+}
+
+type LiveServiceGetLiveRoomStatusResult struct {
+	Success *GetLiveRoomStatusResponse `thrift:"success,0,optional" frugal:"0,optional,GetLiveRoomStatusResponse" json:"success,omitempty"`
+}
+
+func NewLiveServiceGetLiveRoomStatusResult() *LiveServiceGetLiveRoomStatusResult {
+	return &LiveServiceGetLiveRoomStatusResult{}
+}
+
+func (p *LiveServiceGetLiveRoomStatusResult) InitDefault() {
+	*p = LiveServiceGetLiveRoomStatusResult{}
+}
+
+var LiveServiceGetLiveRoomStatusResult_Success_DEFAULT *GetLiveRoomStatusResponse
+
+func (p *LiveServiceGetLiveRoomStatusResult) GetSuccess() (v *GetLiveRoomStatusResponse) {
+	if !p.IsSetSuccess() {
+		return LiveServiceGetLiveRoomStatusResult_Success_DEFAULT
+	}
+	return p.Success
+}
+func (p *LiveServiceGetLiveRoomStatusResult) SetSuccess(x interface{}) {
+	p.Success = x.(*GetLiveRoomStatusResponse)
+}
+
+var fieldIDToName_LiveServiceGetLiveRoomStatusResult = map[int16]string{
+	0: "success",
+}
+
+func (p *LiveServiceGetLiveRoomStatusResult) IsSetSuccess() bool {
+	return p.Success != nil
+}
+
+func (p *LiveServiceGetLiveRoomStatusResult) Read(iprot thrift.TProtocol) (err error) {
+
+	var fieldTypeId thrift.TType
+	var fieldId int16
+
+	if _, err = iprot.ReadStructBegin(); err != nil {
+		goto ReadStructBeginError
+	}
+
+	for {
+		_, fieldTypeId, fieldId, err = iprot.ReadFieldBegin()
+		if err != nil {
+			goto ReadFieldBeginError
+		}
+		if fieldTypeId == thrift.STOP {
+			break
+		}
+
+		switch fieldId {
+		case 0:
+			if fieldTypeId == thrift.STRUCT {
+				if err = p.ReadField0(iprot); err != nil {
+					goto ReadFieldError
+				}
+			} else if err = iprot.Skip(fieldTypeId); err != nil {
+				goto SkipFieldError
+			}
+		default:
+			if err = iprot.Skip(fieldTypeId); err != nil {
+				goto SkipFieldError
+			}
+		}
+		if err = iprot.ReadFieldEnd(); err != nil {
+			goto ReadFieldEndError
+		}
+	}
+	if err = iprot.ReadStructEnd(); err != nil {
+		goto ReadStructEndError
+	}
+
+	return nil
+ReadStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct begin error: ", p), err)
+ReadFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
+ReadFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_LiveServiceGetLiveRoomStatusResult[fieldId]), err)
+SkipFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
+
+ReadFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read field end error", p), err)
+ReadStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
+}
+
+func (p *LiveServiceGetLiveRoomStatusResult) ReadField0(iprot thrift.TProtocol) error {
+	_field := NewGetLiveRoomStatusResponse()
+	if err := _field.Read(iprot); err != nil {
+		return err
+	}
+	p.Success = _field
+	return nil
+}
+
+func (p *LiveServiceGetLiveRoomStatusResult) Write(oprot thrift.TProtocol) (err error) {
+	var fieldId int16
+	if err = oprot.WriteStructBegin("GetLiveRoomStatus_result"); err != nil {
+		goto WriteStructBeginError
+	}
+	if p != nil {
+		if err = p.writeField0(oprot); err != nil {
+			fieldId = 0
+			goto WriteFieldError
+		}
+	}
+	if err = oprot.WriteFieldStop(); err != nil {
+		goto WriteFieldStopError
+	}
+	if err = oprot.WriteStructEnd(); err != nil {
+		goto WriteStructEndError
+	}
+	return nil
+WriteStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct begin error: ", p), err)
+WriteFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T write field %d error: ", p, fieldId), err)
+WriteFieldStopError:
+	return thrift.PrependError(fmt.Sprintf("%T write field stop error: ", p), err)
+WriteStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct end error: ", p), err)
+}
+
+func (p *LiveServiceGetLiveRoomStatusResult) writeField0(oprot thrift.TProtocol) (err error) {
+	if p.IsSetSuccess() {
+		if err = oprot.WriteFieldBegin("success", thrift.STRUCT, 0); err != nil {
+			goto WriteFieldBeginError
+		}
+		if err := p.Success.Write(oprot); err != nil {
+			return err
+		}
+		if err = oprot.WriteFieldEnd(); err != nil {
+			goto WriteFieldEndError
+		}
+	}
+	return nil
+WriteFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 0 begin error: ", p), err)
+WriteFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 0 end error: ", p), err)
+}
+
+func (p *LiveServiceGetLiveRoomStatusResult) String() string {
+	if p == nil {
+		return "<nil>"
+	}
+	return fmt.Sprintf("LiveServiceGetLiveRoomStatusResult(%+v)", *p)
+
+}
+
+func (p *LiveServiceGetLiveRoomStatusResult) DeepEqual(ano *LiveServiceGetLiveRoomStatusResult) bool {
+	if p == ano {
+		return true
+	} else if p == nil || ano == nil {
+		return false
+	}
+	if !p.Field0DeepEqual(ano.Success) {
+		return false
+	}
+	return true
+}
+
+func (p *LiveServiceGetLiveRoomStatusResult) Field0DeepEqual(src *GetLiveRoomStatusResponse) bool {
+
+	if !p.Success.DeepEqual(src) {
+		return false
+	}
+	return true
+}
+
 type LiveServiceGetLiveRoomArgs struct {
 	Req *GetLiveRoomRequest `thrift:"req,1" frugal:"1,default,GetLiveRoomRequest" json:"req"`
 }
@@ -2494,6 +3921,613 @@ func (p *LiveServiceGetLiveRoomResult) DeepEqual(ano *LiveServiceGetLiveRoomResu
 }
 
 func (p *LiveServiceGetLiveRoomResult) Field0DeepEqual(src *GetLiveRoomResponse) bool {
+
+	if !p.Success.DeepEqual(src) {
+		return false
+	}
+	return true
+}
+
+type LiveServiceGetLiveRoomKeyArgs struct {
+	Req *GetLiveRoomKeyRequest `thrift:"req,1" frugal:"1,default,GetLiveRoomKeyRequest" json:"req"`
+}
+
+func NewLiveServiceGetLiveRoomKeyArgs() *LiveServiceGetLiveRoomKeyArgs {
+	return &LiveServiceGetLiveRoomKeyArgs{}
+}
+
+func (p *LiveServiceGetLiveRoomKeyArgs) InitDefault() {
+	*p = LiveServiceGetLiveRoomKeyArgs{}
+}
+
+var LiveServiceGetLiveRoomKeyArgs_Req_DEFAULT *GetLiveRoomKeyRequest
+
+func (p *LiveServiceGetLiveRoomKeyArgs) GetReq() (v *GetLiveRoomKeyRequest) {
+	if !p.IsSetReq() {
+		return LiveServiceGetLiveRoomKeyArgs_Req_DEFAULT
+	}
+	return p.Req
+}
+func (p *LiveServiceGetLiveRoomKeyArgs) SetReq(val *GetLiveRoomKeyRequest) {
+	p.Req = val
+}
+
+var fieldIDToName_LiveServiceGetLiveRoomKeyArgs = map[int16]string{
+	1: "req",
+}
+
+func (p *LiveServiceGetLiveRoomKeyArgs) IsSetReq() bool {
+	return p.Req != nil
+}
+
+func (p *LiveServiceGetLiveRoomKeyArgs) Read(iprot thrift.TProtocol) (err error) {
+
+	var fieldTypeId thrift.TType
+	var fieldId int16
+
+	if _, err = iprot.ReadStructBegin(); err != nil {
+		goto ReadStructBeginError
+	}
+
+	for {
+		_, fieldTypeId, fieldId, err = iprot.ReadFieldBegin()
+		if err != nil {
+			goto ReadFieldBeginError
+		}
+		if fieldTypeId == thrift.STOP {
+			break
+		}
+
+		switch fieldId {
+		case 1:
+			if fieldTypeId == thrift.STRUCT {
+				if err = p.ReadField1(iprot); err != nil {
+					goto ReadFieldError
+				}
+			} else if err = iprot.Skip(fieldTypeId); err != nil {
+				goto SkipFieldError
+			}
+		default:
+			if err = iprot.Skip(fieldTypeId); err != nil {
+				goto SkipFieldError
+			}
+		}
+		if err = iprot.ReadFieldEnd(); err != nil {
+			goto ReadFieldEndError
+		}
+	}
+	if err = iprot.ReadStructEnd(); err != nil {
+		goto ReadStructEndError
+	}
+
+	return nil
+ReadStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct begin error: ", p), err)
+ReadFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
+ReadFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_LiveServiceGetLiveRoomKeyArgs[fieldId]), err)
+SkipFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
+
+ReadFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read field end error", p), err)
+ReadStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
+}
+
+func (p *LiveServiceGetLiveRoomKeyArgs) ReadField1(iprot thrift.TProtocol) error {
+	_field := NewGetLiveRoomKeyRequest()
+	if err := _field.Read(iprot); err != nil {
+		return err
+	}
+	p.Req = _field
+	return nil
+}
+
+func (p *LiveServiceGetLiveRoomKeyArgs) Write(oprot thrift.TProtocol) (err error) {
+	var fieldId int16
+	if err = oprot.WriteStructBegin("GetLiveRoomKey_args"); err != nil {
+		goto WriteStructBeginError
+	}
+	if p != nil {
+		if err = p.writeField1(oprot); err != nil {
+			fieldId = 1
+			goto WriteFieldError
+		}
+	}
+	if err = oprot.WriteFieldStop(); err != nil {
+		goto WriteFieldStopError
+	}
+	if err = oprot.WriteStructEnd(); err != nil {
+		goto WriteStructEndError
+	}
+	return nil
+WriteStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct begin error: ", p), err)
+WriteFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T write field %d error: ", p, fieldId), err)
+WriteFieldStopError:
+	return thrift.PrependError(fmt.Sprintf("%T write field stop error: ", p), err)
+WriteStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct end error: ", p), err)
+}
+
+func (p *LiveServiceGetLiveRoomKeyArgs) writeField1(oprot thrift.TProtocol) (err error) {
+	if err = oprot.WriteFieldBegin("req", thrift.STRUCT, 1); err != nil {
+		goto WriteFieldBeginError
+	}
+	if err := p.Req.Write(oprot); err != nil {
+		return err
+	}
+	if err = oprot.WriteFieldEnd(); err != nil {
+		goto WriteFieldEndError
+	}
+	return nil
+WriteFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 1 begin error: ", p), err)
+WriteFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 1 end error: ", p), err)
+}
+
+func (p *LiveServiceGetLiveRoomKeyArgs) String() string {
+	if p == nil {
+		return "<nil>"
+	}
+	return fmt.Sprintf("LiveServiceGetLiveRoomKeyArgs(%+v)", *p)
+
+}
+
+func (p *LiveServiceGetLiveRoomKeyArgs) DeepEqual(ano *LiveServiceGetLiveRoomKeyArgs) bool {
+	if p == ano {
+		return true
+	} else if p == nil || ano == nil {
+		return false
+	}
+	if !p.Field1DeepEqual(ano.Req) {
+		return false
+	}
+	return true
+}
+
+func (p *LiveServiceGetLiveRoomKeyArgs) Field1DeepEqual(src *GetLiveRoomKeyRequest) bool {
+
+	if !p.Req.DeepEqual(src) {
+		return false
+	}
+	return true
+}
+
+type LiveServiceGetLiveRoomKeyResult struct {
+	Success *GetLiveRoomKeyResponse `thrift:"success,0,optional" frugal:"0,optional,GetLiveRoomKeyResponse" json:"success,omitempty"`
+}
+
+func NewLiveServiceGetLiveRoomKeyResult() *LiveServiceGetLiveRoomKeyResult {
+	return &LiveServiceGetLiveRoomKeyResult{}
+}
+
+func (p *LiveServiceGetLiveRoomKeyResult) InitDefault() {
+	*p = LiveServiceGetLiveRoomKeyResult{}
+}
+
+var LiveServiceGetLiveRoomKeyResult_Success_DEFAULT *GetLiveRoomKeyResponse
+
+func (p *LiveServiceGetLiveRoomKeyResult) GetSuccess() (v *GetLiveRoomKeyResponse) {
+	if !p.IsSetSuccess() {
+		return LiveServiceGetLiveRoomKeyResult_Success_DEFAULT
+	}
+	return p.Success
+}
+func (p *LiveServiceGetLiveRoomKeyResult) SetSuccess(x interface{}) {
+	p.Success = x.(*GetLiveRoomKeyResponse)
+}
+
+var fieldIDToName_LiveServiceGetLiveRoomKeyResult = map[int16]string{
+	0: "success",
+}
+
+func (p *LiveServiceGetLiveRoomKeyResult) IsSetSuccess() bool {
+	return p.Success != nil
+}
+
+func (p *LiveServiceGetLiveRoomKeyResult) Read(iprot thrift.TProtocol) (err error) {
+
+	var fieldTypeId thrift.TType
+	var fieldId int16
+
+	if _, err = iprot.ReadStructBegin(); err != nil {
+		goto ReadStructBeginError
+	}
+
+	for {
+		_, fieldTypeId, fieldId, err = iprot.ReadFieldBegin()
+		if err != nil {
+			goto ReadFieldBeginError
+		}
+		if fieldTypeId == thrift.STOP {
+			break
+		}
+
+		switch fieldId {
+		case 0:
+			if fieldTypeId == thrift.STRUCT {
+				if err = p.ReadField0(iprot); err != nil {
+					goto ReadFieldError
+				}
+			} else if err = iprot.Skip(fieldTypeId); err != nil {
+				goto SkipFieldError
+			}
+		default:
+			if err = iprot.Skip(fieldTypeId); err != nil {
+				goto SkipFieldError
+			}
+		}
+		if err = iprot.ReadFieldEnd(); err != nil {
+			goto ReadFieldEndError
+		}
+	}
+	if err = iprot.ReadStructEnd(); err != nil {
+		goto ReadStructEndError
+	}
+
+	return nil
+ReadStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct begin error: ", p), err)
+ReadFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
+ReadFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_LiveServiceGetLiveRoomKeyResult[fieldId]), err)
+SkipFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
+
+ReadFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read field end error", p), err)
+ReadStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
+}
+
+func (p *LiveServiceGetLiveRoomKeyResult) ReadField0(iprot thrift.TProtocol) error {
+	_field := NewGetLiveRoomKeyResponse()
+	if err := _field.Read(iprot); err != nil {
+		return err
+	}
+	p.Success = _field
+	return nil
+}
+
+func (p *LiveServiceGetLiveRoomKeyResult) Write(oprot thrift.TProtocol) (err error) {
+	var fieldId int16
+	if err = oprot.WriteStructBegin("GetLiveRoomKey_result"); err != nil {
+		goto WriteStructBeginError
+	}
+	if p != nil {
+		if err = p.writeField0(oprot); err != nil {
+			fieldId = 0
+			goto WriteFieldError
+		}
+	}
+	if err = oprot.WriteFieldStop(); err != nil {
+		goto WriteFieldStopError
+	}
+	if err = oprot.WriteStructEnd(); err != nil {
+		goto WriteStructEndError
+	}
+	return nil
+WriteStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct begin error: ", p), err)
+WriteFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T write field %d error: ", p, fieldId), err)
+WriteFieldStopError:
+	return thrift.PrependError(fmt.Sprintf("%T write field stop error: ", p), err)
+WriteStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct end error: ", p), err)
+}
+
+func (p *LiveServiceGetLiveRoomKeyResult) writeField0(oprot thrift.TProtocol) (err error) {
+	if p.IsSetSuccess() {
+		if err = oprot.WriteFieldBegin("success", thrift.STRUCT, 0); err != nil {
+			goto WriteFieldBeginError
+		}
+		if err := p.Success.Write(oprot); err != nil {
+			return err
+		}
+		if err = oprot.WriteFieldEnd(); err != nil {
+			goto WriteFieldEndError
+		}
+	}
+	return nil
+WriteFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 0 begin error: ", p), err)
+WriteFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 0 end error: ", p), err)
+}
+
+func (p *LiveServiceGetLiveRoomKeyResult) String() string {
+	if p == nil {
+		return "<nil>"
+	}
+	return fmt.Sprintf("LiveServiceGetLiveRoomKeyResult(%+v)", *p)
+
+}
+
+func (p *LiveServiceGetLiveRoomKeyResult) DeepEqual(ano *LiveServiceGetLiveRoomKeyResult) bool {
+	if p == ano {
+		return true
+	} else if p == nil || ano == nil {
+		return false
+	}
+	if !p.Field0DeepEqual(ano.Success) {
+		return false
+	}
+	return true
+}
+
+func (p *LiveServiceGetLiveRoomKeyResult) Field0DeepEqual(src *GetLiveRoomKeyResponse) bool {
+
+	if !p.Success.DeepEqual(src) {
+		return false
+	}
+	return true
+}
+
+type LiveServiceGetAllOnlineLiveRoomArgs struct {
+}
+
+func NewLiveServiceGetAllOnlineLiveRoomArgs() *LiveServiceGetAllOnlineLiveRoomArgs {
+	return &LiveServiceGetAllOnlineLiveRoomArgs{}
+}
+
+func (p *LiveServiceGetAllOnlineLiveRoomArgs) InitDefault() {
+	*p = LiveServiceGetAllOnlineLiveRoomArgs{}
+}
+
+var fieldIDToName_LiveServiceGetAllOnlineLiveRoomArgs = map[int16]string{}
+
+func (p *LiveServiceGetAllOnlineLiveRoomArgs) Read(iprot thrift.TProtocol) (err error) {
+
+	var fieldTypeId thrift.TType
+	var fieldId int16
+
+	if _, err = iprot.ReadStructBegin(); err != nil {
+		goto ReadStructBeginError
+	}
+
+	for {
+		_, fieldTypeId, fieldId, err = iprot.ReadFieldBegin()
+		if err != nil {
+			goto ReadFieldBeginError
+		}
+		if fieldTypeId == thrift.STOP {
+			break
+		}
+		if err = iprot.Skip(fieldTypeId); err != nil {
+			goto SkipFieldTypeError
+		}
+		if err = iprot.ReadFieldEnd(); err != nil {
+			goto ReadFieldEndError
+		}
+	}
+	if err = iprot.ReadStructEnd(); err != nil {
+		goto ReadStructEndError
+	}
+
+	return nil
+ReadStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct begin error: ", p), err)
+ReadFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
+SkipFieldTypeError:
+	return thrift.PrependError(fmt.Sprintf("%T skip field type %d error", p, fieldTypeId), err)
+
+ReadFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read field end error", p), err)
+ReadStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
+}
+
+func (p *LiveServiceGetAllOnlineLiveRoomArgs) Write(oprot thrift.TProtocol) (err error) {
+	if err = oprot.WriteStructBegin("GetAllOnlineLiveRoom_args"); err != nil {
+		goto WriteStructBeginError
+	}
+	if p != nil {
+	}
+	if err = oprot.WriteFieldStop(); err != nil {
+		goto WriteFieldStopError
+	}
+	if err = oprot.WriteStructEnd(); err != nil {
+		goto WriteStructEndError
+	}
+	return nil
+WriteStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct begin error: ", p), err)
+WriteFieldStopError:
+	return thrift.PrependError(fmt.Sprintf("%T write field stop error: ", p), err)
+WriteStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct end error: ", p), err)
+}
+
+func (p *LiveServiceGetAllOnlineLiveRoomArgs) String() string {
+	if p == nil {
+		return "<nil>"
+	}
+	return fmt.Sprintf("LiveServiceGetAllOnlineLiveRoomArgs(%+v)", *p)
+
+}
+
+func (p *LiveServiceGetAllOnlineLiveRoomArgs) DeepEqual(ano *LiveServiceGetAllOnlineLiveRoomArgs) bool {
+	if p == ano {
+		return true
+	} else if p == nil || ano == nil {
+		return false
+	}
+	return true
+}
+
+type LiveServiceGetAllOnlineLiveRoomResult struct {
+	Success *GetAllOnlineLiveRoomResponse `thrift:"success,0,optional" frugal:"0,optional,GetAllOnlineLiveRoomResponse" json:"success,omitempty"`
+}
+
+func NewLiveServiceGetAllOnlineLiveRoomResult() *LiveServiceGetAllOnlineLiveRoomResult {
+	return &LiveServiceGetAllOnlineLiveRoomResult{}
+}
+
+func (p *LiveServiceGetAllOnlineLiveRoomResult) InitDefault() {
+	*p = LiveServiceGetAllOnlineLiveRoomResult{}
+}
+
+var LiveServiceGetAllOnlineLiveRoomResult_Success_DEFAULT *GetAllOnlineLiveRoomResponse
+
+func (p *LiveServiceGetAllOnlineLiveRoomResult) GetSuccess() (v *GetAllOnlineLiveRoomResponse) {
+	if !p.IsSetSuccess() {
+		return LiveServiceGetAllOnlineLiveRoomResult_Success_DEFAULT
+	}
+	return p.Success
+}
+func (p *LiveServiceGetAllOnlineLiveRoomResult) SetSuccess(x interface{}) {
+	p.Success = x.(*GetAllOnlineLiveRoomResponse)
+}
+
+var fieldIDToName_LiveServiceGetAllOnlineLiveRoomResult = map[int16]string{
+	0: "success",
+}
+
+func (p *LiveServiceGetAllOnlineLiveRoomResult) IsSetSuccess() bool {
+	return p.Success != nil
+}
+
+func (p *LiveServiceGetAllOnlineLiveRoomResult) Read(iprot thrift.TProtocol) (err error) {
+
+	var fieldTypeId thrift.TType
+	var fieldId int16
+
+	if _, err = iprot.ReadStructBegin(); err != nil {
+		goto ReadStructBeginError
+	}
+
+	for {
+		_, fieldTypeId, fieldId, err = iprot.ReadFieldBegin()
+		if err != nil {
+			goto ReadFieldBeginError
+		}
+		if fieldTypeId == thrift.STOP {
+			break
+		}
+
+		switch fieldId {
+		case 0:
+			if fieldTypeId == thrift.STRUCT {
+				if err = p.ReadField0(iprot); err != nil {
+					goto ReadFieldError
+				}
+			} else if err = iprot.Skip(fieldTypeId); err != nil {
+				goto SkipFieldError
+			}
+		default:
+			if err = iprot.Skip(fieldTypeId); err != nil {
+				goto SkipFieldError
+			}
+		}
+		if err = iprot.ReadFieldEnd(); err != nil {
+			goto ReadFieldEndError
+		}
+	}
+	if err = iprot.ReadStructEnd(); err != nil {
+		goto ReadStructEndError
+	}
+
+	return nil
+ReadStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct begin error: ", p), err)
+ReadFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
+ReadFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_LiveServiceGetAllOnlineLiveRoomResult[fieldId]), err)
+SkipFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
+
+ReadFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read field end error", p), err)
+ReadStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
+}
+
+func (p *LiveServiceGetAllOnlineLiveRoomResult) ReadField0(iprot thrift.TProtocol) error {
+	_field := NewGetAllOnlineLiveRoomResponse()
+	if err := _field.Read(iprot); err != nil {
+		return err
+	}
+	p.Success = _field
+	return nil
+}
+
+func (p *LiveServiceGetAllOnlineLiveRoomResult) Write(oprot thrift.TProtocol) (err error) {
+	var fieldId int16
+	if err = oprot.WriteStructBegin("GetAllOnlineLiveRoom_result"); err != nil {
+		goto WriteStructBeginError
+	}
+	if p != nil {
+		if err = p.writeField0(oprot); err != nil {
+			fieldId = 0
+			goto WriteFieldError
+		}
+	}
+	if err = oprot.WriteFieldStop(); err != nil {
+		goto WriteFieldStopError
+	}
+	if err = oprot.WriteStructEnd(); err != nil {
+		goto WriteStructEndError
+	}
+	return nil
+WriteStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct begin error: ", p), err)
+WriteFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T write field %d error: ", p, fieldId), err)
+WriteFieldStopError:
+	return thrift.PrependError(fmt.Sprintf("%T write field stop error: ", p), err)
+WriteStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct end error: ", p), err)
+}
+
+func (p *LiveServiceGetAllOnlineLiveRoomResult) writeField0(oprot thrift.TProtocol) (err error) {
+	if p.IsSetSuccess() {
+		if err = oprot.WriteFieldBegin("success", thrift.STRUCT, 0); err != nil {
+			goto WriteFieldBeginError
+		}
+		if err := p.Success.Write(oprot); err != nil {
+			return err
+		}
+		if err = oprot.WriteFieldEnd(); err != nil {
+			goto WriteFieldEndError
+		}
+	}
+	return nil
+WriteFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 0 begin error: ", p), err)
+WriteFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 0 end error: ", p), err)
+}
+
+func (p *LiveServiceGetAllOnlineLiveRoomResult) String() string {
+	if p == nil {
+		return "<nil>"
+	}
+	return fmt.Sprintf("LiveServiceGetAllOnlineLiveRoomResult(%+v)", *p)
+
+}
+
+func (p *LiveServiceGetAllOnlineLiveRoomResult) DeepEqual(ano *LiveServiceGetAllOnlineLiveRoomResult) bool {
+	if p == ano {
+		return true
+	} else if p == nil || ano == nil {
+		return false
+	}
+	if !p.Field0DeepEqual(ano.Success) {
+		return false
+	}
+	return true
+}
+
+func (p *LiveServiceGetAllOnlineLiveRoomResult) Field0DeepEqual(src *GetAllOnlineLiveRoomResponse) bool {
 
 	if !p.Success.DeepEqual(src) {
 		return false

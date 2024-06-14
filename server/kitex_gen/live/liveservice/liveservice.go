@@ -27,10 +27,31 @@ var serviceMethods = map[string]kitex.MethodInfo{
 		false,
 		kitex.WithStreamingMode(kitex.StreamingNone),
 	),
+	"GetLiveRoomStatus": kitex.NewMethodInfo(
+		getLiveRoomStatusHandler,
+		newLiveServiceGetLiveRoomStatusArgs,
+		newLiveServiceGetLiveRoomStatusResult,
+		false,
+		kitex.WithStreamingMode(kitex.StreamingNone),
+	),
 	"GetLiveRoom": kitex.NewMethodInfo(
 		getLiveRoomHandler,
 		newLiveServiceGetLiveRoomArgs,
 		newLiveServiceGetLiveRoomResult,
+		false,
+		kitex.WithStreamingMode(kitex.StreamingNone),
+	),
+	"GetLiveRoomKey": kitex.NewMethodInfo(
+		getLiveRoomKeyHandler,
+		newLiveServiceGetLiveRoomKeyArgs,
+		newLiveServiceGetLiveRoomKeyResult,
+		false,
+		kitex.WithStreamingMode(kitex.StreamingNone),
+	),
+	"GetAllOnlineLiveRoom": kitex.NewMethodInfo(
+		getAllOnlineLiveRoomHandler,
+		newLiveServiceGetAllOnlineLiveRoomArgs,
+		newLiveServiceGetAllOnlineLiveRoomResult,
 		false,
 		kitex.WithStreamingMode(kitex.StreamingNone),
 	),
@@ -143,6 +164,24 @@ func newLiveServiceGetLiveRoomOwnerResult() interface{} {
 	return live.NewLiveServiceGetLiveRoomOwnerResult()
 }
 
+func getLiveRoomStatusHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	realArg := arg.(*live.LiveServiceGetLiveRoomStatusArgs)
+	realResult := result.(*live.LiveServiceGetLiveRoomStatusResult)
+	success, err := handler.(live.LiveService).GetLiveRoomStatus(ctx, realArg.Req)
+	if err != nil {
+		return err
+	}
+	realResult.Success = success
+	return nil
+}
+func newLiveServiceGetLiveRoomStatusArgs() interface{} {
+	return live.NewLiveServiceGetLiveRoomStatusArgs()
+}
+
+func newLiveServiceGetLiveRoomStatusResult() interface{} {
+	return live.NewLiveServiceGetLiveRoomStatusResult()
+}
+
 func getLiveRoomHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
 	realArg := arg.(*live.LiveServiceGetLiveRoomArgs)
 	realResult := result.(*live.LiveServiceGetLiveRoomResult)
@@ -159,6 +198,42 @@ func newLiveServiceGetLiveRoomArgs() interface{} {
 
 func newLiveServiceGetLiveRoomResult() interface{} {
 	return live.NewLiveServiceGetLiveRoomResult()
+}
+
+func getLiveRoomKeyHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	realArg := arg.(*live.LiveServiceGetLiveRoomKeyArgs)
+	realResult := result.(*live.LiveServiceGetLiveRoomKeyResult)
+	success, err := handler.(live.LiveService).GetLiveRoomKey(ctx, realArg.Req)
+	if err != nil {
+		return err
+	}
+	realResult.Success = success
+	return nil
+}
+func newLiveServiceGetLiveRoomKeyArgs() interface{} {
+	return live.NewLiveServiceGetLiveRoomKeyArgs()
+}
+
+func newLiveServiceGetLiveRoomKeyResult() interface{} {
+	return live.NewLiveServiceGetLiveRoomKeyResult()
+}
+
+func getAllOnlineLiveRoomHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	_ = arg.(*live.LiveServiceGetAllOnlineLiveRoomArgs)
+	realResult := result.(*live.LiveServiceGetAllOnlineLiveRoomResult)
+	success, err := handler.(live.LiveService).GetAllOnlineLiveRoom(ctx)
+	if err != nil {
+		return err
+	}
+	realResult.Success = success
+	return nil
+}
+func newLiveServiceGetAllOnlineLiveRoomArgs() interface{} {
+	return live.NewLiveServiceGetAllOnlineLiveRoomArgs()
+}
+
+func newLiveServiceGetAllOnlineLiveRoomResult() interface{} {
+	return live.NewLiveServiceGetAllOnlineLiveRoomResult()
 }
 
 func stopLiveRoomHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
@@ -209,11 +284,40 @@ func (p *kClient) GetLiveRoomOwner(ctx context.Context, req *live.GetLiveRoomOwn
 	return _result.GetSuccess(), nil
 }
 
+func (p *kClient) GetLiveRoomStatus(ctx context.Context, req *live.GetLiveRoomStatusRequest) (r *live.GetLiveRoomStatusResponse, err error) {
+	var _args live.LiveServiceGetLiveRoomStatusArgs
+	_args.Req = req
+	var _result live.LiveServiceGetLiveRoomStatusResult
+	if err = p.c.Call(ctx, "GetLiveRoomStatus", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
 func (p *kClient) GetLiveRoom(ctx context.Context, req *live.GetLiveRoomRequest) (r *live.GetLiveRoomResponse, err error) {
 	var _args live.LiveServiceGetLiveRoomArgs
 	_args.Req = req
 	var _result live.LiveServiceGetLiveRoomResult
 	if err = p.c.Call(ctx, "GetLiveRoom", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) GetLiveRoomKey(ctx context.Context, req *live.GetLiveRoomKeyRequest) (r *live.GetLiveRoomKeyResponse, err error) {
+	var _args live.LiveServiceGetLiveRoomKeyArgs
+	_args.Req = req
+	var _result live.LiveServiceGetLiveRoomKeyResult
+	if err = p.c.Call(ctx, "GetLiveRoomKey", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) GetAllOnlineLiveRoom(ctx context.Context) (r *live.GetAllOnlineLiveRoomResponse, err error) {
+	var _args live.LiveServiceGetAllOnlineLiveRoomArgs
+	var _result live.LiveServiceGetAllOnlineLiveRoomResult
+	if err = p.c.Call(ctx, "GetAllOnlineLiveRoom", &_args, &_result); err != nil {
 		return
 	}
 	return _result.GetSuccess(), nil

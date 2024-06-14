@@ -13,7 +13,10 @@ import (
 type Client interface {
 	CreateLiveRoom(ctx context.Context, req *live.CreateLiveRoomRequest, callOptions ...callopt.Option) (r *live.CreateLiveRoomResponse, err error)
 	GetLiveRoomOwner(ctx context.Context, req *live.GetLiveRoomOwnerRequest, callOptions ...callopt.Option) (r *live.GetLiveRoomOwnerResponse, err error)
+	GetLiveRoomStatus(ctx context.Context, req *live.GetLiveRoomStatusRequest, callOptions ...callopt.Option) (r *live.GetLiveRoomStatusResponse, err error)
 	GetLiveRoom(ctx context.Context, req *live.GetLiveRoomRequest, callOptions ...callopt.Option) (r *live.GetLiveRoomResponse, err error)
+	GetLiveRoomKey(ctx context.Context, req *live.GetLiveRoomKeyRequest, callOptions ...callopt.Option) (r *live.GetLiveRoomKeyResponse, err error)
+	GetAllOnlineLiveRoom(ctx context.Context, callOptions ...callopt.Option) (r *live.GetAllOnlineLiveRoomResponse, err error)
 	StopLiveRoom(ctx context.Context, req *live.StopLiveRoomRequest, callOptions ...callopt.Option) (err error)
 }
 
@@ -56,9 +59,24 @@ func (p *kLiveServiceClient) GetLiveRoomOwner(ctx context.Context, req *live.Get
 	return p.kClient.GetLiveRoomOwner(ctx, req)
 }
 
+func (p *kLiveServiceClient) GetLiveRoomStatus(ctx context.Context, req *live.GetLiveRoomStatusRequest, callOptions ...callopt.Option) (r *live.GetLiveRoomStatusResponse, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.GetLiveRoomStatus(ctx, req)
+}
+
 func (p *kLiveServiceClient) GetLiveRoom(ctx context.Context, req *live.GetLiveRoomRequest, callOptions ...callopt.Option) (r *live.GetLiveRoomResponse, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
 	return p.kClient.GetLiveRoom(ctx, req)
+}
+
+func (p *kLiveServiceClient) GetLiveRoomKey(ctx context.Context, req *live.GetLiveRoomKeyRequest, callOptions ...callopt.Option) (r *live.GetLiveRoomKeyResponse, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.GetLiveRoomKey(ctx, req)
+}
+
+func (p *kLiveServiceClient) GetAllOnlineLiveRoom(ctx context.Context, callOptions ...callopt.Option) (r *live.GetAllOnlineLiveRoomResponse, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.GetAllOnlineLiveRoom(ctx)
 }
 
 func (p *kLiveServiceClient) StopLiveRoom(ctx context.Context, req *live.StopLiveRoomRequest, callOptions ...callopt.Option) (err error) {

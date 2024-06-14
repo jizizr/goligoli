@@ -21,6 +21,7 @@ import (
 	"github.com/jizizr/goligoli/server/kitex_gen/user"
 	"github.com/jizizr/goligoli/server/service/api/biz/errno"
 	"github.com/jizizr/goligoli/server/service/api/biz/global"
+	_ "github.com/jizizr/goligoli/server/service/api/biz/live"
 	"github.com/jizizr/goligoli/server/service/api/biz/model/api"
 	"github.com/jizizr/goligoli/server/service/api/biz/model/base"
 	"io"
@@ -127,7 +128,15 @@ func SendMessage(ctx context.Context, c *app.RequestContext) {
 		LiveId: req.LiveID,
 	})
 	if err != nil {
-		klog.Errorf("get live room owner failed, %v", err)
+		klog.Errorf("get live room failed, %v", err)
+	}
+	if res.Room == nil {
+		errno.SendResponse(c, consts2.CodeNoLiveRoomRight, nil)
+		return
+	}
+	if !res.Room.IsLive {
+		errno.SendResponse(c, consts2.CodeLiveRoomNotLive, nil)
+		return
 	}
 	bul := &base2.LiveMessage{
 		Type:     req.Type,
@@ -301,6 +310,43 @@ func CreateLive(ctx context.Context, c *app.RequestContext) {
 	}
 	resp.BaseResp = SuccessBaseResponse()
 	resp.LiveID = res.LiveId
+	resp.Key = res.Key
+	c.JSON(consts.StatusOK, resp)
+}
+
+// GetLiveRoomKey .
+// @router /room/live/key [GET]
+func GetLiveRoomKey(ctx context.Context, c *app.RequestContext) {
+	var err error
+	var req api.GetLiveRoomKeyRequest
+	err = c.BindAndValidate(&req)
+	if err != nil {
+		c.String(consts.StatusBadRequest, err.Error())
+		return
+	}
+
+	resp := new(api.GetLiveRoomKeyResponse)
+	uid, _ := tools.GetUID(c)
+	LiveMsg, err := global.LiveClient.GetLiveRoomOwner(ctx, &live.GetLiveRoomOwnerRequest{
+		LiveId: req.LiveID,
+	})
+	if err != nil {
+		errno.SendResponse(c, consts2.CodeInternalError, err.Error())
+		return
+	}
+	if uid != LiveMsg.Owner {
+		errno.SendResponse(c, consts2.CodeNoLiveRoomRight, "you are not the owner of the live room")
+		return
+	}
+	res, err := global.LiveClient.GetLiveRoomKey(ctx, &live.GetLiveRoomKeyRequest{
+		LiveId: req.LiveID,
+	})
+	if err != nil {
+		errno.SendResponse(c, consts2.CodeInternalError, err.Error())
+		return
+	}
+	resp.BaseResp = SuccessBaseResponse()
+	resp.Key = res.Key
 	c.JSON(consts.StatusOK, resp)
 }
 

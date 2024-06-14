@@ -20,6 +20,22 @@ type NsqServiceImpl interface {
 	PushMessageToNsq(ctx context.Context, request *push.PushMessageRequest) error
 }
 
+type RecChan struct {
+	rec chan *base.LiveMessage
+	fl  chan struct{}
+}
+
+func NewRecChan() *RecChan {
+	return &RecChan{
+		rec: make(chan *base.LiveMessage),
+		fl:  make(chan struct{}),
+	}
+}
+
+func (r *RecChan) Get() (msg chan *base.LiveMessage, fl chan struct{}) {
+	return r.rec, r.fl
+}
+
 // PushMessage implements the PushServiceImpl interface.
 func (s *PushServiceImpl) PushMessage(ctx context.Context, req *push.PushMessageRequest) (err error) {
 	r, ok := config.Receiver.Load(req.Message.LiveId)
@@ -28,8 +44,11 @@ func (s *PushServiceImpl) PushMessage(ctx context.Context, req *push.PushMessage
 	}
 	if config.Limiter.ShouldSendWord(req.Message.Content) {
 		r.(*sync.Map).Range(func(key, value interface{}) bool {
-			rec := value.(chan *base.LiveMessage)
-			rec <- req.Message
+			rec, flag := value.(*RecChan).Get()
+			select {
+			case rec <- req.Message:
+			case <-flag:
+			}
 			return true
 		})
 	}
@@ -41,14 +60,18 @@ func (s *PushServiceImpl) PushMessage(ctx context.Context, req *push.PushMessage
 }
 
 func (s *PushServiceImpl) ReceiveMessage(stream push.PushService_ReceiveMessageServer) (err error) {
-	rec := make(chan *base.LiveMessage)
 	req, err := stream.Recv()
 	defer stream.Close()
 	if !tools.CheckLiveRoom(req.LiveId, &config.LiveClient) {
 		return errors.New("live room not exist")
 	}
-	v, _ := config.Receiver.LoadOrStore(req.LiveId, &sync.Map{})
-	v.(*sync.Map).Store(req.UserId, rec)
+	v, okk := config.Receiver.Load(req.LiveId)
+	if !okk {
+		return errors.New("live not exist")
+	}
+	recChan := NewRecChan()
+	rec, flag := recChan.Get()
+	v.(*sync.Map).Store(req.UserId, recChan)
 	ok := make(chan struct{})
 	go func() {
 		stream.Recv()
@@ -73,5 +96,27 @@ func (s *PushServiceImpl) ReceiveMessage(stream push.PushService_ReceiveMessageS
 	}
 EXIT:
 	v.(*sync.Map).Delete(req.UserId)
+	close(flag)
+	return
+}
+
+// StopMessage implements the PushServiceImpl interface.
+func (s *PushServiceImpl) StopMessage(ctx context.Context, req *push.StopMessageRequest) (err error) {
+	r, ok := config.Receiver.Load(req.LiveId)
+	if !ok {
+		return errors.New("live not exist")
+	}
+	config.Receiver.Delete(req.LiveId)
+	go r.(*sync.Map).Range(func(key, value interface{}) bool {
+		_, flag := value.(*RecChan).Get()
+		close(flag)
+		return true
+	})
+	return
+}
+
+// InitLiveRoomReciver implements the PushServiceImpl interface.
+func (s *PushServiceImpl) InitLiveRoomReciver(ctx context.Context, req *push.InitLiveRoomReciverRequest) (err error) {
+	// TODO: Your code here...
 	return
 }

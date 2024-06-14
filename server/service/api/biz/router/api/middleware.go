@@ -86,3 +86,12 @@ func _deleteliveMw() []app.HandlerFunc {
 	// your code...
 	return []app.HandlerFunc{middleware.JWTAuth()}
 }
+
+func _liveMw() []app.HandlerFunc {
+	// your code...
+	return nil
+}
+
+func _getliveroomkeyMw() []app.HandlerFunc {
+	return []app.HandlerFunc{middleware.JWTAuth()}
+}

@@ -36,7 +36,9 @@ func Register(r *server.Hertz) {
 	}
 	{
 		_room := root.Group("/room", _roomMw()...)
-		_room.POST("/live", append(_createliveMw(), api.CreateLive)...)
 		_room.DELETE("/live", append(_deleteliveMw(), api.DeleteLive)...)
+		_room.POST("/live", append(_createliveMw(), api.CreateLive)...)
+		_live := _room.Group("/live", _liveMw()...)
+		_live.GET("/key", append(_getliveroomkeyMw(), api.GetLiveRoomKey)...)
 	}
 }

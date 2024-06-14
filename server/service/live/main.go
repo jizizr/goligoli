@@ -37,9 +37,7 @@ func main() {
 		}),
 		server.WithSuite(tracing.NewServerSuite()),
 	)
-
 	err := svr.Run()
-
 	if err != nil {
 		log.Println(err.Error())
 	}

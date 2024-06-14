@@ -10,9 +10,18 @@ type Live struct {
 	db *gorm.DB
 }
 
+func (l *Live) GetOnlineLiveRooms() ([]int64, error) {
+	var rooms []int64
+	err := l.db.Model(&base.Room{}).Where("is_live = 1").Pluck("live_id", &rooms).Error
+	if err != nil {
+		klog.Errorf("GetOnlineLiveRooms failed: %v", err)
+	}
+	return rooms, err
+}
+
 func (l *Live) AddLiveRoom(room *base.Room) (int64, error) {
 	var temp base.Room
-	err := l.db.Where("owner = ?", room.Owner).Find(&temp).Error
+	err := l.db.Where("owner = ? AND is_live = 1", room.Owner).Find(&temp).Error
 
 	if err != gorm.ErrRecordNotFound && err != nil {
 		klog.Errorf("MySql Error in AddLiveRoom: %v", err)
@@ -47,18 +56,6 @@ func (l *Live) GetLiveRoomByID(id int64) (*base.Room, error) {
 		return nil, err
 	}
 	return &room, err
-}
-
-func (l *Live) GetLiveRoomOwnerByID(id int64) (int64, error) {
-	var owner int64
-	err := l.db.Model(&base.Room{}).Where("live_id = ?", id).Select("owner").First(&owner).Error
-	if err == gorm.ErrRecordNotFound {
-		return 0, nil
-	} else if err != nil {
-		klog.Errorf("query liveroom owner failed: %v", err)
-		return 0, err
-	}
-	return owner, err
 }
 
 func NewLive(db *gorm.DB) *Live {

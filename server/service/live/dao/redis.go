@@ -12,6 +12,22 @@ type LiveRedis struct {
 	rd *redis.Client
 }
 
+func (l *LiveRedis) StopLive(ctx context.Context, id int64) error {
+	idRaw := strconv.FormatInt(id, 10)
+	key, err := l.rd.Get(ctx, idRaw).Result()
+	if err != nil {
+		return err
+	}
+	if err := l.rd.Del(ctx, key).Err(); err != nil {
+		return err
+	}
+	return l.rd.Del(ctx, idRaw).Err()
+}
+
+func (l *LiveRedis) GetLiveRoomIsLiveCache(ctx context.Context, id int64) (bool, error) {
+	return l.rd.HGet(ctx, fmt.Sprintf("live:%d", id), "is_live").Bool()
+}
+
 func (l *LiveRedis) AddLiveRoomCache(ctx context.Context, room *base.Room) error {
 	return l.rd.HMSet(ctx, fmt.Sprintf("live:%d", room.LiveId), map[string]interface{}{
 		"room_name":    room.RoomName,
@@ -44,7 +60,7 @@ func (l *LiveRedis) GetLiveRoomCache(ctx context.Context, id int64) (*base.Room,
 		Owner:        owner,
 		Cover:        res["cover"],
 		StartTime:    startTime,
-		IsLive:       res["is_live"] == "true",
+		IsLive:       res["is_live"] == "1",
 	}, nil
 }
 
