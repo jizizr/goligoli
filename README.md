@@ -32,6 +32,9 @@
 - 对象存储数据库存储直播间封面和直播回放，节省了服务器资源
 - 使用微服务框架，实现功能解耦
 
+### API文档
+https://console-docs.apipost.cn/preview/3afa23205f8cddef/d92b80e31c14eea9
+
 ### 目录结构
 
 ```shell
