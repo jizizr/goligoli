@@ -13,6 +13,10 @@ type LotteryRedis struct {
 	client *redis.Client
 }
 
+func (l *LotteryRedis) DeleteLotteryCache(ctx context.Context, lotteryID int64) error {
+	return l.client.Del(ctx, fmt.Sprintf("lo:%d", lotteryID)).Err()
+}
+
 func (l *LotteryRedis) SetLotteryCache(ctx context.Context, info *base.Gift) error {
 	err := l.client.SAdd(ctx, fmt.Sprintf("lo:%d", info.LiveId), info.Id).Err()
 	if err != nil {
@@ -24,6 +28,7 @@ func (l *LotteryRedis) SetLotteryCache(ctx context.Context, info *base.Gift) err
 		"gift":     info.Gift,
 		"count":    info.Count,
 		"end_time": info.EndTime,
+		"is_end":   info.IsEnd,
 	}).Err()
 	if err != nil {
 		klog.Errorf("failed to set lottery: %v", err)
@@ -53,6 +58,7 @@ func (l *LotteryRedis) GetLotteryCache(ctx context.Context, lotteryID int64) (in
 		Gift:    res["gift"],
 		Count:   int32(count),
 		EndTime: endTime,
+		IsEnd:   res["is_end"] == "1",
 	}
 	return
 }

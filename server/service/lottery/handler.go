@@ -32,6 +32,8 @@ type LotteryMySqlServiceImpl interface {
 	SetLotteryDB(info *base.Gift) error
 	GetLotteryDB(LiveID int64) ([]*base.Gift, error)
 	GetLotteryByID(lotteryID int64) (*base.Gift, error)
+	TagLotteryEnd(lotteryID int64) error
+	GetUndrawLottery() ([]int64, error)
 }
 
 type RedisServiceImpl interface {
@@ -41,10 +43,11 @@ type RedisServiceImpl interface {
 	GetLiveRoomLotteryCache(ctx context.Context, liveRoomID int64) ([]*base.Gift, error)
 	DrawLotteryCache(ctx context.Context, lotteryID int64, count int32) ([]int64, error)
 	AddWinnersCache(ctx context.Context, lotteryID int64, winners []int64) error
+	DeleteLotteryCache(ctx context.Context, lotteryID int64) error
 }
 
 type NsqServiceImpl interface {
-	PushToNsq(result []int64) error
+	PushToNsq(body []byte) error
 }
 
 // SetLottery implements the LotteryServiceImpl interface.
@@ -83,7 +86,9 @@ func (s *LotteryServiceImpl) SetLottery(ctx context.Context, req *lottery.SetLot
 	if err != nil {
 		return nil, err
 	}
-	if err := s.SetLotteryDB(req.Gift); err != nil {
+	gift, _ := sonic.Marshal(req.Gift)
+	err = s.PushToNsq(gift)
+	if err != nil {
 		return nil, err
 	}
 	resp = new(lottery.SetLotteryResponse)
@@ -175,9 +180,26 @@ func (s *LotteryServiceImpl) DrawLottery(ctx context.Context, req *lottery.DrawL
 		klog.Errorf("failed to add winners: %v", err)
 		return
 	}
-	err = s.PushToNsq(append([]int64{req.Id}, winners...))
+	err = s.AddWinners(req.Id, winners)
 	if err != nil {
-		return nil, err
+		klog.Errorf("add winners failed, %v", err)
+		resp.Msg = err.Error()
+		return
+	}
+	err = s.TagLotteryEnd(req.Id)
+	if err != nil {
+		resp.Msg = "failed to tag lottery end"
+	}
+	_ = s.DeleteLotteryCache(ctx, req.Id)
+	return
+}
+
+// GetAllUnDrawLottery implements the LotteryServiceImpl interface.
+func (s *LotteryServiceImpl) GetAllUnDrawLottery(ctx context.Context) (resp *lottery.GetAllUnDrawLotteryResponse, err error) {
+	resp = new(lottery.GetAllUnDrawLotteryResponse)
+	resp.Ids, err = s.GetUndrawLottery()
+	if err != nil {
+		klog.Errorf("failed to get undraw lottery: %v", err)
 	}
 	return
 }

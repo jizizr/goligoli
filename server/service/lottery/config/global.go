@@ -13,7 +13,7 @@ var (
 )
 
 var (
-	WinnerDB *dao.Winner
+	LotteryDB *dao.Lottery
 )
 
 var (

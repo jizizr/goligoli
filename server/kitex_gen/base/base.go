@@ -1273,6 +1273,7 @@ type Gift struct {
 	Gift    string `thrift:"gift,3,required" frugal:"3,required,string" json:"gift"`
 	Count   int32  `thrift:"count,4,required" frugal:"4,required,i32" json:"count"`
 	EndTime int64  `thrift:"end_time,5,required" frugal:"5,required,i64" json:"end_time"`
+	IsEnd   bool   `thrift:"is_end,6" frugal:"6,default,bool" json:"is_end"`
 }
 
 func NewGift() *Gift {
@@ -1302,6 +1303,10 @@ func (p *Gift) GetCount() (v int32) {
 func (p *Gift) GetEndTime() (v int64) {
 	return p.EndTime
 }
+
+func (p *Gift) GetIsEnd() (v bool) {
+	return p.IsEnd
+}
 func (p *Gift) SetId(val int64) {
 	p.Id = val
 }
@@ -1317,6 +1322,9 @@ func (p *Gift) SetCount(val int32) {
 func (p *Gift) SetEndTime(val int64) {
 	p.EndTime = val
 }
+func (p *Gift) SetIsEnd(val bool) {
+	p.IsEnd = val
+}
 
 var fieldIDToName_Gift = map[int16]string{
 	1: "id",
@@ -1324,6 +1332,7 @@ var fieldIDToName_Gift = map[int16]string{
 	3: "gift",
 	4: "count",
 	5: "end_time",
+	6: "is_end",
 }
 
 func (p *Gift) Read(iprot thrift.TProtocol) (err error) {
@@ -1390,6 +1399,14 @@ func (p *Gift) Read(iprot thrift.TProtocol) (err error) {
 					goto ReadFieldError
 				}
 				issetEndTime = true
+			} else if err = iprot.Skip(fieldTypeId); err != nil {
+				goto SkipFieldError
+			}
+		case 6:
+			if fieldTypeId == thrift.BOOL {
+				if err = p.ReadField6(iprot); err != nil {
+					goto ReadFieldError
+				}
 			} else if err = iprot.Skip(fieldTypeId); err != nil {
 				goto SkipFieldError
 			}
@@ -1498,6 +1515,17 @@ func (p *Gift) ReadField5(iprot thrift.TProtocol) error {
 	p.EndTime = _field
 	return nil
 }
+func (p *Gift) ReadField6(iprot thrift.TProtocol) error {
+
+	var _field bool
+	if v, err := iprot.ReadBool(); err != nil {
+		return err
+	} else {
+		_field = v
+	}
+	p.IsEnd = _field
+	return nil
+}
 
 func (p *Gift) Write(oprot thrift.TProtocol) (err error) {
 	var fieldId int16
@@ -1523,6 +1551,10 @@ func (p *Gift) Write(oprot thrift.TProtocol) (err error) {
 		}
 		if err = p.writeField5(oprot); err != nil {
 			fieldId = 5
+			goto WriteFieldError
+		}
+		if err = p.writeField6(oprot); err != nil {
+			fieldId = 6
 			goto WriteFieldError
 		}
 	}
@@ -1628,6 +1660,23 @@ WriteFieldEndError:
 	return thrift.PrependError(fmt.Sprintf("%T write field 5 end error: ", p), err)
 }
 
+func (p *Gift) writeField6(oprot thrift.TProtocol) (err error) {
+	if err = oprot.WriteFieldBegin("is_end", thrift.BOOL, 6); err != nil {
+		goto WriteFieldBeginError
+	}
+	if err := oprot.WriteBool(p.IsEnd); err != nil {
+		return err
+	}
+	if err = oprot.WriteFieldEnd(); err != nil {
+		goto WriteFieldEndError
+	}
+	return nil
+WriteFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 6 begin error: ", p), err)
+WriteFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 6 end error: ", p), err)
+}
+
 func (p *Gift) String() string {
 	if p == nil {
 		return "<nil>"
@@ -1655,6 +1704,9 @@ func (p *Gift) DeepEqual(ano *Gift) bool {
 		return false
 	}
 	if !p.Field5DeepEqual(ano.EndTime) {
+		return false
+	}
+	if !p.Field6DeepEqual(ano.IsEnd) {
 		return false
 	}
 	return true
@@ -1691,6 +1743,13 @@ func (p *Gift) Field4DeepEqual(src int32) bool {
 func (p *Gift) Field5DeepEqual(src int64) bool {
 
 	if p.EndTime != src {
+		return false
+	}
+	return true
+}
+func (p *Gift) Field6DeepEqual(src bool) bool {
+
+	if p.IsEnd != src {
 		return false
 	}
 	return true

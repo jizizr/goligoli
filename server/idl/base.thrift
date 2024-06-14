@@ -29,4 +29,5 @@ struct Gift{
     3:required string gift
     4:required i32 count
     5:required i64 end_time
+    6:bool is_end
 }

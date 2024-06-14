@@ -48,6 +48,24 @@ type Lottery struct {
 	db *gorm.DB
 }
 
+func (l *Lottery) GetUndrawLottery() ([]int64, error) {
+	var lotterys []int64
+	err := l.db.Model(&base.Gift{}).Where("is_end = 0").Pluck("id", &lotterys).Error
+	if err != nil {
+		klog.Errorf("GetOnlineLiveRooms failed: %v", err)
+	}
+	return lotterys, err
+}
+
+func (l *Lottery) TagLotteryEnd(lotteryID int64) error {
+	err := l.db.Model(&base.Gift{}).Where("id = ?", lotteryID).Update("is_end", true).Error
+	if err != nil {
+		klog.Errorf("failed to tag lottery end: %v", err)
+		return err
+	}
+	return nil
+}
+
 func (l *Lottery) SetLotteryDB(info *base.Gift) error {
 	err := l.db.Create(info).Error
 	if err != nil {

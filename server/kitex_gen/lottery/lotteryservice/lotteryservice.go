@@ -48,6 +48,13 @@ var serviceMethods = map[string]kitex.MethodInfo{
 		false,
 		kitex.WithStreamingMode(kitex.StreamingNone),
 	),
+	"GetAllUnDrawLottery": kitex.NewMethodInfo(
+		getAllUnDrawLotteryHandler,
+		newLotteryServiceGetAllUnDrawLotteryArgs,
+		newLotteryServiceGetAllUnDrawLotteryResult,
+		false,
+		kitex.WithStreamingMode(kitex.StreamingNone),
+	),
 }
 
 var (
@@ -204,6 +211,24 @@ func newLotteryServiceDrawLotteryResult() interface{} {
 	return lottery.NewLotteryServiceDrawLotteryResult()
 }
 
+func getAllUnDrawLotteryHandler(ctx context.Context, handler interface{}, arg, result interface{}) error {
+	_ = arg.(*lottery.LotteryServiceGetAllUnDrawLotteryArgs)
+	realResult := result.(*lottery.LotteryServiceGetAllUnDrawLotteryResult)
+	success, err := handler.(lottery.LotteryService).GetAllUnDrawLottery(ctx)
+	if err != nil {
+		return err
+	}
+	realResult.Success = success
+	return nil
+}
+func newLotteryServiceGetAllUnDrawLotteryArgs() interface{} {
+	return lottery.NewLotteryServiceGetAllUnDrawLotteryArgs()
+}
+
+func newLotteryServiceGetAllUnDrawLotteryResult() interface{} {
+	return lottery.NewLotteryServiceGetAllUnDrawLotteryResult()
+}
+
 type kClient struct {
 	c client.Client
 }
@@ -259,6 +284,15 @@ func (p *kClient) DrawLottery(ctx context.Context, req *lottery.DrawLotteryReque
 	_args.Req = req
 	var _result lottery.LotteryServiceDrawLotteryResult
 	if err = p.c.Call(ctx, "DrawLottery", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
+
+func (p *kClient) GetAllUnDrawLottery(ctx context.Context) (r *lottery.GetAllUnDrawLotteryResponse, err error) {
+	var _args lottery.LotteryServiceGetAllUnDrawLotteryArgs
+	var _result lottery.LotteryServiceGetAllUnDrawLotteryResult
+	if err = p.c.Call(ctx, "GetAllUnDrawLottery", &_args, &_result); err != nil {
 		return
 	}
 	return _result.GetSuccess(), nil

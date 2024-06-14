@@ -30,18 +30,18 @@ func main() {
 		provider.WithInsecure(),
 	)
 	defer p.Shutdown(context.Background())
-	config.WinnerDB = dao.NewWinner(db)
+	config.LotteryDB = dao.NewLottery(db)
 	go func() {
 		MessageSub := mq.NewSubscriberManager(subscriber)
-		err := MessageSub.SubscribeFromNsq(mq.HandleWinnersFunc)
+		err := MessageSub.SubscribeFromNsq(mq.HandleFunc)
 		if err != nil {
 			klog.Error(err)
 		}
 	}()
 	svr := lottery.NewServer(
 		&LotteryServiceImpl{
-			config.WinnerDB,
-			dao.NewLottery(db),
+			dao.NewWinner(db),
+			config.LotteryDB,
 			dao.NewLotteryRedis(rd),
 			mq.NewPublisherManager(publisher),
 		},

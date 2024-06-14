@@ -44,10 +44,15 @@ struct DrawLotteryResponse {
     1:string msg
 }
 
+struct GetAllUnDrawLotteryResponse {
+    1:list<i64> ids
+}
+
 service LotteryService {
     SetLotteryResponse SetLottery(1:SetLotteryRequest req)
     GetLotteryResponse GetLottery(1:GetLotteryRequest req)
     JoinLotteryResponse JoinLottery(1:JoinLotteryRequest req)
     GetLiveRoomLotteryResponse GetLiveRoomLottery(1:GetLiveRoomLotteryRequest req)
     DrawLotteryResponse DrawLottery(1:DrawLotteryRequest req)
+    GetAllUnDrawLotteryResponse GetAllUnDrawLottery()
 }

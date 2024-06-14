@@ -1805,6 +1805,196 @@ func (p *DrawLotteryResponse) Field1DeepEqual(src string) bool {
 	return true
 }
 
+type GetAllUnDrawLotteryResponse struct {
+	Ids []int64 `thrift:"ids,1" frugal:"1,default,list<i64>" json:"ids"`
+}
+
+func NewGetAllUnDrawLotteryResponse() *GetAllUnDrawLotteryResponse {
+	return &GetAllUnDrawLotteryResponse{}
+}
+
+func (p *GetAllUnDrawLotteryResponse) InitDefault() {
+	*p = GetAllUnDrawLotteryResponse{}
+}
+
+func (p *GetAllUnDrawLotteryResponse) GetIds() (v []int64) {
+	return p.Ids
+}
+func (p *GetAllUnDrawLotteryResponse) SetIds(val []int64) {
+	p.Ids = val
+}
+
+var fieldIDToName_GetAllUnDrawLotteryResponse = map[int16]string{
+	1: "ids",
+}
+
+func (p *GetAllUnDrawLotteryResponse) Read(iprot thrift.TProtocol) (err error) {
+
+	var fieldTypeId thrift.TType
+	var fieldId int16
+
+	if _, err = iprot.ReadStructBegin(); err != nil {
+		goto ReadStructBeginError
+	}
+
+	for {
+		_, fieldTypeId, fieldId, err = iprot.ReadFieldBegin()
+		if err != nil {
+			goto ReadFieldBeginError
+		}
+		if fieldTypeId == thrift.STOP {
+			break
+		}
+
+		switch fieldId {
+		case 1:
+			if fieldTypeId == thrift.LIST {
+				if err = p.ReadField1(iprot); err != nil {
+					goto ReadFieldError
+				}
+			} else if err = iprot.Skip(fieldTypeId); err != nil {
+				goto SkipFieldError
+			}
+		default:
+			if err = iprot.Skip(fieldTypeId); err != nil {
+				goto SkipFieldError
+			}
+		}
+		if err = iprot.ReadFieldEnd(); err != nil {
+			goto ReadFieldEndError
+		}
+	}
+	if err = iprot.ReadStructEnd(); err != nil {
+		goto ReadStructEndError
+	}
+
+	return nil
+ReadStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct begin error: ", p), err)
+ReadFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
+ReadFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_GetAllUnDrawLotteryResponse[fieldId]), err)
+SkipFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
+
+ReadFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read field end error", p), err)
+ReadStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
+}
+
+func (p *GetAllUnDrawLotteryResponse) ReadField1(iprot thrift.TProtocol) error {
+	_, size, err := iprot.ReadListBegin()
+	if err != nil {
+		return err
+	}
+	_field := make([]int64, 0, size)
+	for i := 0; i < size; i++ {
+
+		var _elem int64
+		if v, err := iprot.ReadI64(); err != nil {
+			return err
+		} else {
+			_elem = v
+		}
+
+		_field = append(_field, _elem)
+	}
+	if err := iprot.ReadListEnd(); err != nil {
+		return err
+	}
+	p.Ids = _field
+	return nil
+}
+
+func (p *GetAllUnDrawLotteryResponse) Write(oprot thrift.TProtocol) (err error) {
+	var fieldId int16
+	if err = oprot.WriteStructBegin("GetAllUnDrawLotteryResponse"); err != nil {
+		goto WriteStructBeginError
+	}
+	if p != nil {
+		if err = p.writeField1(oprot); err != nil {
+			fieldId = 1
+			goto WriteFieldError
+		}
+	}
+	if err = oprot.WriteFieldStop(); err != nil {
+		goto WriteFieldStopError
+	}
+	if err = oprot.WriteStructEnd(); err != nil {
+		goto WriteStructEndError
+	}
+	return nil
+WriteStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct begin error: ", p), err)
+WriteFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T write field %d error: ", p, fieldId), err)
+WriteFieldStopError:
+	return thrift.PrependError(fmt.Sprintf("%T write field stop error: ", p), err)
+WriteStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct end error: ", p), err)
+}
+
+func (p *GetAllUnDrawLotteryResponse) writeField1(oprot thrift.TProtocol) (err error) {
+	if err = oprot.WriteFieldBegin("ids", thrift.LIST, 1); err != nil {
+		goto WriteFieldBeginError
+	}
+	if err := oprot.WriteListBegin(thrift.I64, len(p.Ids)); err != nil {
+		return err
+	}
+	for _, v := range p.Ids {
+		if err := oprot.WriteI64(v); err != nil {
+			return err
+		}
+	}
+	if err := oprot.WriteListEnd(); err != nil {
+		return err
+	}
+	if err = oprot.WriteFieldEnd(); err != nil {
+		goto WriteFieldEndError
+	}
+	return nil
+WriteFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 1 begin error: ", p), err)
+WriteFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 1 end error: ", p), err)
+}
+
+func (p *GetAllUnDrawLotteryResponse) String() string {
+	if p == nil {
+		return "<nil>"
+	}
+	return fmt.Sprintf("GetAllUnDrawLotteryResponse(%+v)", *p)
+
+}
+
+func (p *GetAllUnDrawLotteryResponse) DeepEqual(ano *GetAllUnDrawLotteryResponse) bool {
+	if p == ano {
+		return true
+	} else if p == nil || ano == nil {
+		return false
+	}
+	if !p.Field1DeepEqual(ano.Ids) {
+		return false
+	}
+	return true
+}
+
+func (p *GetAllUnDrawLotteryResponse) Field1DeepEqual(src []int64) bool {
+
+	if len(p.Ids) != len(src) {
+		return false
+	}
+	for i, v := range p.Ids {
+		_src := src[i]
+		if v != _src {
+			return false
+		}
+	}
+	return true
+}
+
 type LotteryService interface {
 	SetLottery(ctx context.Context, req *SetLotteryRequest) (r *SetLotteryResponse, err error)
 
@@ -1815,6 +2005,8 @@ type LotteryService interface {
 	GetLiveRoomLottery(ctx context.Context, req *GetLiveRoomLotteryRequest) (r *GetLiveRoomLotteryResponse, err error)
 
 	DrawLottery(ctx context.Context, req *DrawLotteryRequest) (r *DrawLotteryResponse, err error)
+
+	GetAllUnDrawLottery(ctx context.Context) (r *GetAllUnDrawLotteryResponse, err error)
 }
 
 type LotteryServiceClient struct {
@@ -1888,6 +2080,14 @@ func (p *LotteryServiceClient) DrawLottery(ctx context.Context, req *DrawLottery
 	}
 	return _result.GetSuccess(), nil
 }
+func (p *LotteryServiceClient) GetAllUnDrawLottery(ctx context.Context) (r *GetAllUnDrawLotteryResponse, err error) {
+	var _args LotteryServiceGetAllUnDrawLotteryArgs
+	var _result LotteryServiceGetAllUnDrawLotteryResult
+	if err = p.Client_().Call(ctx, "GetAllUnDrawLottery", &_args, &_result); err != nil {
+		return
+	}
+	return _result.GetSuccess(), nil
+}
 
 type LotteryServiceProcessor struct {
 	processorMap map[string]thrift.TProcessorFunction
@@ -1914,6 +2114,7 @@ func NewLotteryServiceProcessor(handler LotteryService) *LotteryServiceProcessor
 	self.AddToProcessorMap("JoinLottery", &lotteryServiceProcessorJoinLottery{handler: handler})
 	self.AddToProcessorMap("GetLiveRoomLottery", &lotteryServiceProcessorGetLiveRoomLottery{handler: handler})
 	self.AddToProcessorMap("DrawLottery", &lotteryServiceProcessorDrawLottery{handler: handler})
+	self.AddToProcessorMap("GetAllUnDrawLottery", &lotteryServiceProcessorGetAllUnDrawLottery{handler: handler})
 	return self
 }
 func (p *LotteryServiceProcessor) Process(ctx context.Context, iprot, oprot thrift.TProtocol) (success bool, err thrift.TException) {
@@ -2157,6 +2358,54 @@ func (p *lotteryServiceProcessorDrawLottery) Process(ctx context.Context, seqId 
 		result.Success = retval
 	}
 	if err2 = oprot.WriteMessageBegin("DrawLottery", thrift.REPLY, seqId); err2 != nil {
+		err = err2
+	}
+	if err2 = result.Write(oprot); err == nil && err2 != nil {
+		err = err2
+	}
+	if err2 = oprot.WriteMessageEnd(); err == nil && err2 != nil {
+		err = err2
+	}
+	if err2 = oprot.Flush(ctx); err == nil && err2 != nil {
+		err = err2
+	}
+	if err != nil {
+		return
+	}
+	return true, err
+}
+
+type lotteryServiceProcessorGetAllUnDrawLottery struct {
+	handler LotteryService
+}
+
+func (p *lotteryServiceProcessorGetAllUnDrawLottery) Process(ctx context.Context, seqId int32, iprot, oprot thrift.TProtocol) (success bool, err thrift.TException) {
+	args := LotteryServiceGetAllUnDrawLotteryArgs{}
+	if err = args.Read(iprot); err != nil {
+		iprot.ReadMessageEnd()
+		x := thrift.NewTApplicationException(thrift.PROTOCOL_ERROR, err.Error())
+		oprot.WriteMessageBegin("GetAllUnDrawLottery", thrift.EXCEPTION, seqId)
+		x.Write(oprot)
+		oprot.WriteMessageEnd()
+		oprot.Flush(ctx)
+		return false, err
+	}
+
+	iprot.ReadMessageEnd()
+	var err2 error
+	result := LotteryServiceGetAllUnDrawLotteryResult{}
+	var retval *GetAllUnDrawLotteryResponse
+	if retval, err2 = p.handler.GetAllUnDrawLottery(ctx); err2 != nil {
+		x := thrift.NewTApplicationException(thrift.INTERNAL_ERROR, "Internal error processing GetAllUnDrawLottery: "+err2.Error())
+		oprot.WriteMessageBegin("GetAllUnDrawLottery", thrift.EXCEPTION, seqId)
+		x.Write(oprot)
+		oprot.WriteMessageEnd()
+		oprot.Flush(ctx)
+		return true, err2
+	} else {
+		result.Success = retval
+	}
+	if err2 = oprot.WriteMessageBegin("GetAllUnDrawLottery", thrift.REPLY, seqId); err2 != nil {
 		err = err2
 	}
 	if err2 = result.Write(oprot); err == nil && err2 != nil {
@@ -3877,6 +4126,271 @@ func (p *LotteryServiceDrawLotteryResult) DeepEqual(ano *LotteryServiceDrawLotte
 }
 
 func (p *LotteryServiceDrawLotteryResult) Field0DeepEqual(src *DrawLotteryResponse) bool {
+
+	if !p.Success.DeepEqual(src) {
+		return false
+	}
+	return true
+}
+
+type LotteryServiceGetAllUnDrawLotteryArgs struct {
+}
+
+func NewLotteryServiceGetAllUnDrawLotteryArgs() *LotteryServiceGetAllUnDrawLotteryArgs {
+	return &LotteryServiceGetAllUnDrawLotteryArgs{}
+}
+
+func (p *LotteryServiceGetAllUnDrawLotteryArgs) InitDefault() {
+	*p = LotteryServiceGetAllUnDrawLotteryArgs{}
+}
+
+var fieldIDToName_LotteryServiceGetAllUnDrawLotteryArgs = map[int16]string{}
+
+func (p *LotteryServiceGetAllUnDrawLotteryArgs) Read(iprot thrift.TProtocol) (err error) {
+
+	var fieldTypeId thrift.TType
+	var fieldId int16
+
+	if _, err = iprot.ReadStructBegin(); err != nil {
+		goto ReadStructBeginError
+	}
+
+	for {
+		_, fieldTypeId, fieldId, err = iprot.ReadFieldBegin()
+		if err != nil {
+			goto ReadFieldBeginError
+		}
+		if fieldTypeId == thrift.STOP {
+			break
+		}
+		if err = iprot.Skip(fieldTypeId); err != nil {
+			goto SkipFieldTypeError
+		}
+		if err = iprot.ReadFieldEnd(); err != nil {
+			goto ReadFieldEndError
+		}
+	}
+	if err = iprot.ReadStructEnd(); err != nil {
+		goto ReadStructEndError
+	}
+
+	return nil
+ReadStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct begin error: ", p), err)
+ReadFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
+SkipFieldTypeError:
+	return thrift.PrependError(fmt.Sprintf("%T skip field type %d error", p, fieldTypeId), err)
+
+ReadFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read field end error", p), err)
+ReadStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
+}
+
+func (p *LotteryServiceGetAllUnDrawLotteryArgs) Write(oprot thrift.TProtocol) (err error) {
+	if err = oprot.WriteStructBegin("GetAllUnDrawLottery_args"); err != nil {
+		goto WriteStructBeginError
+	}
+	if p != nil {
+	}
+	if err = oprot.WriteFieldStop(); err != nil {
+		goto WriteFieldStopError
+	}
+	if err = oprot.WriteStructEnd(); err != nil {
+		goto WriteStructEndError
+	}
+	return nil
+WriteStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct begin error: ", p), err)
+WriteFieldStopError:
+	return thrift.PrependError(fmt.Sprintf("%T write field stop error: ", p), err)
+WriteStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct end error: ", p), err)
+}
+
+func (p *LotteryServiceGetAllUnDrawLotteryArgs) String() string {
+	if p == nil {
+		return "<nil>"
+	}
+	return fmt.Sprintf("LotteryServiceGetAllUnDrawLotteryArgs(%+v)", *p)
+
+}
+
+func (p *LotteryServiceGetAllUnDrawLotteryArgs) DeepEqual(ano *LotteryServiceGetAllUnDrawLotteryArgs) bool {
+	if p == ano {
+		return true
+	} else if p == nil || ano == nil {
+		return false
+	}
+	return true
+}
+
+type LotteryServiceGetAllUnDrawLotteryResult struct {
+	Success *GetAllUnDrawLotteryResponse `thrift:"success,0,optional" frugal:"0,optional,GetAllUnDrawLotteryResponse" json:"success,omitempty"`
+}
+
+func NewLotteryServiceGetAllUnDrawLotteryResult() *LotteryServiceGetAllUnDrawLotteryResult {
+	return &LotteryServiceGetAllUnDrawLotteryResult{}
+}
+
+func (p *LotteryServiceGetAllUnDrawLotteryResult) InitDefault() {
+	*p = LotteryServiceGetAllUnDrawLotteryResult{}
+}
+
+var LotteryServiceGetAllUnDrawLotteryResult_Success_DEFAULT *GetAllUnDrawLotteryResponse
+
+func (p *LotteryServiceGetAllUnDrawLotteryResult) GetSuccess() (v *GetAllUnDrawLotteryResponse) {
+	if !p.IsSetSuccess() {
+		return LotteryServiceGetAllUnDrawLotteryResult_Success_DEFAULT
+	}
+	return p.Success
+}
+func (p *LotteryServiceGetAllUnDrawLotteryResult) SetSuccess(x interface{}) {
+	p.Success = x.(*GetAllUnDrawLotteryResponse)
+}
+
+var fieldIDToName_LotteryServiceGetAllUnDrawLotteryResult = map[int16]string{
+	0: "success",
+}
+
+func (p *LotteryServiceGetAllUnDrawLotteryResult) IsSetSuccess() bool {
+	return p.Success != nil
+}
+
+func (p *LotteryServiceGetAllUnDrawLotteryResult) Read(iprot thrift.TProtocol) (err error) {
+
+	var fieldTypeId thrift.TType
+	var fieldId int16
+
+	if _, err = iprot.ReadStructBegin(); err != nil {
+		goto ReadStructBeginError
+	}
+
+	for {
+		_, fieldTypeId, fieldId, err = iprot.ReadFieldBegin()
+		if err != nil {
+			goto ReadFieldBeginError
+		}
+		if fieldTypeId == thrift.STOP {
+			break
+		}
+
+		switch fieldId {
+		case 0:
+			if fieldTypeId == thrift.STRUCT {
+				if err = p.ReadField0(iprot); err != nil {
+					goto ReadFieldError
+				}
+			} else if err = iprot.Skip(fieldTypeId); err != nil {
+				goto SkipFieldError
+			}
+		default:
+			if err = iprot.Skip(fieldTypeId); err != nil {
+				goto SkipFieldError
+			}
+		}
+		if err = iprot.ReadFieldEnd(); err != nil {
+			goto ReadFieldEndError
+		}
+	}
+	if err = iprot.ReadStructEnd(); err != nil {
+		goto ReadStructEndError
+	}
+
+	return nil
+ReadStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct begin error: ", p), err)
+ReadFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T read field %d begin error: ", p, fieldId), err)
+ReadFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T read field %d '%s' error: ", p, fieldId, fieldIDToName_LotteryServiceGetAllUnDrawLotteryResult[fieldId]), err)
+SkipFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T field %d skip type %d error: ", p, fieldId, fieldTypeId), err)
+
+ReadFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read field end error", p), err)
+ReadStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T read struct end error: ", p), err)
+}
+
+func (p *LotteryServiceGetAllUnDrawLotteryResult) ReadField0(iprot thrift.TProtocol) error {
+	_field := NewGetAllUnDrawLotteryResponse()
+	if err := _field.Read(iprot); err != nil {
+		return err
+	}
+	p.Success = _field
+	return nil
+}
+
+func (p *LotteryServiceGetAllUnDrawLotteryResult) Write(oprot thrift.TProtocol) (err error) {
+	var fieldId int16
+	if err = oprot.WriteStructBegin("GetAllUnDrawLottery_result"); err != nil {
+		goto WriteStructBeginError
+	}
+	if p != nil {
+		if err = p.writeField0(oprot); err != nil {
+			fieldId = 0
+			goto WriteFieldError
+		}
+	}
+	if err = oprot.WriteFieldStop(); err != nil {
+		goto WriteFieldStopError
+	}
+	if err = oprot.WriteStructEnd(); err != nil {
+		goto WriteStructEndError
+	}
+	return nil
+WriteStructBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct begin error: ", p), err)
+WriteFieldError:
+	return thrift.PrependError(fmt.Sprintf("%T write field %d error: ", p, fieldId), err)
+WriteFieldStopError:
+	return thrift.PrependError(fmt.Sprintf("%T write field stop error: ", p), err)
+WriteStructEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write struct end error: ", p), err)
+}
+
+func (p *LotteryServiceGetAllUnDrawLotteryResult) writeField0(oprot thrift.TProtocol) (err error) {
+	if p.IsSetSuccess() {
+		if err = oprot.WriteFieldBegin("success", thrift.STRUCT, 0); err != nil {
+			goto WriteFieldBeginError
+		}
+		if err := p.Success.Write(oprot); err != nil {
+			return err
+		}
+		if err = oprot.WriteFieldEnd(); err != nil {
+			goto WriteFieldEndError
+		}
+	}
+	return nil
+WriteFieldBeginError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 0 begin error: ", p), err)
+WriteFieldEndError:
+	return thrift.PrependError(fmt.Sprintf("%T write field 0 end error: ", p), err)
+}
+
+func (p *LotteryServiceGetAllUnDrawLotteryResult) String() string {
+	if p == nil {
+		return "<nil>"
+	}
+	return fmt.Sprintf("LotteryServiceGetAllUnDrawLotteryResult(%+v)", *p)
+
+}
+
+func (p *LotteryServiceGetAllUnDrawLotteryResult) DeepEqual(ano *LotteryServiceGetAllUnDrawLotteryResult) bool {
+	if p == ano {
+		return true
+	} else if p == nil || ano == nil {
+		return false
+	}
+	if !p.Field0DeepEqual(ano.Success) {
+		return false
+	}
+	return true
+}
+
+func (p *LotteryServiceGetAllUnDrawLotteryResult) Field0DeepEqual(src *GetAllUnDrawLotteryResponse) bool {
 
 	if !p.Success.DeepEqual(src) {
 		return false

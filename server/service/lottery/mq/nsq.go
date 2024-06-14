@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/bytedance/sonic"
 	"github.com/cloudwego/kitex/pkg/klog"
+	"github.com/jizizr/goligoli/server/kitex_gen/base"
 	"github.com/jizizr/goligoli/server/service/lottery/config"
 	"github.com/nsqio/go-nsq"
 	"os"
@@ -15,11 +16,7 @@ type PublisherManager struct {
 	Publisher *nsq.Producer
 }
 
-func (p *PublisherManager) PushToNsq(result []int64) error {
-	body, err := sonic.Marshal(result)
-	if err != nil {
-		return err
-	}
+func (p *PublisherManager) PushToNsq(body []byte) error {
 	return p.Publisher.Publish(config.GlobalServerConfig.NsqInfo.Topic, body)
 }
 
@@ -48,16 +45,16 @@ func (s *SubscriberManager) SubscribeFromNsq(f nsq.HandlerFunc) error {
 	return nil
 }
 
-func HandleWinnersFunc(message *nsq.Message) error {
-	var result []int64
-	err := sonic.Unmarshal(message.Body, &result)
+func HandleFunc(message *nsq.Message) error {
+	var gift base.Gift
+	err := sonic.Unmarshal(message.Body, &gift)
 	if err != nil {
 		klog.Errorf("unmarshal winners failed, %v", err)
 		return err
 	}
-	err = config.WinnerDB.AddWinners(result[0], result[1:])
+	err = config.LotteryDB.SetLotteryDB(&gift)
 	if err != nil {
-		klog.Errorf("add winners failed, %v", err)
+		klog.Errorf("set lottery db failed, %v", err)
 	}
 	return err
 }

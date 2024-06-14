@@ -16,6 +16,7 @@ type Client interface {
 	JoinLottery(ctx context.Context, req *lottery.JoinLotteryRequest, callOptions ...callopt.Option) (r *lottery.JoinLotteryResponse, err error)
 	GetLiveRoomLottery(ctx context.Context, req *lottery.GetLiveRoomLotteryRequest, callOptions ...callopt.Option) (r *lottery.GetLiveRoomLotteryResponse, err error)
 	DrawLottery(ctx context.Context, req *lottery.DrawLotteryRequest, callOptions ...callopt.Option) (r *lottery.DrawLotteryResponse, err error)
+	GetAllUnDrawLottery(ctx context.Context, callOptions ...callopt.Option) (r *lottery.GetAllUnDrawLotteryResponse, err error)
 }
 
 // NewClient creates a client for the service defined in IDL.
@@ -70,4 +71,9 @@ func (p *kLotteryServiceClient) GetLiveRoomLottery(ctx context.Context, req *lot
 func (p *kLotteryServiceClient) DrawLottery(ctx context.Context, req *lottery.DrawLotteryRequest, callOptions ...callopt.Option) (r *lottery.DrawLotteryResponse, err error) {
 	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
 	return p.kClient.DrawLottery(ctx, req)
+}
+
+func (p *kLotteryServiceClient) GetAllUnDrawLottery(ctx context.Context, callOptions ...callopt.Option) (r *lottery.GetAllUnDrawLotteryResponse, err error) {
+	ctx = client.NewCtxWithCallOptions(ctx, callOptions)
+	return p.kClient.GetAllUnDrawLottery(ctx)
 }
